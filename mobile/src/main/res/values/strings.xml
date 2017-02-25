@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Dive Monitor</string>
+    <string name="title_dive_detail">Dive Detail</string>
+</resources>
