@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.example.zmeggyesi.divemonitor.dummy.DummyContent;
 
+import java.util.Collections;
+
 /**
  * A fragment representing a single Dive detail screen.
  * This fragment is either contained in a {@link DiveListActivity}
@@ -62,7 +64,10 @@ public class DiveDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.dive_detail)).setText(mItem.details);
+            ((TextView) rootView.findViewById(R.id.dive_detail)).setText(getResources().getString(R.string.dive_content_format,
+                    mItem.id,
+                    mItem.depths.get(Integer.decode(mItem.id)-1),
+                    Collections.max(mItem.depths)));
         }
 
         return rootView;
