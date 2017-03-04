@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name">Dive Monitor</string>
-    <string name="title_dive_detail">Dive Detail</string>
-    <string name="dive_content_format">"This is item %1$s. \nRandom depth value: %2$,.0f \nGreatest depth: %3$,.0f"</string>
-</resources>
