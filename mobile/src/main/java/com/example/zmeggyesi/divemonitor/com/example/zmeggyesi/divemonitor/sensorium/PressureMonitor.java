@@ -7,6 +7,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import com.example.zmeggyesi.divemonitor.R;
 
 /**
  * Created by zmeggyesi on 2017. 03. 03..
@@ -22,6 +27,7 @@ public class PressureMonitor extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         pressureSensor = manager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        setContentView(R.layout.activity_pressure_monitor);
     }
 
     @Override
@@ -39,7 +45,6 @@ public class PressureMonitor extends Activity implements SensorEventListener {
     @Override
     public final void onSensorChanged(SensorEvent e) {
         float pressure = e.values[0];
-
     }
 
     @Override

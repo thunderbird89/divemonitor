@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.example.zmeggyesi.divemonitor.com.example.zmeggyesi.divemonitor.sensorium.PressureMonitor;
 import com.example.zmeggyesi.divemonitor.dummy.DummyContent;
 
 import java.util.List;
@@ -35,6 +36,11 @@ public class DiveListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
 
+    public void startMonitoring(View view) {
+        Intent i = new Intent(this, PressureMonitor.class);
+        startActivity(i);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,13 +51,6 @@ public class DiveListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         View recyclerView = findViewById(R.id.dive_list);
         assert recyclerView != null;
