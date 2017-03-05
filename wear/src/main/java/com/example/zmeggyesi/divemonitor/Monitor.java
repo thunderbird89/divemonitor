@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Wearable;
 
 import java.text.SimpleDateFormat;
@@ -30,10 +29,11 @@ public class Monitor extends WearableActivity implements SensorEventListener {
     private BoxInsetLayout mContainerView;
     private TextView pressure;
     private TextView mClockView;
-    private TextView orientation;
+    private TextView temperature;
     private SensorManager manager;
     private Sensor barometer;
     private GoogleApiClient client;
+    private float surfacePressure;
 
     @Override
     protected void onPause() {
@@ -68,10 +68,10 @@ public class Monitor extends WearableActivity implements SensorEventListener {
 
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
         pressure = (TextView) findViewById(R.id.pressure);
-        orientation = (TextView) findViewById(R.id.orientation);
+        temperature = (TextView) findViewById(R.id.temperature);
         mClockView = (TextView) findViewById(R.id.clock);
         connectToDataLayer();
-//        Wearable.MessageApi.addListener(client, MonitorTriggerListener.class);
+        surfacePressure = getIntent().getFloatExtra("surfacePressure", 1000);
     }
 
     private void connectToDataLayer() {
@@ -98,15 +98,6 @@ public class Monitor extends WearableActivity implements SensorEventListener {
         client.connect();
     }
 
-    public void toggleConnection(View view) {
-        if (client.isConnected()) {
-            client.disconnect();
-            Log.d("API Connection", Boolean.toString(client.isConnected()));
-        } else {
-            client.connect();
-        }
-    }
-
     @Override
     public void onEnterAmbient(Bundle ambientDetails) {
         super.onEnterAmbient(ambientDetails);
@@ -127,7 +118,8 @@ public class Monitor extends WearableActivity implements SensorEventListener {
 
     private void readPressure(float reading, long timestamp) {
         if (timestamp - lastReading > 10000000000l) {
-            pressure.setText(String.valueOf(reading));
+            float depth = SensorManager.getAltitude(surfacePressure, reading) * -1;
+            pressure.setText(String.format(getResources().getString(R.string.pressure_format), reading, depth));
             lastReading = timestamp;
         }
         updateDisplay();
@@ -138,6 +130,7 @@ public class Monitor extends WearableActivity implements SensorEventListener {
             mContainerView.setBackgroundColor(getResources().getColor(android.R.color.black));
             pressure.setTextColor(getResources().getColor(android.R.color.white));
             mClockView.setVisibility(View.VISIBLE);
+            mClockView.setTextColor(getResources().getColor(R.color.white, null));
             mClockView.setText(AMBIENT_DATE_FORMAT.format(new Date()));
         } else {
             mContainerView.setBackground(null);

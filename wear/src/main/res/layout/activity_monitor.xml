@@ -14,33 +14,27 @@
         android:layout_height="144dp"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/toggleConnection"
+        <Chronometer
+            android:id="@+id/clock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="toggleConnection"
-            android:text="Button" />
+            android:gravity="top"
+            android:textAppearance="@style/TextAppearance.Wearable.Large"
+            app:layout_box="all" />
 
         <TextView
-            android:id="@+id/orientation"
+            android:id="@+id/temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Orientation" />
+            android:text="Temperature" />
 
         <TextView
             android:id="@+id/pressure"
-            android:layout_width="wrap_content"
+            android:layout_width="71dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Pressure" />
     </LinearLayout>
-
-    <Chronometer
-        app:layout_box="all"
-        android:id="@+id/clock"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </android.support.wearable.view.BoxInsetLayout>
