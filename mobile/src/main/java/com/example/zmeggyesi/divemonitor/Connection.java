@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.zmeggyesi.divemonitor.model.Dive;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -32,6 +33,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +123,8 @@ public class Connection extends Activity implements SensorEventListener, Adapter
         });
     }
 
-    public void connectToMonitor(View view) {
+    public void beginDive(View view) {
+        Dive dive = new Dive();
         if (selectedNode == null) {
             PendingResult<CapabilityApi.GetCapabilityResult> result =
                     Wearable.CapabilityApi.getCapability(
@@ -137,6 +140,11 @@ public class Connection extends Activity implements SensorEventListener, Adapter
         } else {
             sendMonitoringStartMessage();
         }
+        dive.setStartDate(new Date());
+        Intent i = new Intent(this, DiveInProgress.class);
+        i.putExtra("dive", dive);
+        i.putExtra("remoteMonitorId", selectedNode.getId());
+        startActivity(i);
     }
 
     private void sendMonitoringStartMessage() {

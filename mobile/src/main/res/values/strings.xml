@@ -5,4 +5,5 @@
     <string name="remote_monitor_rescan_button">Re-scan remote devices</string>
     <string name="dive_start_button">Commence dive!</string>
     <string name="remoteMonitor_label">Remote Monitor</string>
+    <string name="close_dive_button">Close Dive and save entry</string>
 </resources>

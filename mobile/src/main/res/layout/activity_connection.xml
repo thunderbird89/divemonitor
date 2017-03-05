@@ -70,7 +70,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="connectToMonitor"
+        android:onClick="beginDive"
         android:text="@string/dive_start_button"
         app:layout_constraintLeft_toLeftOf="@+id/scan"
         app:layout_constraintRight_toRightOf="@+id/scan"

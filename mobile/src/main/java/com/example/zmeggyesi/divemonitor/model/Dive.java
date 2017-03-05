@@ -2,6 +2,7 @@ package com.example.zmeggyesi.divemonitor.model;
 
 import android.location.Location;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by zmeggyesi on 2017. 03. 05..
  */
 
-public class Dive {
+public class Dive implements Serializable {
 	private Date startDate;
 	private Date endDate;
 	private Location location;

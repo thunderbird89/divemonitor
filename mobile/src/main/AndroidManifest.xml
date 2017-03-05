@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Monitoring" />
-        <activity android:name=".Connection"></activity>
+        <activity android:name=".Connection" />
+        <activity android:name=".DiveInProgress"></activity>
     </application>
 
 </manifest>
