@@ -1,12 +1,20 @@
 package com.example.zmeggyesi.divemonitor;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -19,43 +27,67 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Connection extends Activity {
+public class Connection extends Activity implements SensorEventListener, AdapterView.OnItemSelectedListener {
 
     private GoogleApiClient client;
-    private String selectedNodeId;
+    private Node selectedNode;
+    private TextView outputArea;
+    private Map<String, Node> nodeMap;
+    private float surfacePressure;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
-        client = new GoogleApiClient.Builder(this)
+        outputArea = (TextView) findViewById(R.id.output);
+        client = getGoogleAPIClient();
+        watchCapabilities();
+        initiateConnection();
+        initialScan();
+        initializeSensors();
+        Spinner remoteMonitor = (Spinner) findViewById(R.id.remoteMonitor);
+        remoteMonitor.setOnItemSelectedListener(this);
+    }
+
+    private void initializeSensors() {
+        SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor barometer = manager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        manager.registerListener(this, barometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @NonNull
+    private GoogleApiClient getGoogleAPIClient() {
+        return new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(@Nullable Bundle bundle) {
-                        Log.d("API Connection", "Connection Established");
-                        TextView tw = (TextView) findViewById(R.id.output);
-                        tw.setText("Successfully connected");
+                        Log.d("API", "Connection Established");
+                        outputArea.setText("Successfully connected");
                     }
 
                     @Override
                     public void onConnectionSuspended(int i) {
-                        Log.d("API Connection", "Connection Suspended");
+                        Log.d("API", "Connection Suspended");
                     }
                 })
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Log.wtf("API Connection", "Connection Failed");
+                        Log.wtf("API", "Connection Failed");
                     }
                 })
                 .build();
-        watchCapabilities();
-        initiateConnection();
     }
 
     private void initiateConnection() {
@@ -63,34 +95,34 @@ public class Connection extends Activity {
     }
 
     public void scanDevices(View view) {
-        PendingResult<CapabilityApi.GetAllCapabilitiesResult> result =
-                Wearable.CapabilityApi.getAllCapabilities(
-                        client,
+        PendingResult<CapabilityApi.GetCapabilityResult> result =
+                Wearable.CapabilityApi.getCapability(
+                        client, "dive_monitor",
                         CapabilityApi.FILTER_REACHABLE);
-        result.setResultCallback(new ResultCallback<CapabilityApi.GetAllCapabilitiesResult>() {
+        result.setResultCallback(new ResultCallback<CapabilityApi.GetCapabilityResult>() {
             @Override
-            public void onResult(@NonNull CapabilityApi.GetAllCapabilitiesResult getAllCapabilitiesResult) {
-                TextView tw = (TextView) findViewById(R.id.output);
-                Map<String, CapabilityInfo> caps = getAllCapabilitiesResult.getAllCapabilities();
-                StringBuilder text = new StringBuilder();
-                for (String key : caps.keySet()) {
-                    CapabilityInfo ci = caps.get(key);
-                    text.append(ci.getName());
-                    text.append(":");
-                    Set<Node> nodes = ci.getNodes();
-                    for (Node node : nodes) {
-                        text.append(node.getDisplayName());
-                        text.append(",");
-                    }
-                    text.append("\n");
-                }
-                tw.setText(text.toString());
+            public void onResult(@NonNull CapabilityApi.GetCapabilityResult getCapabilityResult) {
+                updateMonitorList(getCapabilityResult.getCapability());
+            }
+        });
+    }
+
+    private void initialScan() {
+        Log.d("API", "Performing initial capability scan");
+        PendingResult<CapabilityApi.GetCapabilityResult> result =
+                Wearable.CapabilityApi.getCapability(
+                        client, "dive_monitor",
+                        CapabilityApi.FILTER_REACHABLE);
+        result.setResultCallback(new ResultCallback<CapabilityApi.GetCapabilityResult>() {
+            @Override
+            public void onResult(@NonNull CapabilityApi.GetCapabilityResult getCapabilityResult) {
+                updateMonitorList(getCapabilityResult.getCapability());
             }
         });
     }
 
     public void connectToMonitor(View view) {
-        if (selectedNodeId == null) {
+        if (selectedNode == null) {
             PendingResult<CapabilityApi.GetCapabilityResult> result =
                     Wearable.CapabilityApi.getCapability(
                             client, "dive_monitor",
@@ -98,7 +130,7 @@ public class Connection extends Activity {
             result.setResultCallback(new ResultCallback<CapabilityApi.GetCapabilityResult>() {
                 @Override
                 public void onResult(@NonNull CapabilityApi.GetCapabilityResult getCapabilityResult) {
-                    updateMonitor(getCapabilityResult.getCapability());
+                    updateMonitorList(getCapabilityResult.getCapability());
                     sendMonitoringStartMessage();
                 }
             });
@@ -108,15 +140,18 @@ public class Connection extends Activity {
     }
 
     private void sendMonitoringStartMessage() {
-        Log.d("Remote", "Sending message to " + selectedNodeId);
-        Wearable.MessageApi.sendMessage(client, selectedNodeId, "/startMonitoring", null).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-            @Override
-            public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
-                TextView tw = (TextView) findViewById(R.id.output);
-                Log.d("Remote", sendMessageResult.getStatus().getStatusMessage());
-                tw.setText("Monitor started");
-            }
-        });
+        Log.d("Remote", "Sending message to " + selectedNode.getDisplayName());
+
+        Wearable.MessageApi.sendMessage(client, selectedNode.getId(),
+                "/startMonitoring",
+                ByteBuffer.allocate(64).putFloat(surfacePressure).array())
+                .setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+                    @Override
+                    public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
+                        Log.d("Remote", sendMessageResult.getStatus().getStatusMessage());
+                        outputArea.setText("Monitor started");
+                    }
+                });
     }
 
     public void closeConnection(View view) {
@@ -130,25 +165,70 @@ public class Connection extends Activity {
         CapabilityApi.CapabilityListener listener = new CapabilityApi.CapabilityListener() {
             @Override
             public void onCapabilityChanged(CapabilityInfo capabilityInfo) {
-                updateMonitor(capabilityInfo);
+                updateMonitorList(capabilityInfo);
             }
         };
         Wearable.CapabilityApi.addCapabilityListener(client, listener, "dive_monitor");
+        Log.d("API", "Listening for compatible device");
     }
 
-    private void updateMonitor(CapabilityInfo capabilityInfo) {
+    private void updateMonitorList(CapabilityInfo capabilityInfo) {
+        Log.d("API", "Connected capabilities changed");
         Set<Node> nodes = capabilityInfo.getNodes();
-        selectedNodeId = selectNode(nodes);
+        populateNodeList(nodes);
     }
 
-    private String selectNode(Set<Node> nodes) {
-        String bestNodeId = null;
+    private void populateNodeList(Set<Node> nodes) {
+        Log.d("API", "Selecting dive monitor device");
+        nodeMap = new HashMap<String, Node>();
+        Node bestNode = null;
         for (Node node : nodes) {
-            if (node.isNearby()) {
-                return node.getId();
-            }
-            bestNodeId = node.getId();
+            nodeMap.put(node.getDisplayName(), node);
         }
-        return bestNodeId;
+        List<CharSequence> nodeNames = new ArrayList<>();
+        for (String n : nodeMap.keySet()) {
+            Node node = nodeMap.get(n);
+            if (node.isNearby()) {
+                Log.d("API", "Found device in direct connection: " + node.getDisplayName());
+                Log.d("API", "Dive monitor device selected: " + node.getId());
+                nodeNames.add(0, n);
+            } else {
+                nodeNames.add(n);
+            }
+        }
+        Spinner remoteMonitor = (Spinner) findViewById(R.id.remoteMonitor);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,
+                android.R.layout.simple_spinner_item,
+                nodeNames);
+                Log.d("API", "Dive monitor device selected: " + bestNode);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        remoteMonitor.setAdapter(adapter);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_PRESSURE) {
+            surfacePressure = event.values[0];
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String nodeDisplayName = (String) parent.getItemAtPosition(position);
+        selectedNode = nodeMap.get(nodeDisplayName);
+        outputArea.setText("Connected to " + selectedNode.getDisplayName());
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        String nodeDisplayName = (String) parent.getItemAtPosition(0);
+        selectedNode = nodeMap.get(nodeDisplayName);
+        outputArea.setText("Connected to " + selectedNode.getDisplayName());
+
     }
 }
