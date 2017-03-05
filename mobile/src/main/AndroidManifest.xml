@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Monitoring" />
-
+        <activity android:name=".Connection"></activity>
     </application>
 
 </manifest>

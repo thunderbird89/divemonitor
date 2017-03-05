@@ -31,4 +31,17 @@
         android:layout_marginLeft="0dp"
         app:layout_constraintLeft_toLeftOf="@+id/textView" />
 
+    <Button
+        android:id="@+id/connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="connectWatch"
+        android:text="Connect To Watch"
+        app:layout_constraintLeft_toLeftOf="@+id/start"
+        app:layout_constraintRight_toRightOf="@+id/start"
+        app:layout_constraintTop_toBottomOf="@+id/start" />
+
 </android.support.constraint.ConstraintLayout>

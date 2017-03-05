@@ -17,4 +17,9 @@ public class Home extends Activity {
         Intent i = new Intent(this, Monitoring.class);
         startActivity(i);
     }
+
+    public void connectWatch(View view) {
+        Intent intent = new Intent(this, Connection.class);
+        startActivity(intent);
+    }
 }
