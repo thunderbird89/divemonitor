@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Wearable;
 
 import java.text.SimpleDateFormat;
@@ -70,6 +71,7 @@ public class Monitor extends WearableActivity implements SensorEventListener {
         orientation = (TextView) findViewById(R.id.orientation);
         mClockView = (TextView) findViewById(R.id.clock);
         connectToDataLayer();
+//        Wearable.MessageApi.addListener(client, MonitorTriggerListener.class);
     }
 
     private void connectToDataLayer() {

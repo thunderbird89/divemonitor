@@ -15,6 +15,7 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.CapabilityApi;
 import com.google.android.gms.wearable.CapabilityInfo;
+import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
@@ -25,6 +26,7 @@ import java.util.Set;
 public class Connection extends Activity {
 
     private GoogleApiClient client;
+    private String selectedNodeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,27 +89,32 @@ public class Connection extends Activity {
         });
     }
 
-    public void findRemote(View view) {
-        PendingResult<CapabilityApi.GetCapabilityResult> result =
-                Wearable.CapabilityApi.getCapability(
-                        client, "dive_monitor",
-                        CapabilityApi.FILTER_REACHABLE);
-        result.setResultCallback(new ResultCallback<CapabilityApi.GetCapabilityResult>() {
-            @Override
-            public void onResult(@NonNull CapabilityApi.GetCapabilityResult getCapabilityResult) {
-                TextView tw = (TextView) findViewById(R.id.output);
-                StringBuilder text = new StringBuilder();
-                CapabilityInfo ci = getCapabilityResult.getCapability();
-                text.append(ci.getName());
-                text.append(":");
-                Set<Node> nodes = ci.getNodes();
-                for (Node node : nodes) {
-                    text.append(node.getDisplayName());
-                    text.append(", ");
-                    text.append(node.getId());
+    public void connectToMonitor(View view) {
+        if (selectedNodeId == null) {
+            PendingResult<CapabilityApi.GetCapabilityResult> result =
+                    Wearable.CapabilityApi.getCapability(
+                            client, "dive_monitor",
+                            CapabilityApi.FILTER_REACHABLE);
+            result.setResultCallback(new ResultCallback<CapabilityApi.GetCapabilityResult>() {
+                @Override
+                public void onResult(@NonNull CapabilityApi.GetCapabilityResult getCapabilityResult) {
+                    updateMonitor(getCapabilityResult.getCapability());
+                    sendMonitoringStartMessage();
                 }
-                text.append("\n");
-                tw.setText(text.toString());
+            });
+        } else {
+            sendMonitoringStartMessage();
+        }
+    }
+
+    private void sendMonitoringStartMessage() {
+        Log.d("Remote", "Sending message to " + selectedNodeId);
+        Wearable.MessageApi.sendMessage(client, selectedNodeId, "/startMonitoring", null).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+            @Override
+            public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
+                TextView tw = (TextView) findViewById(R.id.output);
+                Log.d("Remote", sendMessageResult.getStatus().getStatusMessage());
+                tw.setText("Monitor started");
             }
         });
     }
@@ -123,9 +130,25 @@ public class Connection extends Activity {
         CapabilityApi.CapabilityListener listener = new CapabilityApi.CapabilityListener() {
             @Override
             public void onCapabilityChanged(CapabilityInfo capabilityInfo) {
-                Log.d("Capabilities", capabilityInfo.getNodes().toString());
+                updateMonitor(capabilityInfo);
             }
         };
-        Wearable.CapabilityApi.addCapabilityListener(client, listener, "remote_data_connection");
+        Wearable.CapabilityApi.addCapabilityListener(client, listener, "dive_monitor");
+    }
+
+    private void updateMonitor(CapabilityInfo capabilityInfo) {
+        Set<Node> nodes = capabilityInfo.getNodes();
+        selectedNodeId = selectNode(nodes);
+    }
+
+    private String selectNode(Set<Node> nodes) {
+        String bestNodeId = null;
+        for (Node node : nodes) {
+            if (node.isNearby()) {
+                return node.getId();
+            }
+            bestNodeId = node.getId();
+        }
+        return bestNodeId;
     }
 }

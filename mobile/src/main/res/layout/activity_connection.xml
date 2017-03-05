@@ -51,7 +51,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="findRemote"
+        android:onClick="connectToMonitor"
         android:text="Connect to remote"
         app:layout_constraintLeft_toLeftOf="@+id/scan"
         app:layout_constraintRight_toRightOf="@+id/scan"
