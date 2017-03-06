@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">Dive Monitor</string>
-    <string name="title_dive_detail">Dive Detail</string>
-    <string name="dive_content_format">"This is item %1$s. \nRandom depth value: %2$,.0f \nGreatest depth: %3$,.0f"</string>
+    <string name="app_name" translatable="false">Dive Monitor</string>
+    <string name="local_monitor_button">Start Local Monitor</string>
+    <string name="diver_preparation_button">Prepare for dive</string>
+    <string name="remote_monitor_rescan_button">Re-scan remote devices</string>
+    <string name="dive_start_button">Commence dive!</string>
+    <string name="remoteMonitor_label">Remote Monitor</string>
+    <string name="close_dive_button">Close Dive and save entry</string>
 </resources>

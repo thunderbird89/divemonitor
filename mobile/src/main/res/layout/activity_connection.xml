@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.zmeggyesi.divemonitor.Connection">
+
+    <Spinner
+        android:id="@+id/remoteMonitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/output"
+        app:layout_constraintRight_toRightOf="@+id/output"
+        app:layout_constraintTop_toBottomOf="@+id/output"
+        app:layout_constraintHorizontal_bias="0.441" />
+
+    <TextView
+        android:id="@+id/output"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <Button
+        android:id="@+id/closeConnection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:onClick="closeConnection"
+        android:text="End connection"
+        app:layout_constraintLeft_toLeftOf="@+id/output"
+        app:layout_constraintRight_toRightOf="@+id/output"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintHorizontal_bias="0.456"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="scanDevices"
+        android:text="@string/remote_monitor_rescan_button"
+        app:layout_constraintLeft_toLeftOf="@+id/closeConnection"
+        app:layout_constraintRight_toRightOf="@+id/closeConnection"
+        app:layout_constraintTop_toBottomOf="@+id/remoteMonitor" />
+
+    <Button
+        android:id="@+id/connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="beginDive"
+        android:text="@string/dive_start_button"
+        app:layout_constraintLeft_toLeftOf="@+id/scan"
+        app:layout_constraintRight_toRightOf="@+id/scan"
+        app:layout_constraintTop_toBottomOf="@+id/scan" />
+
+    <TextView
+        android:id="@+id/remoteMonitor_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:text="@string/remoteMonitor_label"
+        app:layout_constraintBaseline_toBaselineOf="@+id/remoteMonitor"
+        app:layout_constraintRight_toLeftOf="@+id/remoteMonitor" />
+</android.support.constraint.ConstraintLayout>

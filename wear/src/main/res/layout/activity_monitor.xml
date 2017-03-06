@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.zmeggyesi.divemonitor.Monitor"
+    tools:deviceIds="wear">
+
+    <LinearLayout
+        app:layout_box="all"
+        android:layout_width="154dp"
+        android:layout_height="144dp"
+        android:orientation="vertical">
+
+        <Chronometer
+            android:id="@+id/clock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:textAppearance="@style/TextAppearance.Wearable.Large"
+            app:layout_box="all" />
+
+        <TextView
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Temperature" />
+
+        <TextView
+            android:id="@+id/pressure"
+            android:layout_width="71dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pressure" />
+    </LinearLayout>
+
+</android.support.wearable.view.BoxInsetLayout>
