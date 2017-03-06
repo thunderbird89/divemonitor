@@ -26,10 +26,11 @@ public class DiveInProgress extends Activity {
 	private TextView output;
 	private Dive dive;
 	private String remoteId;
-	private GoogleApiClient client = getGoogleAPIClient();
+	private GoogleApiClient client;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		client = getGoogleAPIClient();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dive_in_progress);
 		Notification notification = new Notification.Builder(this)
@@ -43,7 +44,7 @@ public class DiveInProgress extends Activity {
 		output = (TextView) findViewById(R.id.output);
 		dive = (Dive) getIntent().getSerializableExtra("dive");
 		remoteId = getIntent().getStringExtra("remoteMonitorId");
-		output.setText(dive.getStartDate().toString());
+		output.setText(dive.toString());
 	}
 
 	@NonNull

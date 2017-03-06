@@ -2,6 +2,8 @@ package com.example.zmeggyesi.divemonitor.model;
 
 import android.location.Location;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +15,18 @@ import java.util.List;
 public class Dive implements Serializable {
 	private Date startDate;
 	private Date endDate;
-	private Location location;
+
+	transient private Location location;
+	private SerializableLocation serializableLocation;
+
+	public SerializableLocation getSerializableLocation() {
+		return serializableLocation;
+	}
+
+	public void setSerializableLocation(SerializableLocation serializableLocation) {
+		this.serializableLocation = serializableLocation;
+	}
+
 	private List<EnvironmentReading> readings;
 
 	public Date getStartDate() {
@@ -38,6 +51,7 @@ public class Dive implements Serializable {
 
 	public void setLocation(Location location) {
 		this.location = location;
+		this.serializableLocation = new SerializableLocation(location);
 	}
 
 	public List<EnvironmentReading> getReadings() {
@@ -57,4 +71,10 @@ public class Dive implements Serializable {
 	}
 
 	private float surfacePressure;
+
+	@Override
+	public String toString() {
+		Gson gson = new Gson();
+		return gson.toJson(this);
+	}
 }
