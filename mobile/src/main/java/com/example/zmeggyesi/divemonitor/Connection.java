@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.zmeggyesi.divemonitor.model.Dive;
+import com.example.zmeggyesi.divemonitor.model.GlobalClient;
 import com.example.zmeggyesi.divemonitor.model.SerializableLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -48,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Connection extends Activity implements SensorEventListener, AdapterView.OnItemSelectedListener, LocationListener {
+public class Connection extends Activity implements SensorEventListener, AdapterView.OnItemSelectedListener, LocationListener, GoogleApiClient.ConnectionCallbacks {
 
 	private GoogleApiClient client;
 	private Node selectedNode;
@@ -62,7 +63,9 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_connection);
 		outputArea = (TextView) findViewById(R.id.output);
-		client = getGoogleAPIClient();
+		GlobalClient gc = (GlobalClient) getApplicationContext();
+		client = gc.getClient();
+		initializeLocation();
 		watchCapabilities();
 		initiateConnection();
 		initialScan();
@@ -90,33 +93,6 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 		manager.registerListener(this, barometer, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
-	@NonNull
-	private GoogleApiClient getGoogleAPIClient() {
-		return new GoogleApiClient.Builder(this)
-				.addApi(Wearable.API)
-				.addApi(LocationServices.API)
-				.addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-					@Override
-					public void onConnected(@Nullable Bundle bundle) {
-						initializeLocation();
-						Log.d("API", "Connection Established");
-						outputArea.setText("Successfully connected");
-					}
-
-					@Override
-					public void onConnectionSuspended(int i) {
-						Log.d("API", "Connection Suspended");
-					}
-				})
-				.addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-					@Override
-					public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-						Log.wtf("API", "Connection Failed");
-					}
-				})
-				.build();
-	}
-
 	private void initiateConnection() {
 		client.connect();
 	}
@@ -134,6 +110,11 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 		});
 	}
 
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
 	private void initialScan() {
 		Log.d("API", "Performing initial capability scan");
 		PendingResult<CapabilityApi.GetCapabilityResult> result =
@@ -146,6 +127,11 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 				updateMonitorList(getCapabilityResult.getCapability());
 			}
 		});
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
 	}
 
 	public void beginDive(View view) {
@@ -184,14 +170,12 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 				.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
 					@Override
 					public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
-						Log.d("Remote", sendMessageResult.getStatus().getStatusMessage());
-						outputArea.setText("Monitor started");
+						Log.d("Remote", sendMessageResult.getStatus().toString());
 					}
 				});
 	}
 
 	public void closeConnection(View view) {
-		client.disconnect();
 		Log.d("API Connection", "Connection closed");
 		Intent i = new Intent(this, Home.class);
 		startActivity(i);
@@ -285,6 +269,16 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 
 	@Override
 	public void onProviderDisabled(String provider) {
+
+	}
+
+	@Override
+	public void onConnected(@Nullable Bundle bundle) {
+		Log.d("Connection", "Client has connected");
+	}
+
+	@Override
+	public void onConnectionSuspended(int i) {
 
 	}
 }

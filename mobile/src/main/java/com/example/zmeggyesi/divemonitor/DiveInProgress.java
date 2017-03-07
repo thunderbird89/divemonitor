@@ -6,19 +6,20 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.zmeggyesi.divemonitor.model.Dive;
-import com.google.android.gms.common.ConnectionResult;
+import com.example.zmeggyesi.divemonitor.model.GlobalClient;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class DiveInProgress extends Activity {
 
@@ -29,9 +30,34 @@ public class DiveInProgress extends Activity {
 	private GoogleApiClient client;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onRestart() {
+		super.onRestart();
 		client = getGoogleAPIClient();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		client = getGoogleAPIClient();
+	}
+
+	@Override
+	protected void onPause() {
+		client.disconnect();
+		super.onPause();
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		if (client == null) {
+			Log.d("Remote", "Client does not exist, creating");
+			client = getGoogleAPIClient();
+		} else {
+			Log.d("Remote", "Client already exists");
+		}
+		client.connect();
 		setContentView(R.layout.activity_dive_in_progress);
 		Notification notification = new Notification.Builder(this)
 				.setOngoing(true)
@@ -47,40 +73,23 @@ public class DiveInProgress extends Activity {
 		output.setText(dive.toString());
 	}
 
-	@NonNull
 	private GoogleApiClient getGoogleAPIClient() {
-		return new GoogleApiClient.Builder(this)
-				.addApi(Wearable.API)
-				.addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-					@Override
-					public void onConnected(@Nullable Bundle bundle) {
-						Log.d("API", "Connection Established");
-					}
-
-					@Override
-					public void onConnectionSuspended(int i) {
-						Log.d("API", "Connection Suspended");
-					}
-				})
-				.addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-					@Override
-					public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-						Log.wtf("API", "Connection Failed");
-					}
-				})
-				.build();
+		GlobalClient gc = (GlobalClient) getApplicationContext();
+		return gc.getClient();
 	}
 
 	public void closeDive(View view) {
-		notificationManager.cancel(0);
-		Wearable.MessageApi.sendMessage(client, remoteId,
-				"/endMonitoring", null)
-				.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-					@Override
-					public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
-						Log.d("Remote", sendMessageResult.getStatus().getStatusMessage());
-					}
-				});
+
+		client.connect();
+		Log.d("Remote", "Sending message to " + remoteId);
+		PendingResult res = Wearable.MessageApi.sendMessage(client, remoteId, "/endMonitoring", null);
+		res.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+			@Override
+			public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
+				Log.d("Remote", sendMessageResult.getStatus().toString());
+			}
+		}, 10, TimeUnit.SECONDS);
 		dive.setEndDate(new Date());
+		notificationManager.cancel(0);
 	}
 }
