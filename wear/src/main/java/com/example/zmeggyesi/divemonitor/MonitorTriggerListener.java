@@ -27,15 +27,12 @@ public class MonitorTriggerListener extends WearableListenerService {
         super.onMessageReceived(messageEvent);
         Log.d("Remote", "Begin monitoring!");
         if (messageEvent.getPath().equals("/startMonitoring")) {
-            Intent i = new Intent(this, Monitor.class);
+            Intent monitoringStart = new Intent(this, Monitor.class);
             float surfacePressure = ByteBuffer.wrap(messageEvent.getData()).getFloat();
             Log.d("Remote", "Received surface pressure from remote device: " + surfacePressure);
-            i.putExtra("surfacePressure", surfacePressure != 0 ? surfacePressure : SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-
-            Intent monitoring = new Intent(this, MonitorService.class);
-            startService(monitoring);
+            monitoringStart.putExtra("surfacePressure", surfacePressure != 0 ? surfacePressure : SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
+            monitoringStart.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(monitoringStart);
         }
     }
 }

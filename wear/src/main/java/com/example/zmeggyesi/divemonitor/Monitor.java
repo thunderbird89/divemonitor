@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.zmeggyesi.divemonitor.sensorium.OrientationListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
@@ -22,39 +23,35 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Monitor extends WearableActivity implements SensorEventListener {
-    private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
+public class Monitor extends WearableActivity {
+	private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
             new SimpleDateFormat("HH:mm", Locale.US);
-    private long lastReading;
+	private static final String TAG = "DataLayer";
+
+	private long lastReading;
     private BoxInsetLayout mContainerView;
     private TextView pressure;
     private TextView mClockView;
     private TextView temperature;
-    private SensorManager manager;
-    private Sensor barometer;
+
+	private SensorManager manager;
     private GoogleApiClient client;
     private float surfacePressure;
+	private OrientationListener ol;
+	private Sensor magneto;
+	private Sensor accelero;
 
-    @Override
+	@Override
     protected void onPause() {
         super.onPause();
-        manager.unregisterListener(this);
+        manager.unregisterListener(ol);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        manager.registerListener(this, barometer, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        readPressure(event.values[0], event.timestamp);
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+    	manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
+    	manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -64,7 +61,10 @@ public class Monitor extends WearableActivity implements SensorEventListener {
         setAmbientEnabled();
 
         manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        barometer = manager.getDefaultSensor(Sensor.TYPE_PRESSURE, true);
+		ol = new OrientationListener(manager);
+		magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
 
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
         pressure = (TextView) findViewById(R.id.pressure);
@@ -80,18 +80,18 @@ public class Monitor extends WearableActivity implements SensorEventListener {
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(@Nullable Bundle bundle) {
-                        Log.d("API Connection", "Connection Established");
+                        Log.d(TAG, "Connection Established");
                     }
 
                     @Override
                     public void onConnectionSuspended(int i) {
-                        Log.d("API Connection", "Connection Suspended");
+                        Log.d(TAG, "Connection Suspended");
                     }
                 })
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Log.wtf("API Connection", "Connection Failed");
+                        Log.wtf(TAG, "Connection Failed");
                     }
                 })
                 .build();
