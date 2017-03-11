@@ -8,7 +8,7 @@ import android.hardware.SensorEventListener;
  * Created by zmeggyesi on 2017. 03. 11..
  */
 
-public class PressureListener implements SensorEventListener {
+public class PressureHandler implements SensorEventListener {
 
 	private float pressure;
 

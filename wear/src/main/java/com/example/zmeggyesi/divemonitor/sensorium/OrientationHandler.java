@@ -15,7 +15,7 @@ import java.util.List;
  * Created by zmeggyesi on 2017. 03. 11..
  */
 
-public class OrientationListener implements SensorEventListener {
+public class OrientationHandler implements SensorEventListener {
 	private static final String TAG = "Sensorium-orientation";
 	private static final List<Integer> HANDLED_SENSORS = Lists.newArrayList(Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD);
 
@@ -26,7 +26,7 @@ public class OrientationListener implements SensorEventListener {
 	private float[] orientation;
 	private SensorManager manager;
 
-	public OrientationListener(SensorManager manager) {
+	public OrientationHandler(SensorManager manager) {
 		this.manager = manager;
 	}
 

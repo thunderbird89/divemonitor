@@ -8,7 +8,13 @@ import android.hardware.SensorEventListener;
  * Created by zmeggyesi on 2017. 03. 11..
  */
 
-public class LightLevelListener implements SensorEventListener {
+public class TemperatureHandler implements SensorEventListener {
+	private float temperature;
+
+	public float getTemperature() {
+		return temperature;
+	}
+
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 
@@ -18,4 +24,5 @@ public class LightLevelListener implements SensorEventListener {
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
 	}
+
 }

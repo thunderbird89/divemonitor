@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.sensorium;
+package com.example.zmeggyesi.divemonitor.dao.contracts;
 
 import android.provider.BaseColumns;
 
@@ -24,5 +24,9 @@ public final class RecordContract {
 
 		public static final String TABLE_NAME = "readings";
 		public static final String COLUMN_NAME_PRESSURE = "pressure";
+		public static final String COLUMN_NAME_TEMPERATURE = "temperature";
+		public static final String COLUMN_NAME_ORIENTATION = "orientation";
+		public static final String COLUMN_NAME_LIGHTLEVEL = "lightLevel";
+		public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
 	}
 }

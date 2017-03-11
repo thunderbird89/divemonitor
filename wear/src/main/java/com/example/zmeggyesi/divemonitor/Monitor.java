@@ -2,8 +2,6 @@ package com.example.zmeggyesi.divemonitor;
 
 import android.content.Context;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,7 +12,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.zmeggyesi.divemonitor.sensorium.OrientationListener;
+import com.example.zmeggyesi.divemonitor.sensorium.LightLevelHandler;
+import com.example.zmeggyesi.divemonitor.sensorium.OrientationHandler;
+import com.example.zmeggyesi.divemonitor.sensorium.PressureHandler;
+import com.example.zmeggyesi.divemonitor.sensorium.TemperatureHandler;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
@@ -37,21 +38,34 @@ public class Monitor extends WearableActivity {
 	private SensorManager manager;
     private GoogleApiClient client;
     private float surfacePressure;
-	private OrientationListener ol;
+	private OrientationHandler ol;
+	private LightLevelHandler lh;
 	private Sensor magneto;
 	private Sensor accelero;
+	private Sensor temperatureSensor;
+	private Sensor light;
+	private PressureHandler ph;
+	private Sensor pressureSensor;
+	private TemperatureHandler th;
 
 	@Override
     protected void onPause() {
         super.onPause();
-        manager.unregisterListener(ol);
-    }
+		manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+	}
 
     @Override
     protected void onResume() {
         super.onResume();
     	manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
     	manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -61,10 +75,15 @@ public class Monitor extends WearableActivity {
         setAmbientEnabled();
 
         manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		ol = new OrientationListener(manager);
-		magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
+		ol = new OrientationHandler(manager);
+		lh = new LightLevelHandler();
+		ph = new PressureHandler();
+		th = new TemperatureHandler();
+		magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD, true);
+		accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER, true);
+		light = manager.getDefaultSensor(Sensor.TYPE_LIGHT, true);
+		temperatureSensor = manager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, true);
+		pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE, true);
 
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
         pressure = (TextView) findViewById(R.id.pressure);

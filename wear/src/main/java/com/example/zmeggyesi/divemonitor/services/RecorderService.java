@@ -1,25 +1,25 @@
-package com.example.zmeggyesi.divemonitor.sensorium;
+package com.example.zmeggyesi.divemonitor.services;
 
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.example.zmeggyesi.divemonitor.DatabaseService;
+import com.example.zmeggyesi.divemonitor.dao.contracts.RecordContract.Record;
 
 public class RecorderService extends Service {
-	public static final String TAG = "Recorder";
+	private static final String TAG = "Recorder";
 	private final LocalBinder localBinder = new LocalBinder();
+	private boolean recordOpen = false;
+	private final RecorderDatabaseHelper dsb = new RecorderDatabaseHelper(this);
+	private SQLiteDatabase db;
+	private RecordBean currentRecord;
 
 	public RecorderService() {
 	}
-
-	private boolean recordOpen = false;
-	private DatabaseService dsb = new DatabaseService(this);
-	private SQLiteDatabase db;
-	private Record currentRecord;
 
 	@Override
 	public void onCreate() {
@@ -27,22 +27,28 @@ public class RecorderService extends Service {
 		db = dsb.getWritableDatabase();
 	}
 
-	public void recordReading(Intent intent) { // TODO: change param type!
+	@Override
+	public IBinder onBind(Intent intent) {
+		Log.d(TAG, "Service is binding to " + intent.getStringExtra("binder"));
+		return localBinder;
+	}
+
+	public void recordReading(Intent intent) {
 		if (!recordOpen) {
-			currentRecord = new Record();
+			currentRecord = new RecordBean();
 			currentRecord.timestamp = System.currentTimeMillis();
 			recordOpen = true;
 		}
 
 		String dataType = intent.getStringExtra("dataType");
 		switch (dataType) {
-			case "pressure" : addPressure(intent.getFloatExtra("pressure", 0));
+			case "pressure" : addPressure(intent.getFloatExtra("data", 0));
 				break;
-			case "orientation" : addOrientation(intent.getFloatArrayExtra("orientation"));
+			case "orientation" : addOrientation(intent.getFloatArrayExtra("data"));
 				break;
-			case "lightLevel" : addLight(intent.getFloatExtra("lightLevel", 0));
+			case "lightLevel" : addLight(intent.getFloatExtra("data", 0));
 				break;
-			case "temperature" : addTemperature(intent.getFloatExtra("temperature", 0));
+			case "temperature" : addTemperature(intent.getFloatExtra("data", 0));
 				break;
 		}
 
@@ -50,17 +56,9 @@ public class RecorderService extends Service {
 				!currentRecord.needsOrientation &
 				!currentRecord.needsPressure &
 				!currentRecord.needsTemperature) {
-			// TODO: write to db
-			recordOpen = false;
-		}
-	}
+			writeToDB();
 
-	private void addTemperature(float temperature) {
-		if (currentRecord.needsTemperature) {
-			currentRecord.tempreature = temperature;
-			currentRecord.needsTemperature = false;
 		}
-
 	}
 
 	private void addLight(float lightLevel) {
@@ -85,23 +83,36 @@ public class RecorderService extends Service {
 		}
 	}
 
-	private class Record {
+	private void addTemperature(float temperature) {
+		if (currentRecord.needsTemperature) {
+			currentRecord.temperature = temperature;
+			currentRecord.needsTemperature = false;
+		}
+
+	}
+
+	private void writeToDB() {
+		ContentValues dbRecord = new ContentValues();
+		dbRecord.put(Record.COLUMN_NAME_LIGHTLEVEL, currentRecord.lightLevel);
+//			dbRecord.put(Record.COLUMN_NAME_ORIENTATION, );
+		dbRecord.put(Record.COLUMN_NAME_PRESSURE, currentRecord.pressure);
+		dbRecord.put(Record.COLUMN_NAME_TEMPERATURE, currentRecord.temperature);
+		dbRecord.put(Record.COLUMN_NAME_TIMESTAMP, currentRecord.timestamp);
+		db.insert(Record.TABLE_NAME, null, dbRecord);
+		recordOpen = false;
+	}
+
+	private class RecordBean {
 		private boolean needsPressure = true;
 		private boolean needsTemperature = true;
 		private boolean needsOrientation = true;
 		private boolean needsLightLevel = true;
 
 		private float pressure;
-		private float tempreature;
+		private float temperature;
 		private float[] orientation;
 		private float lightLevel;
 		private long timestamp;
-	}
-
-	@Override
-	public IBinder onBind(Intent intent) {
-		Log.d(TAG, "Service is binding to " + intent.getStringExtra("binder"));
-		return localBinder;
 	}
 
 	private class LocalBinder extends Binder {

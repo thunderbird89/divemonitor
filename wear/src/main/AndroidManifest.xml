@@ -38,7 +38,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".sensorium.RecorderService"
+            android:name=".services.RecorderService"
             android:enabled="true"
             android:exported="false">
         </service>
