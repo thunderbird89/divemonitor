@@ -1,6 +1,9 @@
 package com.example.zmeggyesi.divemonitor;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -48,26 +51,6 @@ public class Monitor extends WearableActivity {
 	private Sensor pressureSensor;
 	private TemperatureHandler th;
 
-	@Override
-    protected void onPause() {
-        super.onPause();
-		manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-	}
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    	manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
-    	manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +75,54 @@ public class Monitor extends WearableActivity {
         connectToDataLayer();
 		// TODO: return this value from the handler for more precise initialization?
         surfacePressure = getIntent().getFloatExtra("surfacePressure", 1000);
+		BroadcastReceiver br = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				pressure.setText(String.format(getResources().getString(R.string.pressure_format),
+						intent.getFloatExtra("rawPressure", 0),
+						intent.getFloatExtra("data", 0)));
+			}
+		};
+		IntentFilter iF = new IntentFilter("com.example.zmeggyesi.divemonitor.BROADCAST_PRESSURE_READING");
+		this.registerReceiver(br, iF);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    	manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
+    	manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+	@Override
+    protected void onPause() {
+        super.onPause();
+		manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+	}
+
+    @Override
+    public void onEnterAmbient(Bundle ambientDetails) {
+        super.onEnterAmbient(ambientDetails);
+        updateDisplay();
+    }
+
+    @Override
+    public void onUpdateAmbient() {
+        super.onUpdateAmbient();
+        updateDisplay();
+    }
+
+    @Override
+    public void onExitAmbient() {
+        updateDisplay();
+        super.onExitAmbient();
     }
 
     private void connectToDataLayer() {
@@ -116,24 +147,6 @@ public class Monitor extends WearableActivity {
                 })
                 .build();
         client.connect();
-    }
-
-    @Override
-    public void onEnterAmbient(Bundle ambientDetails) {
-        super.onEnterAmbient(ambientDetails);
-        updateDisplay();
-    }
-
-    @Override
-    public void onUpdateAmbient() {
-        super.onUpdateAmbient();
-        updateDisplay();
-    }
-
-    @Override
-    public void onExitAmbient() {
-        updateDisplay();
-        super.onExitAmbient();
     }
 
     private void readPressure(float reading, long timestamp) {

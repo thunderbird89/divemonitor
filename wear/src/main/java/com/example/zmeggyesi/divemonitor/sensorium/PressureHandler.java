@@ -9,6 +9,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.zmeggyesi.divemonitor.services.RecorderService;
@@ -56,7 +57,10 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 		Intent recording = new Intent(context, RecorderService.class);
 		recording.putExtra("dataType", RecorderService.DataTypes.PRESSURE);
 		recording.putExtra("data", SensorManager.getAltitude(referencePressure, event.values[0]) * -1);
+		recording.putExtra("rawPressure", event.values[0]);
+		recording.setAction("com.example.zmeggyesi.divemonitor.BROADCAST_PRESSURE_READING");
 		rec.recordReading(recording);
+		LocalBroadcastManager.getInstance(context).sendBroadcast(recording);
 	}
 
 	@Override
