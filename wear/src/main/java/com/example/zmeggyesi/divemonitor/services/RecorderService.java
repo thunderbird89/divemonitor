@@ -13,8 +13,8 @@ import com.example.zmeggyesi.divemonitor.dao.contracts.RecordContract.Record;
 public class RecorderService extends Service {
 	private static final String TAG = "Recorder";
 	private final RecorderBinder localBinder = new RecorderBinder();
-	private boolean recordOpen = false;
 	private final RecorderDatabaseHelper dsb = new RecorderDatabaseHelper(this);
+	private boolean recordOpen = false;
 	private SQLiteDatabase db;
 	private RecordBean currentRecord;
 
@@ -104,6 +104,17 @@ public class RecorderService extends Service {
 		recordOpen = false;
 	}
 
+	/**
+	 * Created by zmeggyesi on 2017. 03. 12..
+	 */
+
+	public static class DataTypes {
+		public static final String PRESSURE = "pressure";
+		public static final String ORIENTATION = "orientation";
+		public static final String LIGHT_LEVEL = "lightLevel";
+		public static final String TEMPERATURE = "temperature";
+	}
+
 	private class RecordBean {
 		private boolean needsPressure = true;
 		private boolean needsTemperature = true;
@@ -121,16 +132,5 @@ public class RecorderService extends Service {
 		public RecorderService getRecorder() {
 			return RecorderService.this;
 		}
-	}
-
-	/**
-	 * Created by zmeggyesi on 2017. 03. 12..
-	 */
-
-	public static class DataTypes {
-		public static final String PRESSURE = "pressure";
-		public static final String ORIENTATION = "orientation";
-		public static final String LIGHT_LEVEL = "lightLevel";
-		public static final String TEMPERATURE = "temperature";
 	}
 }

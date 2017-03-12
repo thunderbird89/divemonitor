@@ -18,16 +18,10 @@ import com.example.zmeggyesi.divemonitor.services.RecorderService;
  */
 
 public class TemperatureHandler extends SensorHandler implements SensorEventListener {
-	private float temperature;
 	private static final String TAG = "Sensorium-temperature";
+	private float temperature;
 	private RecorderService rec;
 	private Context context;
-
-	public TemperatureHandler(Context context) {
-		this.context = context;
-		bindRecorder(context, CONN, this.getClass().getName());
-	}
-
 	private boolean serviceBound = false;
 	private final ServiceConnection CONN = new ServiceConnection() {
 		@Override
@@ -44,7 +38,10 @@ public class TemperatureHandler extends SensorHandler implements SensorEventList
 			serviceBound = false;
 		}
 	};
-
+	public TemperatureHandler(Context context) {
+		this.context = context;
+		bindRecorder(context, CONN, this.getClass().getName());
+	}
 
 	public float getTemperature() {
 		return temperature;

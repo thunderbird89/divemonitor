@@ -38,13 +38,10 @@ public class LightLevelHandler extends SensorHandler implements SensorEventListe
 		}
 	};
 
-
 	public LightLevelHandler(Context context) {
 		this.context = context;
 		bindRecorder(context, CONN, this.getClass().getName());
 	}
-
-
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {

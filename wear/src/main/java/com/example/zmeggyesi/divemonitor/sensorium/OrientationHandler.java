@@ -32,6 +32,7 @@ public class OrientationHandler extends SensorHandler implements SensorEventList
 	private float[] orientation;
 	private SensorManager manager;
 	private boolean serviceBound = false;
+	private RecorderService rec;
 	private final ServiceConnection CONN = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -47,7 +48,6 @@ public class OrientationHandler extends SensorHandler implements SensorEventList
 			serviceBound = false;
 		}
 	};
-	private RecorderService rec;
 	private Context context;
 
 	public OrientationHandler(SensorManager manager, Context ctx) {

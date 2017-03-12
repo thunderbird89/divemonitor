@@ -21,13 +21,6 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 	private static final String TAG = "Sensorium-pressure";
 	private boolean serviceBound = false;
 	private RecorderService rec;
-	private Context context;
-
-	public PressureHandler(Context context) {
-		this.context = context;
-		bindRecorder(context, CONN, this.getClass().getName());
-	}
-
 	private final ServiceConnection CONN = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -43,9 +36,14 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 			serviceBound = false;
 		}
 	};
-
-
+	private Context context;
 	private float pressure;
+
+
+	public PressureHandler(Context context) {
+		this.context = context;
+		bindRecorder(context, CONN, this.getClass().getName());
+	}
 
 	public float getPressure() {
 		return pressure;
