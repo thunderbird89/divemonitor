@@ -12,7 +12,7 @@ import com.example.zmeggyesi.divemonitor.dao.contracts.RecordContract.Record;
 
 public class RecorderService extends Service {
 	private static final String TAG = "Recorder";
-	private final LocalBinder localBinder = new LocalBinder();
+	private final RecorderBinder localBinder = new RecorderBinder();
 	private boolean recordOpen = false;
 	private final RecorderDatabaseHelper dsb = new RecorderDatabaseHelper(this);
 	private SQLiteDatabase db;
@@ -42,13 +42,13 @@ public class RecorderService extends Service {
 
 		String dataType = intent.getStringExtra("dataType");
 		switch (dataType) {
-			case "pressure" : addPressure(intent.getFloatExtra("data", 0));
+			case DataTypes.PRESSURE: addPressure(intent.getFloatExtra("data", 0));
 				break;
-			case "orientation" : addOrientation(intent.getFloatArrayExtra("data"));
+			case DataTypes.ORIENTATION: addOrientation(intent.getFloatArrayExtra("data"));
 				break;
-			case "lightLevel" : addLight(intent.getFloatExtra("data", 0));
+			case DataTypes.LIGHT_LEVEL: addLight(intent.getFloatExtra("data", 0));
 				break;
-			case "temperature" : addTemperature(intent.getFloatExtra("data", 0));
+			case DataTypes.TEMPERATURE: addTemperature(intent.getFloatExtra("data", 0));
 				break;
 		}
 
@@ -94,7 +94,9 @@ public class RecorderService extends Service {
 	private void writeToDB() {
 		ContentValues dbRecord = new ContentValues();
 		dbRecord.put(Record.COLUMN_NAME_LIGHTLEVEL, currentRecord.lightLevel);
-//			dbRecord.put(Record.COLUMN_NAME_ORIENTATION, );
+		dbRecord.put(Record.COLUMN_NAME_ORIENTATION_AZIMUTH,currentRecord.orientation[0]);
+		dbRecord.put(Record.COLUMN_NAME_ORIENTATION_PITCH,currentRecord.orientation[1]);
+		dbRecord.put(Record.COLUMN_NAME_ORIENTATION_ROLL,currentRecord.orientation[2]);
 		dbRecord.put(Record.COLUMN_NAME_PRESSURE, currentRecord.pressure);
 		dbRecord.put(Record.COLUMN_NAME_TEMPERATURE, currentRecord.temperature);
 		dbRecord.put(Record.COLUMN_NAME_TIMESTAMP, currentRecord.timestamp);
@@ -115,9 +117,20 @@ public class RecorderService extends Service {
 		private long timestamp;
 	}
 
-	private class LocalBinder extends Binder {
-		RecorderService getRecorder() {
+	public class RecorderBinder extends Binder {
+		public RecorderService getRecorder() {
 			return RecorderService.this;
 		}
+	}
+
+	/**
+	 * Created by zmeggyesi on 2017. 03. 12..
+	 */
+
+	public static class DataTypes {
+		public static final String PRESSURE = "pressure";
+		public static final String ORIENTATION = "orientation";
+		public static final String LIGHT_LEVEL = "lightLevel";
+		public static final String TEMPERATURE = "temperature";
 	}
 }

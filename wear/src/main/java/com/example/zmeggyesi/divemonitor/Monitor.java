@@ -75,10 +75,10 @@ public class Monitor extends WearableActivity {
         setAmbientEnabled();
 
         manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		ol = new OrientationHandler(manager);
-		lh = new LightLevelHandler();
-		ph = new PressureHandler();
-		th = new TemperatureHandler();
+		ol = new OrientationHandler(manager, getApplicationContext());
+		lh = new LightLevelHandler(getApplicationContext());
+		ph = new PressureHandler(getApplicationContext());
+		th = new TemperatureHandler(getApplicationContext());
 		magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD, true);
 		accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER, true);
 		light = manager.getDefaultSensor(Sensor.TYPE_LIGHT, true);
