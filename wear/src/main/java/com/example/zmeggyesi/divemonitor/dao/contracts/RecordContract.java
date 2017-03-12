@@ -23,7 +23,7 @@ public final class RecordContract {
 		private long timestamp;
 
 		public static final String TABLE_NAME = "readings";
-		public static final String COLUMN_NAME_PRESSURE = "pressure";
+		public static final String COLUMN_NAME_PRESSURE = "depth";
 		public static final String COLUMN_NAME_TEMPERATURE = "temperature";
 		public static final String COLUMN_NAME_ORIENTATION_AZIMUTH = "orientationAzimuth";
 		public static final String COLUMN_NAME_ORIENTATION_PITCH = "orientationPitch";

@@ -90,6 +90,7 @@ public class Monitor extends WearableActivity {
         temperature = (TextView) findViewById(R.id.temperature);
         mClockView = (TextView) findViewById(R.id.clock);
         connectToDataLayer();
+		// TODO: return this value from the handler for more precise initialization?
         surfacePressure = getIntent().getFloatExtra("surfacePressure", 1000);
     }
 

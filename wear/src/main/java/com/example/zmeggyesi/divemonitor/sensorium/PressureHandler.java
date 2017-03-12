@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -37,7 +38,8 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 		}
 	};
 	private Context context;
-	private float pressure;
+	private float referencePressure;
+	private boolean referenceSet = false;
 
 
 	public PressureHandler(Context context) {
@@ -45,15 +47,15 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 		bindRecorder(context, CONN, this.getClass().getName());
 	}
 
-	public float getPressure() {
-		return pressure;
-	}
-
 	@Override
 	public void onSensorChanged(SensorEvent event) {
+		if (!referenceSet) {
+			referencePressure = event.values[0];
+			referenceSet = true;
+		}
 		Intent recording = new Intent(context, RecorderService.class);
 		recording.putExtra("dataType", RecorderService.DataTypes.PRESSURE);
-		recording.putExtra("data", event.values[0]);
+		recording.putExtra("data", SensorManager.getAltitude(referencePressure, event.values[0]) * -1);
 		rec.recordReading(recording);
 	}
 
