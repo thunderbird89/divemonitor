@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.Sensor;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,7 +26,9 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 public class Monitor extends WearableActivity {
 	private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
@@ -50,8 +53,16 @@ public class Monitor extends WearableActivity {
 	private PressureHandler ph;
 	private Sensor pressureSensor;
 	private TemperatureHandler th;
+	private final BroadcastReceiver br = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+		if (intent.hasExtra("listener")) {
+				registerListener(intent.getStringExtra("listener"));
+		}
+		}
+	};
 
-    @Override
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monitor);
@@ -90,21 +101,35 @@ public class Monitor extends WearableActivity {
     @Override
     protected void onResume() {
         super.onResume();
-    	manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
-    	manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+	    IntentFilter filter = new IntentFilter("com.example.zmeggyesi.LISTENER_READY");
+	    this.registerReceiver(br, filter);
     }
+
+	private void registerListener(String listener) {
+		switch (listener) {
+			case OrientationHandler.TAG :
+				manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
+				manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
+				break;
+			case TemperatureHandler.TAG :
+				manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+				break;
+			case PressureHandler.TAG :
+				manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+				break;
+			case LightLevelHandler.TAG :
+				manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
+				break;
+		}
+	}
 
 	@Override
     protected void onPause() {
-        super.onPause();
-		manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-		manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		super.onPause();
+		manager.unregisterListener(ol);
+		manager.unregisterListener(th);
+		manager.unregisterListener(ph);
+		manager.unregisterListener(lh);
 	}
 
     @Override

@@ -10,10 +10,12 @@ import com.example.zmeggyesi.divemonitor.services.RecorderService;
  * Created by zmeggyesi on 2017. 03. 12..
  */
 
-class SensorHandler {
+abstract class SensorHandler {
 	void bindRecorder(Context context, ServiceConnection connection, String className) {
 		Intent serviceStartIntent = new Intent(context, RecorderService.class);
 		serviceStartIntent.putExtra("binder", className);
 		context.bindService(serviceStartIntent, connection, Context.BIND_AUTO_CREATE);
 	}
+
+	protected abstract void announcePresence();
 }

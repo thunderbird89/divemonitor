@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.zmeggyesi.divemonitor.Monitor;
 import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 
@@ -18,7 +19,7 @@ import com.example.zmeggyesi.divemonitor.services.RecorderService;
  */
 
 public class TemperatureHandler extends SensorHandler implements SensorEventListener {
-	private static final String TAG = "Sensorium-temperature";
+	public static final String TAG = "Sensorium-temperature";
 	private float temperature;
 	private RecorderService rec;
 	private Context context;
@@ -30,6 +31,7 @@ public class TemperatureHandler extends SensorHandler implements SensorEventList
 			rec = binder.getRecorder();
 			Log.d(TAG, "Recorder service connected");
 			serviceBound = true;
+			announcePresence();
 		}
 
 		@Override
@@ -41,6 +43,13 @@ public class TemperatureHandler extends SensorHandler implements SensorEventList
 	public TemperatureHandler(Context context) {
 		this.context = context;
 		bindRecorder(context, CONN, this.getClass().getName());
+	}
+
+	@Override
+	protected void announcePresence() {
+		Intent ready = new Intent(context, Monitor.class);
+		ready.setAction("com.example.zmeggyesi.divemonitor.LISTENER_READY");
+		ready.putExtra("listener", TAG);
 	}
 
 	public float getTemperature() {

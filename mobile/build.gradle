@@ -27,6 +27,5 @@ dependencies {
     wearApp project(':wear')
     compile 'com.google.android.gms:play-services-wearable:10.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
-    compile 'com.google.guava:guava:21.0'
     testCompile 'junit:junit:4.12'
 }

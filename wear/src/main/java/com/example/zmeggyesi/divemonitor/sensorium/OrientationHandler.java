@@ -1,6 +1,5 @@
 package com.example.zmeggyesi.divemonitor.sensorium;
 
-import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +11,10 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.zmeggyesi.divemonitor.Monitor;
 import com.example.zmeggyesi.divemonitor.services.RecorderService;
-import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,8 +22,8 @@ import java.util.List;
  */
 
 public class OrientationHandler extends SensorHandler implements SensorEventListener {
-	private static final String TAG = "Sensorium-orientation";
-	private static final List<Integer> HANDLED_SENSORS = Lists.newArrayList(Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD);
+	public static final String TAG = "Sensorium-orientation";
+	private static final List<Integer> HANDLED_SENSORS = new ArrayList<>(2);
 
 	private float[] magneticField;
 	private float[] acceleration;
@@ -40,6 +40,7 @@ public class OrientationHandler extends SensorHandler implements SensorEventList
 			rec = binder.getRecorder();
 			Log.d(TAG, "Recorder service connected");
 			serviceBound = true;
+			announcePresence();
 		}
 
 		@Override
@@ -48,12 +49,22 @@ public class OrientationHandler extends SensorHandler implements SensorEventList
 			serviceBound = false;
 		}
 	};
+
+	@Override
+	protected void announcePresence() {
+		Intent ready = new Intent(context, Monitor.class);
+		ready.setAction("com.example.zmeggyesi.divemonitor.LISTENER_READY");
+		ready.putExtra("listener",TAG);
+	}
+
 	private Context context;
 
 	public OrientationHandler(SensorManager manager, Context ctx) {
 		this.manager = manager;
 		this.context = ctx;
 		bindRecorder(context, CONN, this.getClass().getName());
+		HANDLED_SENSORS.add(Sensor.TYPE_ACCELEROMETER);
+		HANDLED_SENSORS.add(Sensor.TYPE_MAGNETIC_FIELD);
 	}
 
 	public float[] getOrientation() {

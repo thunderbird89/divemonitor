@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.zmeggyesi.divemonitor.Monitor;
 import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 /**
@@ -17,7 +18,7 @@ import com.example.zmeggyesi.divemonitor.services.RecorderService;
  */
 
 public class LightLevelHandler extends SensorHandler implements SensorEventListener {
-	private static final String TAG = "Sensorium-light";
+	public static final String TAG = "Sensorium-light";
 	private RecorderService rec;
 	private Context context;
 
@@ -41,6 +42,13 @@ public class LightLevelHandler extends SensorHandler implements SensorEventListe
 	public LightLevelHandler(Context context) {
 		this.context = context;
 		bindRecorder(context, CONN, this.getClass().getName());
+	}
+
+	@Override
+	protected void announcePresence() {
+		Intent ready = new Intent(context, Monitor.class);
+		ready.setAction("com.example.zmeggyesi.divemonitor.LISTENER_READY");
+		ready.putExtra("listener",TAG);
 	}
 
 	@Override

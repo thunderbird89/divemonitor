@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.example.zmeggyesi.divemonitor.Monitor;
 import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 
@@ -20,7 +21,7 @@ import com.example.zmeggyesi.divemonitor.services.RecorderService;
  */
 
 public class PressureHandler extends SensorHandler implements SensorEventListener {
-	private static final String TAG = "Sensorium-pressure";
+	public static final String TAG = "Sensorium-pressure";
 	private boolean serviceBound = false;
 	private RecorderService rec;
 	private final ServiceConnection CONN = new ServiceConnection() {
@@ -30,6 +31,7 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 			rec = binder.getRecorder();
 			Log.d(TAG, "Recorder service connected");
 			serviceBound = true;
+			announcePresence();
 		}
 
 		@Override
@@ -46,6 +48,13 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 	public PressureHandler(Context context) {
 		this.context = context;
 		bindRecorder(context, CONN, this.getClass().getName());
+	}
+
+	@Override
+	protected void announcePresence() {
+		Intent ready = new Intent(context, Monitor.class);
+		ready.setAction("com.example.zmeggyesi.divemonitor.LISTENER_READY");
+		ready.putExtra("listener",TAG);
 	}
 
 	@Override
