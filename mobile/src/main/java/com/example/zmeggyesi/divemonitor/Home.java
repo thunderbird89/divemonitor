@@ -1,5 +1,6 @@
 package com.example.zmeggyesi.divemonitor;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ public class Home extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 0);
     }
 
     public void startMonitor(View view) {

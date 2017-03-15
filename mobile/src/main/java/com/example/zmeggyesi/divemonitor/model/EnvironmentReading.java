@@ -5,6 +5,11 @@ package com.example.zmeggyesi.divemonitor.model;
  */
 
 class EnvironmentReading {
+	private long timestamp;
+	private float pressure;
+	private float temperature;
+	private float[] orientation;
+
 	public long getTimestamp() {
 		return timestamp;
 	}
@@ -36,9 +41,4 @@ class EnvironmentReading {
 	public void setOrientation(float[] orientation) {
 		this.orientation = orientation;
 	}
-
-	private long timestamp;
-	private float pressure;
-	private float temperature;
-	private float[] orientation;
 }

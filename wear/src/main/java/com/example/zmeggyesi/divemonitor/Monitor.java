@@ -70,6 +70,13 @@ public class Monitor extends WearableActivity {
 		}
 	};
 
+	private final BroadcastReceiver termination = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			finish();
+		}
+	};
+
 	private void displayPressure(String format) {
 		pressure.setText(format);
 	}
@@ -80,6 +87,7 @@ public class Monitor extends WearableActivity {
 		localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
 		setContentView(R.layout.activity_monitor);
 		setAmbientEnabled();
+		registerReceiver(termination, new IntentFilter("terminateMonitoring"));
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(getResources().getString(R.string.listener_ready_action));
 		IntentFilter readingReadyFilter = new IntentFilter();
@@ -141,23 +149,23 @@ public class Monitor extends WearableActivity {
 		manager.unregisterListener(lh);
 	}
 
-    @Override
-    public void onEnterAmbient(Bundle ambientDetails) {
-        super.onEnterAmbient(ambientDetails);
-        updateDisplay();
-    }
+	@Override
+	public void onEnterAmbient(Bundle ambientDetails) {
+		super.onEnterAmbient(ambientDetails);
+		updateDisplay();
+	}
 
-    @Override
-    public void onUpdateAmbient() {
-        super.onUpdateAmbient();
-        updateDisplay();
-    }
+	@Override
+	public void onUpdateAmbient() {
+		super.onUpdateAmbient();
+		updateDisplay();
+	}
 
-    @Override
-    public void onExitAmbient() {
-        updateDisplay();
-        super.onExitAmbient();
-    }
+	@Override
+	public void onExitAmbient() {
+		updateDisplay();
+		super.onExitAmbient();
+	}
 
     private void connectToDataLayer() {
         client = new GoogleApiClient.Builder(this)
@@ -192,17 +200,17 @@ public class Monitor extends WearableActivity {
         updateDisplay();
     }
 
-    private void updateDisplay() {
-        if (isAmbient()) {
-            mContainerView.setBackgroundColor(getResources().getColor(android.R.color.black));
-            pressure.setTextColor(getResources().getColor(android.R.color.white));
-            mClockView.setVisibility(View.VISIBLE);
-            mClockView.setTextColor(getResources().getColor(R.color.white, null));
-            mClockView.setText(AMBIENT_DATE_FORMAT.format(new Date()));
-        } else {
-            mContainerView.setBackground(null);
-            pressure.setTextColor(getResources().getColor(android.R.color.black));
-            mClockView.setVisibility(View.GONE);
-        }
-    }
+	private void updateDisplay() {
+		if (isAmbient()) {
+			mContainerView.setBackgroundColor(getResources().getColor(android.R.color.black));
+			pressure.setTextColor(getResources().getColor(android.R.color.white));
+			mClockView.setVisibility(View.VISIBLE);
+			mClockView.setTextColor(getResources().getColor(R.color.white, null));
+			mClockView.setText(AMBIENT_DATE_FORMAT.format(new Date()));
+		} else {
+			mContainerView.setBackground(null);
+			pressure.setTextColor(getResources().getColor(android.R.color.black));
+			mClockView.setVisibility(View.GONE);
+		}
+	}
 }
