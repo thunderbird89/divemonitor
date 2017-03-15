@@ -8,9 +8,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.zmeggyesi.divemonitor.Monitor;
+import com.example.zmeggyesi.divemonitor.R;
 import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 /**
@@ -19,6 +21,7 @@ import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 public class LightLevelHandler extends SensorHandler implements SensorEventListener {
 	public static final String TAG = "Sensorium-light";
+	private final LocalBroadcastManager lbm;
 	private RecorderService rec;
 	private Context context;
 
@@ -39,7 +42,8 @@ public class LightLevelHandler extends SensorHandler implements SensorEventListe
 		}
 	};
 
-	public LightLevelHandler(Context context) {
+	public LightLevelHandler(LocalBroadcastManager localBroadcastManager, Context context) {
+		this.lbm = localBroadcastManager;
 		this.context = context;
 		bindRecorder(context, CONN, this.getClass().getName());
 	}
@@ -47,8 +51,9 @@ public class LightLevelHandler extends SensorHandler implements SensorEventListe
 	@Override
 	protected void announcePresence() {
 		Intent ready = new Intent(context, Monitor.class);
-		ready.setAction("com.example.zmeggyesi.divemonitor.LISTENER_READY");
+		ready.setAction(context.getString(R.string.listener_ready_action));
 		ready.putExtra("listener",TAG);
+		lbm.sendBroadcast(ready);
 	}
 
 	@Override
@@ -56,6 +61,9 @@ public class LightLevelHandler extends SensorHandler implements SensorEventListe
 		Intent recording = new Intent(context, RecorderService.class);
 		recording.putExtra("dataType", RecorderService.DataTypes.LIGHT_LEVEL);
 		recording.putExtra("data", event.values[0]);
+		recording.setAction(context.getString(R.string.broadcast_reading_light));
+		rec.recordReading(recording);
+		lbm.sendBroadcast(recording);
 	}
 
 	@Override

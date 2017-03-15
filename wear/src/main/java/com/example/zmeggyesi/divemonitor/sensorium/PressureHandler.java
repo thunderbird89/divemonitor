@@ -12,7 +12,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.example.zmeggyesi.divemonitor.Monitor;
+import com.example.zmeggyesi.divemonitor.R;
 import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 
@@ -22,6 +22,7 @@ import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 public class PressureHandler extends SensorHandler implements SensorEventListener {
 	public static final String TAG = "Sensorium-pressure";
+	private final LocalBroadcastManager lbm;
 	private boolean serviceBound = false;
 	private RecorderService rec;
 	private final ServiceConnection CONN = new ServiceConnection() {
@@ -45,16 +46,19 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 	private boolean referenceSet = false;
 
 
-	public PressureHandler(Context context) {
+	public PressureHandler(LocalBroadcastManager localBroadcastManager, Context context) {
+		this.lbm = localBroadcastManager;
 		this.context = context;
 		bindRecorder(context, CONN, this.getClass().getName());
 	}
 
 	@Override
 	protected void announcePresence() {
-		Intent ready = new Intent(context, Monitor.class);
-		ready.setAction("com.example.zmeggyesi.divemonitor.LISTENER_READY");
+		Log.d(TAG, "Announcing presence on the device");
+		Intent ready = new Intent();
+		ready.setAction(context.getResources().getString(R.string.listener_ready_action));
 		ready.putExtra("listener",TAG);
+		lbm.sendBroadcast(ready);
 	}
 
 	@Override
@@ -67,9 +71,9 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 		recording.putExtra("dataType", RecorderService.DataTypes.PRESSURE);
 		recording.putExtra("data", SensorManager.getAltitude(referencePressure, event.values[0]) * -1);
 		recording.putExtra("rawPressure", event.values[0]);
-		recording.setAction("com.example.zmeggyesi.divemonitor.BROADCAST_PRESSURE_READING");
+		recording.setAction(context.getString(R.string.broadcast_reading_pressure));
 		rec.recordReading(recording);
-		LocalBroadcastManager.getInstance(context).sendBroadcast(recording);
+		lbm.sendBroadcast(recording);
 	}
 
 	@Override

@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.Sensor;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
 import android.util.Log;
@@ -26,9 +26,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 public class Monitor extends WearableActivity {
 	private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
@@ -53,7 +51,7 @@ public class Monitor extends WearableActivity {
 	private PressureHandler ph;
 	private Sensor pressureSensor;
 	private TemperatureHandler th;
-	private final BroadcastReceiver br = new BroadcastReceiver() {
+	private final BroadcastReceiver listenerReadyReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 		if (intent.hasExtra("listener")) {
@@ -61,48 +59,59 @@ public class Monitor extends WearableActivity {
 		}
 		}
 	};
+	private LocalBroadcastManager localBroadcastManager;
+	private BroadcastReceiver readingReadyReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d("Readings", intent.getAction());
+//			displayPressure(String.format(getResources().getString(R.string.pressure_format),
+//					intent.getFloatExtra("rawPressure", 0),
+//					intent.getFloatExtra("data", 0)));
+		}
+	};
+
+	private void displayPressure(String format) {
+		pressure.setText(format);
+	}
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_monitor);
-        setAmbientEnabled();
+		super.onCreate(savedInstanceState);
+		localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+		setContentView(R.layout.activity_monitor);
+		setAmbientEnabled();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(getResources().getString(R.string.listener_ready_action));
+		IntentFilter readingReadyFilter = new IntentFilter();
+		readingReadyFilter.addAction(getString(R.string.broadcast_reading_pressure));
+		readingReadyFilter.addAction(getString(R.string.broadcast_reading_temperature));
+		readingReadyFilter.addAction(getString(R.string.broadcast_reading_orientation));
+		readingReadyFilter.addAction(getString(R.string.broadcast_reading_light));
+		localBroadcastManager.registerReceiver(listenerReadyReceiver, filter);
+		localBroadcastManager.registerReceiver(readingReadyReceiver, readingReadyFilter);
 
-        manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		ol = new OrientationHandler(manager, getApplicationContext());
-		lh = new LightLevelHandler(getApplicationContext());
-		ph = new PressureHandler(getApplicationContext());
-		th = new TemperatureHandler(getApplicationContext());
-		magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD, true);
-		accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER, true);
-		light = manager.getDefaultSensor(Sensor.TYPE_LIGHT, true);
-		temperatureSensor = manager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, true);
-		pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE, true);
-
-        mContainerView = (BoxInsetLayout) findViewById(R.id.container);
-        pressure = (TextView) findViewById(R.id.pressure);
-        temperature = (TextView) findViewById(R.id.temperature);
-        mClockView = (TextView) findViewById(R.id.clock);
-        connectToDataLayer();
+		mContainerView = (BoxInsetLayout) findViewById(R.id.container);
+		pressure = (TextView) findViewById(R.id.pressure);
+		temperature = (TextView) findViewById(R.id.temperature);
+		mClockView = (TextView) findViewById(R.id.clock);
+		connectToDataLayer();
 		// TODO: return this value from the handler for more precise initialization?
-        surfacePressure = getIntent().getFloatExtra("surfacePressure", 1000);
-		BroadcastReceiver br = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				pressure.setText(String.format(getResources().getString(R.string.pressure_format),
-						intent.getFloatExtra("rawPressure", 0),
-						intent.getFloatExtra("data", 0)));
-			}
-		};
-		IntentFilter iF = new IntentFilter("com.example.zmeggyesi.divemonitor.BROADCAST_PRESSURE_READING");
-		this.registerReceiver(br, iF);
+		surfacePressure = getIntent().getFloatExtra("surfacePressure", 1000);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-	    IntentFilter filter = new IntentFilter("com.example.zmeggyesi.LISTENER_READY");
-	    this.registerReceiver(br, filter);
+	    manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+	    ol = new OrientationHandler(localBroadcastManager, manager, getApplicationContext());
+	    lh = new LightLevelHandler(localBroadcastManager, getApplicationContext());
+	    ph = new PressureHandler(localBroadcastManager, getApplicationContext());
+	    th = new TemperatureHandler(localBroadcastManager, getApplicationContext());
+	    magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD, true);
+	    accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER, true);
+	    light = manager.getDefaultSensor(Sensor.TYPE_LIGHT, true);
+	    temperatureSensor = manager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, true);
+	    pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE, true);
     }
 
 	private void registerListener(String listener) {

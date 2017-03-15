@@ -4,4 +4,11 @@
     <string name="temperature_format">Temperature: %1$.2d</string>
     <string name="pressure_format">Pressure: %1$,.2f\nDepth: %2$,.2f</string>
     <string name="duration_format">Connection lost for:\n%1$,.2f</string>
+
+    <string name="listener_ready_action">com.example.zmeggyesi.LISTENER_READY</string>
+
+    <string name="broadcast_reading_pressure">com.example.zmeggyesi.divemonitor.BROADCAST_READING_PRESSURE</string>
+    <string name="broadcast_reading_orientation">com.example.zmeggyesi.divemonitor.BROADCAST_READING_ORIENTATION</string>
+    <string name="broadcast_reading_light">com.example.zmeggyesi.divemonitor.BROADCAST_READING_LIGHT</string>
+    <string name="broadcast_reading_temperature">com.example.zmeggyesi.divemonitor.BROADCAST_READING_TEMPERATURE</string>
 </resources>

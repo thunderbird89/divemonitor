@@ -9,9 +9,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.zmeggyesi.divemonitor.Monitor;
+import com.example.zmeggyesi.divemonitor.R;
 import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 import java.util.ArrayList;
@@ -24,12 +26,13 @@ import java.util.List;
 public class OrientationHandler extends SensorHandler implements SensorEventListener {
 	public static final String TAG = "Sensorium-orientation";
 	private static final List<Integer> HANDLED_SENSORS = new ArrayList<>(2);
+	private final LocalBroadcastManager lbm;
 
 	private float[] magneticField;
 	private float[] acceleration;
 	private boolean gotAcceleration = false;
 	private boolean gotMagneticField = false;
-	private float[] orientation;
+	private float[] orientation = new float[3];
 	private SensorManager manager;
 	private boolean serviceBound = false;
 	private RecorderService rec;
@@ -53,13 +56,15 @@ public class OrientationHandler extends SensorHandler implements SensorEventList
 	@Override
 	protected void announcePresence() {
 		Intent ready = new Intent(context, Monitor.class);
-		ready.setAction("com.example.zmeggyesi.divemonitor.LISTENER_READY");
+		ready.setAction(context.getString(R.string.listener_ready_action));
 		ready.putExtra("listener",TAG);
+		lbm.sendBroadcast(ready);
 	}
 
 	private Context context;
 
-	public OrientationHandler(SensorManager manager, Context ctx) {
+	public OrientationHandler(LocalBroadcastManager lbm, SensorManager manager, Context ctx) {
+		this.lbm = lbm;
 		this.manager = manager;
 		this.context = ctx;
 		bindRecorder(context, CONN, this.getClass().getName());
@@ -89,7 +94,9 @@ public class OrientationHandler extends SensorHandler implements SensorEventList
 				Intent recording = new Intent(context, RecorderService.class);
 				recording.putExtra("dataType", RecorderService.DataTypes.ORIENTATION);
 				recording.putExtra("data", orientation);
+				recording.setAction(context.getString(R.string.broadcast_reading_orientation));
 				rec.recordReading(recording);
+				lbm.sendBroadcast(recording);
 				gotAcceleration = false;
 				gotMagneticField = false;
 			} else {

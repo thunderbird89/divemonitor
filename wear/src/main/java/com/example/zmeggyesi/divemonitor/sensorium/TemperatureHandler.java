@@ -8,9 +8,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.zmeggyesi.divemonitor.Monitor;
+import com.example.zmeggyesi.divemonitor.R;
 import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 
@@ -20,6 +22,7 @@ import com.example.zmeggyesi.divemonitor.services.RecorderService;
 
 public class TemperatureHandler extends SensorHandler implements SensorEventListener {
 	public static final String TAG = "Sensorium-temperature";
+	private final LocalBroadcastManager lbm;
 	private float temperature;
 	private RecorderService rec;
 	private Context context;
@@ -40,7 +43,8 @@ public class TemperatureHandler extends SensorHandler implements SensorEventList
 			serviceBound = false;
 		}
 	};
-	public TemperatureHandler(Context context) {
+	public TemperatureHandler(LocalBroadcastManager localBroadcastManager, Context context) {
+		this.lbm = localBroadcastManager;
 		this.context = context;
 		bindRecorder(context, CONN, this.getClass().getName());
 	}
@@ -48,8 +52,9 @@ public class TemperatureHandler extends SensorHandler implements SensorEventList
 	@Override
 	protected void announcePresence() {
 		Intent ready = new Intent(context, Monitor.class);
-		ready.setAction("com.example.zmeggyesi.divemonitor.LISTENER_READY");
+		ready.setAction(context.getString(R.string.listener_ready_action));
 		ready.putExtra("listener", TAG);
+		lbm.sendBroadcast(ready);
 	}
 
 	public float getTemperature() {
@@ -61,7 +66,9 @@ public class TemperatureHandler extends SensorHandler implements SensorEventList
 		Intent recording = new Intent(context, RecorderService.class);
 		recording.putExtra("dataType", RecorderService.DataTypes.TEMPERATURE);
 		recording.putExtra("data", event.values[0]);
+		recording.setAction(context.getString(R.string.broadcast_reading_temperature));
 		rec.recordReading(recording);
+		lbm.sendBroadcast(recording);
 	}
 
 	@Override
