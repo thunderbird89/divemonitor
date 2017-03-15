@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DiveInProgress extends Activity {
 
+	private final String TAG = "Remote";
 	private NotificationManager notificationManager;
 	private TextView output;
 	private Dive dive;
@@ -52,10 +53,10 @@ public class DiveInProgress extends Activity {
 		super.onCreate(savedInstanceState);
 
 		if (client == null) {
-			Log.d("Remote", "Client does not exist, creating");
+			Log.d(TAG, "Client does not exist, creating");
 			client = getGoogleAPIClient();
 		} else {
-			Log.d("Remote", "Client already exists");
+			Log.d(TAG, "Client already exists");
 		}
 		client.connect();
 		setContentView(R.layout.activity_dive_in_progress);
@@ -81,12 +82,12 @@ public class DiveInProgress extends Activity {
 	public void closeDive(View view) {
 
 		client.connect();
-		Log.d("Remote", "Sending message to " + remoteId);
+		Log.d(TAG, "Sending message to " + remoteId);
 		PendingResult res = Wearable.MessageApi.sendMessage(client, remoteId, "/endMonitoring", null);
 		res.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
 			@Override
 			public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
-				Log.d("Remote", sendMessageResult.getStatus().toString());
+				Log.d(TAG, sendMessageResult.getStatus().toString());
 			}
 		}, 10, TimeUnit.SECONDS);
 		dive.setEndDate(new Date());

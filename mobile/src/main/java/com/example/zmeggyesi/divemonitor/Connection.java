@@ -51,6 +51,7 @@ import java.util.Set;
 
 public class Connection extends Activity implements SensorEventListener, AdapterView.OnItemSelectedListener, LocationListener, GoogleApiClient.ConnectionCallbacks {
 
+	private final String TAG = "API";
 	private GoogleApiClient client;
 	private Node selectedNode;
 	private TextView outputArea;
@@ -116,7 +117,7 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 	}
 
 	private void initialScan() {
-		Log.d("API", "Performing initial capability scan");
+		Log.d(TAG, "Performing initial capability scan");
 		PendingResult<CapabilityApi.GetCapabilityResult> result =
 				Wearable.CapabilityApi.getCapability(
 						client, "dive_monitor",
@@ -162,7 +163,7 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 	}
 
 	private void sendMonitoringStartMessage() {
-		Log.d("Remote", "Sending message to " + selectedNode.getDisplayName());
+		Log.d(TAG, "Sending message to " + selectedNode.getDisplayName());
 
 		Wearable.MessageApi.sendMessage(client, selectedNode.getId(),
 				"/startMonitoring",
@@ -176,7 +177,7 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 	}
 
 	public void closeConnection(View view) {
-		Log.d("API Connection", "Connection closed");
+		Log.d(TAG, "Connection closed");
 		Intent i = new Intent(this, Home.class);
 		startActivity(i);
 	}
@@ -189,17 +190,17 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 			}
 		};
 		Wearable.CapabilityApi.addCapabilityListener(client, listener, "dive_monitor");
-		Log.d("API", "Listening for compatible device");
+		Log.d(TAG, "Listening for compatible device");
 	}
 
 	private void updateMonitorList(CapabilityInfo capabilityInfo) {
-		Log.d("API", "Connected capabilities changed");
+		Log.d(TAG, "Connected capabilities changed");
 		Set<Node> nodes = capabilityInfo.getNodes();
 		populateNodeList(nodes);
 	}
 
 	private void populateNodeList(Set<Node> nodes) {
-		Log.d("API", "Selecting dive monitor device");
+		Log.d(TAG, "Selecting dive monitor device");
 		nodeMap = new HashMap<String, Node>();
 		Node bestNode = null;
 		for (Node node : nodes) {
@@ -209,8 +210,8 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 		for (String n : nodeMap.keySet()) {
 			Node node = nodeMap.get(n);
 			if (node.isNearby()) {
-				Log.d("API", "Found device in direct connection: " + node.getDisplayName());
-				Log.d("API", "Dive monitor device selected: " + node.getId());
+				Log.d(TAG, "Found device in direct connection: " + node.getDisplayName());
+				Log.d(TAG, "Dive monitor device selected: " + node.getId());
 				nodeNames.add(0, n);
 			} else {
 				nodeNames.add(n);
@@ -220,7 +221,7 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,
 				android.R.layout.simple_spinner_item,
 				nodeNames);
-		Log.d("API", "Dive monitor device selected: " + bestNode);
+		Log.d(TAG, "Dive monitor device selected: " + bestNode);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		remoteMonitor.setAdapter(adapter);
 	}

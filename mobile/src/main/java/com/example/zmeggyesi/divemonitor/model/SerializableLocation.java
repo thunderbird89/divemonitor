@@ -14,6 +14,20 @@ public class SerializableLocation implements Serializable {
 	private double altitude;
 	private float accuracy;
 
+	public SerializableLocation(double latitude, double longitude, double altitude, float accuracy) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+		this.accuracy = accuracy;
+	}
+
+	public SerializableLocation(Location loc) {
+		this.latitude = loc.getLatitude();
+		this.longitude = loc.getLongitude();
+		this.altitude = loc.getAltitude();
+		this.accuracy = loc.getAccuracy();
+	}
+
 	public double getLatitude() {
 		return latitude;
 	}
@@ -40,20 +54,6 @@ public class SerializableLocation implements Serializable {
 
 	public float getAccuracy() {
 		return accuracy;
-	}
-
-	public SerializableLocation(double latitude, double longitude, double altitude, float accuracy) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.altitude = altitude;
-		this.accuracy = accuracy;
-	}
-
-	public SerializableLocation(Location loc) {
-		this.latitude = loc.getLatitude();
-		this.longitude = loc.getLongitude();
-		this.altitude = loc.getAltitude();
-		this.accuracy = loc.getAccuracy();
 	}
 
 	public void setAccuracy(float accuracy) {
