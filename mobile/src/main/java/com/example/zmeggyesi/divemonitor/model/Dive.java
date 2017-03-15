@@ -1,6 +1,7 @@
 package com.example.zmeggyesi.divemonitor.model;
 
 import android.location.Location;
+import android.provider.BaseColumns;
 
 import com.google.gson.Gson;
 
@@ -76,5 +77,12 @@ public class Dive implements Serializable {
 	public String toString() {
 		Gson gson = new Gson();
 		return gson.toJson(this);
+	}
+
+	public final class Record implements BaseColumns {
+		public static final String TABLE_NAME = "dives";
+		public static final String COLUMN_NAME_LOCATION = "location";
+		public static final String COLUMN_NAME_DISPLAY_NAME = "displayName";
+		public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
 	}
 }
