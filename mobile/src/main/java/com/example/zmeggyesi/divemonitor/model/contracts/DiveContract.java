@@ -13,5 +13,6 @@ public final class DiveContract {
 		public static final String TABLE_NAME = "dives";
 		public static final String COLUMN_NAME_LOCATION = "location";
 		public static final String COLUMN_NAME_DISPLAY_NAME = "displayName";
+		public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
 	}
 }
