@@ -18,9 +18,10 @@
             android:id="@+id/clock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="top"
+            android:gravity="top|center_horizontal"
             android:textAppearance="@style/TextAppearance.Wearable.Large"
-            app:layout_box="all" />
+            android:visibility="visible"
+            app:layout_box="all"/>
 
         <TextView
             android:id="@+id/temperature"
@@ -35,6 +36,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Pressure" />
+
+        <TextView
+            android:id="@+id/duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            tools:text="@string/duration_format"/>
+
     </LinearLayout>
 
 </android.support.wearable.view.BoxInsetLayout>

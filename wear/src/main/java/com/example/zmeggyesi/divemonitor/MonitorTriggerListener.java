@@ -34,9 +34,6 @@ public class MonitorTriggerListener extends WearableListenerService {
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			Log.d("Remote", "Begin monitoring!");
 			startActivity(i);
-
-			Intent monitoring = new Intent(this, MonitorService.class);
-			startService(monitoring);
 		} else if (messageEvent.getPath().equals("/endMonitoring")) {
 	        sendBroadcast(new Intent("terminateMonitoring"));
 		}
