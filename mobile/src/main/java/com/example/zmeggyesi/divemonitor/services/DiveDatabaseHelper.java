@@ -4,16 +4,27 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.zmeggyesi.divemonitor.model.Dive.Record;
+
 /**
  * Created by zmeggyesi on 2017. 03. 15..
  */
 
-public class DatabaseHelper extends SQLiteOpenHelper {
-	public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-		super(context, name, factory, version);
+public class DiveDatabaseHelper extends SQLiteOpenHelper {
+	public DiveDatabaseHelper(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
-	@Override
+	private static final String DATABASE_NAME = "dives.db";
+	private static final int DATABASE_VERSION = 0;
+
+	private static final String TABLE_CREATE_QUERY = "CREATE TABLE IF NOT EXISTS " + Record.TABLE_NAME + " (" +
+			Record._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+			Record.COLUMN_NAME_DISPLAY_NAME + " TEXT," +
+			Record.COLUMN_NAME_LOCATION + " TEXT," +
+			Record.COLUMN_NAME_TIMESTAMP + " INTEGER," +
+			Record.COLUMN_NAME_END_TIMESTAMP + "INTEGER);";
+
 	public String getDatabaseName() {
 		return super.getDatabaseName();
 	}
@@ -40,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-
+		db.execSQL(TABLE_CREATE_QUERY);
 	}
 
 	@Override

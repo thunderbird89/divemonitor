@@ -2,11 +2,15 @@ package com.example.zmeggyesi.divemonitor.model;
 
 import android.app.Application;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.zmeggyesi.divemonitor.services.DiveDatabaseHelper;
+import com.example.zmeggyesi.divemonitor.services.EnvironmentReadingDatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -20,6 +24,8 @@ import com.google.android.gms.wearable.Wearable;
 
 public class GlobalClient extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 	private GoogleApiClient apiClient;
+	private DiveDatabaseHelper divesHelper;
+	private EnvironmentReadingDatabaseHelper environmentReadingsHelper;
 
 	@Override
 	public void onCreate() {
@@ -60,7 +66,34 @@ public class GlobalClient extends Application implements GoogleApiClient.Connect
 
 	@Override
 	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-		Log.wtf("App", "Connection Failed");
+		Log.wtf("App", "PreDive Failed");
 		throw new RuntimeException("Could not connect to Google API");
+	}
+
+	private void setupDBs() {
+		divesHelper = new DiveDatabaseHelper(this);
+		environmentReadingsHelper = new EnvironmentReadingDatabaseHelper(this);
+	}
+
+	public SQLiteDatabase getEnvironmentReadingsDatabase(boolean rw) {
+		if (rw) {
+			SQLiteDatabase writableDatabase = environmentReadingsHelper.getWritableDatabase();
+			writableDatabase.setForeignKeyConstraintsEnabled(true);
+			return writableDatabase;
+		} else {
+			SQLiteDatabase readableDatabase = environmentReadingsHelper.getReadableDatabase();
+			return readableDatabase;
+		}
+	}
+
+	public SQLiteDatabase getDivesDatabase(boolean rw) {
+		if (rw) {
+			SQLiteDatabase writableDatabase = divesHelper.getWritableDatabase();
+			writableDatabase.setForeignKeyConstraintsEnabled(true);
+			return writableDatabase;
+		} else {
+			SQLiteDatabase readableDatabase = divesHelper.getReadableDatabase();
+			return readableDatabase;
+		}
 	}
 }

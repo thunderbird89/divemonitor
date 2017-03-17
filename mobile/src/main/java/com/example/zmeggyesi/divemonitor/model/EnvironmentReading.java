@@ -64,5 +64,6 @@ public class EnvironmentReading {
 		public static final String COLUMN_NAME_ORIENTATION_ROLL = "orientationRoll";
 		public static final String COLUMN_NAME_LIGHTLEVEL = "lightLevel";
 		public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
+		public static final String COLUMN_NAME_DIVE_KEY = "dive";
 	}
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -49,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Connection extends Activity implements SensorEventListener, AdapterView.OnItemSelectedListener, LocationListener, GoogleApiClient.ConnectionCallbacks {
+public class PreDive extends Activity implements SensorEventListener, AdapterView.OnItemSelectedListener, LocationListener, GoogleApiClient.ConnectionCallbacks {
 
 	private final String TAG = "API";
 	private GoogleApiClient client;
@@ -58,6 +59,7 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 	private Map<String, Node> nodeMap;
 	private float surfacePressure;
 	private Location location;
+	private SQLiteDatabase divesDB;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 		setContentView(R.layout.activity_connection);
 		outputArea = (TextView) findViewById(R.id.output);
 		GlobalClient gc = (GlobalClient) getApplicationContext();
+		divesDB = gc.getDivesDatabase(true);
 		client = gc.getClient();
 		initializeLocation();
 		watchCapabilities();
@@ -177,7 +180,7 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 	}
 
 	public void closeConnection(View view) {
-		Log.d(TAG, "Connection closed");
+		Log.d(TAG, "PreDive closed");
 		Intent i = new Intent(this, Home.class);
 		startActivity(i);
 	}
@@ -275,7 +278,7 @@ public class Connection extends Activity implements SensorEventListener, Adapter
 
 	@Override
 	public void onConnected(@Nullable Bundle bundle) {
-		Log.d("Connection", "Client has connected");
+		Log.d("PreDive", "Client has connected");
 	}
 
 	@Override
