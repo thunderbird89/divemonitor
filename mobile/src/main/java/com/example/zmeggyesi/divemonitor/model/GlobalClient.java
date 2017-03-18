@@ -57,7 +57,12 @@ public class GlobalClient extends Application implements GoogleApiClient.Connect
 					.addOnConnectionFailedListener(this)
 					.build();
 		} else {
-			return apiClient;
+			if (apiClient.isConnected()) {
+				return apiClient;
+			} else {
+				apiClient.connect();
+				return apiClient;
+			}
 		}
 	}
 
