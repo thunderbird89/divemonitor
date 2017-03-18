@@ -7,8 +7,6 @@ import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
@@ -16,13 +14,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.zmeggyesi.divemonitor.model.GlobalContext;
 import com.example.zmeggyesi.divemonitor.sensorium.LightLevelHandler;
 import com.example.zmeggyesi.divemonitor.sensorium.OrientationHandler;
 import com.example.zmeggyesi.divemonitor.sensorium.PressureHandler;
 import com.example.zmeggyesi.divemonitor.sensorium.TemperatureHandler;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.Wearable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,7 +37,6 @@ public class Monitor extends WearableActivity {
     private TextView temperature;
 
 	private SensorManager manager;
-    private GoogleApiClient client;
     private float surfacePressure;
 	private OrientationHandler ol;
 	private LightLevelHandler lh;
@@ -66,20 +61,20 @@ public class Monitor extends WearableActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.d("Readings", intent.getAction());
-//			displayPressure(String.format(getResources().getString(R.string.pressure_format),
-//					intent.getFloatExtra("rawPressure", 0),
-//					intent.getFloatExtra("data", 0)));
 		}
 	};
 
-	private final BroadcastReceiver termination = new BroadcastReceiver() {
+	private final BroadcastReceiver terminationReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			manager.unregisterListener(ol);
 			manager.unregisterListener(th);
 			manager.unregisterListener(ph);
 			manager.unregisterListener(lh);
+			unregisterReceiver(terminationReceiver);
+			unregisterReceiver(listenerReadyReceiver);
 			finish();
+
 		}
 	};
 
@@ -90,10 +85,12 @@ public class Monitor extends WearableActivity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		GlobalContext gc = (GlobalContext) getApplicationContext();
+		manager = gc.getSensorManager();
 		localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
 		setContentView(R.layout.activity_monitor);
 		setAmbientEnabled();
-		registerReceiver(termination, new IntentFilter("terminateMonitoring"));
+		registerReceiver(terminationReceiver, new IntentFilter("terminateMonitoring"));
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(getResources().getString(R.string.listener_ready_action));
 		IntentFilter readingReadyFilter = new IntentFilter();
@@ -108,7 +105,6 @@ public class Monitor extends WearableActivity {
 		pressure = (TextView) findViewById(R.id.pressure);
 		temperature = (TextView) findViewById(R.id.temperature);
 		mClockView = (TextView) findViewById(R.id.clock);
-//		connectToDataLayer();
 		// TODO: return this value from the handler for more precise initialization?
 		surfacePressure = getIntent().getFloatExtra("surfacePressure", 1000);
     }
@@ -116,7 +112,6 @@ public class Monitor extends WearableActivity {
     @Override
     protected void onResume() {
         super.onResume();
-	    manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 	    ol = new OrientationHandler(localBroadcastManager, manager, getApplicationContext());
 	    lh = new LightLevelHandler(localBroadcastManager, getApplicationContext());
 	    ph = new PressureHandler(localBroadcastManager, getApplicationContext());
@@ -173,30 +168,6 @@ public class Monitor extends WearableActivity {
 		super.onExitAmbient();
 	}
 
-    private void connectToDataLayer() {
-        client = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(@Nullable Bundle bundle) {
-                        Log.d(TAG, "Connection Established");
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-                        Log.d(TAG, "Connection Suspended");
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Log.wtf(TAG, "Connection Failed");
-                    }
-                })
-                .build();
-        client.connect();
-    }
-
     private void readPressure(float reading, long timestamp) {
         if (timestamp - lastReading > TimeUnit.SECONDS.toMicros(1L)) {
             float depth = SensorManager.getAltitude(surfacePressure, reading) * -1;
@@ -216,7 +187,7 @@ public class Monitor extends WearableActivity {
 		} else {
 			mContainerView.setBackground(null);
 			pressure.setTextColor(getResources().getColor(android.R.color.black));
-			mClockView.setVisibility(View.GONE);
+			mClockView.setVisibility(View.VISIBLE);
 		}
 	}
 }
