@@ -22,7 +22,7 @@ public final class EnvironmentReading {
 		private float lightLevel;
 		private long timestamp;
 
-		public static final String TABLE_NAME = "readings";
+		public static final String TABLE_NAME = "diveEnvironmentData";
 		public static final String COLUMN_NAME_PRESSURE = "depth";
 		public static final String COLUMN_NAME_TEMPERATURE = "temperature";
 		public static final String COLUMN_NAME_ORIENTATION_AZIMUTH = "orientationAzimuth";

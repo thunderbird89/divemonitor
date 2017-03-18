@@ -101,7 +101,7 @@ public class RecorderService extends Service {
 		dbRecord.put(Record.COLUMN_NAME_PRESSURE, currentRecord.pressure);
 		dbRecord.put(Record.COLUMN_NAME_TEMPERATURE, currentRecord.temperature);
 		dbRecord.put(Record.COLUMN_NAME_TIMESTAMP, currentRecord.timestamp);
-		db.insert(Record.TABLE_NAME, null, dbRecord);
+		long pk = db.insert(Record.TABLE_NAME, null, dbRecord);
 		recordOpen = false;
 	}
 

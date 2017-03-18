@@ -27,6 +27,7 @@ import com.google.android.gms.wearable.Wearable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Monitor extends WearableActivity {
 	private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
@@ -56,6 +57,7 @@ public class Monitor extends WearableActivity {
 		public void onReceive(Context context, Intent intent) {
 		if (intent.hasExtra("listener")) {
 				registerListener(intent.getStringExtra("listener"));
+				Log.d(TAG, "Registering listener " + intent.getStringExtra("listener"));
 		}
 		}
 	};
@@ -73,6 +75,10 @@ public class Monitor extends WearableActivity {
 	private final BroadcastReceiver termination = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			manager.unregisterListener(ol);
+			manager.unregisterListener(th);
+			manager.unregisterListener(ph);
+			manager.unregisterListener(lh);
 			finish();
 		}
 	};
@@ -102,7 +108,7 @@ public class Monitor extends WearableActivity {
 		pressure = (TextView) findViewById(R.id.pressure);
 		temperature = (TextView) findViewById(R.id.temperature);
 		mClockView = (TextView) findViewById(R.id.clock);
-		connectToDataLayer();
+//		connectToDataLayer();
 		// TODO: return this value from the handler for more precise initialization?
 		surfacePressure = getIntent().getFloatExtra("surfacePressure", 1000);
     }
@@ -192,7 +198,7 @@ public class Monitor extends WearableActivity {
     }
 
     private void readPressure(float reading, long timestamp) {
-        if (timestamp - lastReading > 10000000000l) {
+        if (timestamp - lastReading > TimeUnit.SECONDS.toMicros(1L)) {
             float depth = SensorManager.getAltitude(surfacePressure, reading) * -1;
             pressure.setText(String.format(getResources().getString(R.string.pressure_format), reading, depth));
             lastReading = timestamp;

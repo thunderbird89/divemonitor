@@ -12,13 +12,16 @@ import com.example.zmeggyesi.divemonitor.model.EnvironmentReading.Record;
 
 public class RemoteEnvironmentDatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "diveEnvironmentData.db";
+    private static final String DATABASE_NAME = "environmentReadings.db";
     private static final String TABLE_NAME = "diveEnvironmentData";
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_INIT_STATEMENT = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
             Record._ID + " INTEGER PRIMARY KEY," +
             Record.COLUMN_NAME_TIMESTAMP + " INTEGER," +
             Record.COLUMN_NAME_LIGHTLEVEL + " INTEGER," +
+            Record.COLUMN_NAME_ORIENTATION_AZIMUTH + " INTEGER," +
+            Record.COLUMN_NAME_ORIENTATION_PITCH + " INTEGER," +
+            Record.COLUMN_NAME_ORIENTATION_ROLL + " INTEGER," +
             Record.COLUMN_NAME_PRESSURE + " INTEGER," +
             Record.COLUMN_NAME_TEMPERATURE + " INTEGER)";
 

@@ -33,6 +33,7 @@ public class LightLevelHandler extends SensorHandler implements SensorEventListe
 			rec = binder.getRecorder();
 			Log.d(TAG, "Recorder service connected");
 			serviceBound = true;
+			announcePresence();
 		}
 
 		@Override
@@ -50,8 +51,9 @@ public class LightLevelHandler extends SensorHandler implements SensorEventListe
 
 	@Override
 	protected void announcePresence() {
-		Intent ready = new Intent(context, Monitor.class);
-		ready.setAction(context.getString(R.string.listener_ready_action));
+		Log.d(TAG, "Announcing presence on the device");
+		Intent ready = new Intent();
+		ready.setAction(context.getResources().getString(R.string.listener_ready_action));
 		ready.putExtra("listener",TAG);
 		lbm.sendBroadcast(ready);
 	}
