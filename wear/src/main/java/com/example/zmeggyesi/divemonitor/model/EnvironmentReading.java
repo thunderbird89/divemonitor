@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.dao.contracts;
+package com.example.zmeggyesi.divemonitor.model;
 
 import android.provider.BaseColumns;
 
@@ -6,8 +6,8 @@ import android.provider.BaseColumns;
  * Created by zmeggyesi on 2017. 03. 11..
  */
 
-public final class RecordContract {
-	private RecordContract() {
+public final class EnvironmentReading {
+	private EnvironmentReading() {
 	}
 
 	public class Record implements BaseColumns {

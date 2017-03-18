@@ -8,12 +8,12 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.example.zmeggyesi.divemonitor.dao.contracts.RecordContract.Record;
+import com.example.zmeggyesi.divemonitor.model.EnvironmentReading.Record;
+import com.example.zmeggyesi.divemonitor.model.GlobalContext;
 
 public class RecorderService extends Service {
 	private static final String TAG = "Recorder";
 	private final RecorderBinder localBinder = new RecorderBinder();
-	private final RecorderDatabaseHelper dsb = new RecorderDatabaseHelper(this);
 	private boolean recordOpen = false;
 	private SQLiteDatabase db;
 	private RecordBean currentRecord;
@@ -24,7 +24,8 @@ public class RecorderService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		db = dsb.getWritableDatabase();
+		GlobalContext gc = (GlobalContext) getApplicationContext();
+		db = gc.getEnvironmentReadingsDatabase(true);
 	}
 
 	@Override

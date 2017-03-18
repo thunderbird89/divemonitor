@@ -3,7 +3,10 @@ package com.example.zmeggyesi.divemonitor;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -29,6 +32,8 @@ public class DiveInProgress extends Activity {
 	private Dive dive;
 	private String remoteId;
 	private GoogleApiClient client;
+	private SQLiteDatabase divesDB;
+	private Long diveKey;
 
 	@Override
 	protected void onRestart() {
@@ -52,6 +57,9 @@ public class DiveInProgress extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		GlobalClient gc = (GlobalClient) getApplicationContext();
+		divesDB = gc.getDivesDatabase(true);
+
 		if (client == null) {
 			Log.d(TAG, "Client does not exist, creating");
 			client = getGoogleAPIClient();
@@ -71,6 +79,7 @@ public class DiveInProgress extends Activity {
 		output = (TextView) findViewById(R.id.output);
 		dive = (Dive) getIntent().getSerializableExtra("dive");
 		remoteId = getIntent().getStringExtra("remoteMonitorId");
+		diveKey = getIntent().getLongExtra("diveKey", -1L);
 		output.setText(dive.toString());
 	}
 
@@ -92,5 +101,9 @@ public class DiveInProgress extends Activity {
 		}, 10, TimeUnit.SECONDS);
 		dive.setEndDate(new Date());
 		notificationManager.cancel(0);
+		ContentValues diveCV = new ContentValues();
+		diveCV.put(Dive.Record.COLUMN_NAME_END_TIMESTAMP, dive.getEndDate().getTime());
+		String[] args = {diveKey.toString()};
+		int result = divesDB.update(Dive.Record.TABLE_NAME, diveCV, Dive.Record._ID + " = ?", args);
 	}
 }

@@ -4,13 +4,13 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.zmeggyesi.divemonitor.dao.contracts.RecordContract.Record;
+import com.example.zmeggyesi.divemonitor.model.EnvironmentReading.Record;
 
 /**
  * Created by zmeggyesi on 2017. 03. 05..
  */
 
-public class RecorderDatabaseHelper extends SQLiteOpenHelper {
+public class RemoteEnvironmentDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "diveEnvironmentData.db";
     private static final String TABLE_NAME = "diveEnvironmentData";
@@ -20,9 +20,9 @@ public class RecorderDatabaseHelper extends SQLiteOpenHelper {
             Record.COLUMN_NAME_TIMESTAMP + " INTEGER," +
             Record.COLUMN_NAME_LIGHTLEVEL + " INTEGER," +
             Record.COLUMN_NAME_PRESSURE + " INTEGER," +
-            Record.COLUMN_NAME_TEMPERATURE + "INTEGER)";
+            Record.COLUMN_NAME_TEMPERATURE + " INTEGER)";
 
-    public RecorderDatabaseHelper(Context context) {
+    public RemoteEnvironmentDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

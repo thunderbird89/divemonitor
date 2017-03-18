@@ -16,8 +16,8 @@ public class EnvironmentReadingDatabaseHelper extends SQLiteOpenHelper {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
-	private static final String DATABASE_NAME = "environmentReadings.db";
-	private static final int DATABASE_VERSION = 0;
+	private static final String DATABASE_NAME = "dives.db";
+	private static final int DATABASE_VERSION = 1;
 	private static final String TABLE_CREATE_QUERY = "CREATE TABLE IF NOT EXISTS " + EnvironmentReading.Record.TABLE_NAME + " (" +
 			EnvironmentReading.Record._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 			EnvironmentReading.Record.COLUMN_NAME_LIGHTLEVEL + " INTEGER," +

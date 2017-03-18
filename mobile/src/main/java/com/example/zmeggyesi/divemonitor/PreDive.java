@@ -2,6 +2,7 @@ package com.example.zmeggyesi.divemonitor;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -159,9 +160,17 @@ public class PreDive extends Activity implements SensorEventListener, AdapterVie
 		dive.setLocation(location);
 		dive.setSerializableLocation(new SerializableLocation(location));
 		dive.setSurfacePressure(surfacePressure);
+
+		ContentValues diveCV = new ContentValues();
+		diveCV.put(Dive.Record.COLUMN_NAME_LOCATION, dive.getSerializableLocation().toString());
+		diveCV.put(Dive.Record.COLUMN_NAME_TIMESTAMP, dive.getStartDate().getTime());
+		long diveKey = divesDB.insert(Dive.Record.TABLE_NAME, null, diveCV);
+		Log.d(TAG, "New dive saved with key " + diveKey);
+
 		Intent i = new Intent(this, DiveInProgress.class);
 		i.putExtra("dive", dive);
 		i.putExtra("remoteMonitorId", selectedNode.getId());
+		i.putExtra("diveKey", diveKey);
 		startActivity(i);
 	}
 
