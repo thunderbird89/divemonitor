@@ -21,7 +21,7 @@ public class Home extends Activity {
     }
 
     public void connectWatch(View view) {
-        Intent intent = new Intent(this, Connection.class);
+        Intent intent = new Intent(this, PreDive.class);
         startActivity(intent);
     }
 }

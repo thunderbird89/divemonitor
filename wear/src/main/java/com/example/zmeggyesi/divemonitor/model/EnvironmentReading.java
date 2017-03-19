@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.dao.contracts;
+package com.example.zmeggyesi.divemonitor.model;
 
 import android.provider.BaseColumns;
 
@@ -6,8 +6,8 @@ import android.provider.BaseColumns;
  * Created by zmeggyesi on 2017. 03. 11..
  */
 
-public final class RecordContract {
-	private RecordContract() {
+public final class EnvironmentReading {
+	private EnvironmentReading() {
 	}
 
 	public class Record implements BaseColumns {
@@ -22,7 +22,7 @@ public final class RecordContract {
 		private float lightLevel;
 		private long timestamp;
 
-		public static final String TABLE_NAME = "readings";
+		public static final String TABLE_NAME = "environmentReadings";
 		public static final String COLUMN_NAME_PRESSURE = "depth";
 		public static final String COLUMN_NAME_TEMPERATURE = "temperature";
 		public static final String COLUMN_NAME_ORIENTATION_AZIMUTH = "orientationAzimuth";
