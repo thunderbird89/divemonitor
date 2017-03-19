@@ -20,6 +20,7 @@ public class EnvironmentReadingDatabaseHelper extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 	private static final String TABLE_CREATE_QUERY = "CREATE TABLE IF NOT EXISTS " + EnvironmentReading.Record.TABLE_NAME + " (" +
 			EnvironmentReading.Record._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+			EnvironmentReading.Record.COLUMN_NAME_DIVE_KEY + " INTEGER," +
 			EnvironmentReading.Record.COLUMN_NAME_LIGHTLEVEL + " INTEGER," +
 			EnvironmentReading.Record.COLUMN_NAME_ORIENTATION_AZIMUTH + " INTEGER," +
 			EnvironmentReading.Record.COLUMN_NAME_ORIENTATION_PITCH + " INTEGER," +
