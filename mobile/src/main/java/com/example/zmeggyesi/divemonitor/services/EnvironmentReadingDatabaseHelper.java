@@ -27,7 +27,7 @@ public class EnvironmentReadingDatabaseHelper extends SQLiteOpenHelper {
 			EnvironmentReading.Record.COLUMN_NAME_ORIENTATION_ROLL + " INTEGER," +
 			EnvironmentReading.Record.COLUMN_NAME_PRESSURE + " INTEGER," +
 			EnvironmentReading.Record.COLUMN_NAME_TEMPERATURE + " INTEGER," +
-			EnvironmentReading.Record.COLUMN_NAME_TIMESTAMP + " INTEGER" +
+			EnvironmentReading.Record.COLUMN_NAME_TIMESTAMP + " INTEGER," +
 			"FOREIGN KEY (" + EnvironmentReading.Record.COLUMN_NAME_DIVE_KEY + ") REFERENCES " + Dive.Record.TABLE_NAME + "(" + Dive.Record._ID + "));";
 
 	@Override
