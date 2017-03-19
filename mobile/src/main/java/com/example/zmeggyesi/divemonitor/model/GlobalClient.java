@@ -23,6 +23,7 @@ import com.google.android.gms.wearable.Wearable;
  */
 
 public class GlobalClient extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+	private final String TAG = "Global Context";
 	private GoogleApiClient apiClient;
 	private DiveDatabaseHelper divesHelper;
 	private EnvironmentReadingDatabaseHelper environmentReadingsHelper;
@@ -68,7 +69,7 @@ public class GlobalClient extends Application implements GoogleApiClient.Connect
 
 	@Override
 	public void onConnected(@Nullable Bundle bundle) {
-		Log.d("App", "API Connected");
+		Log.d(TAG, "API Connected");
 		Intent bi = new Intent("apiConnected");
 		sendBroadcast(bi);
 	}
@@ -80,7 +81,7 @@ public class GlobalClient extends Application implements GoogleApiClient.Connect
 
 	@Override
 	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-		Log.wtf("App", "PreDive Failed");
+		Log.wtf(TAG, "PreDive Failed");
 		throw new RuntimeException("Could not connect to Google API");
 	}
 
