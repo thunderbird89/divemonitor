@@ -13,7 +13,7 @@ import com.example.zmeggyesi.divemonitor.model.EnvironmentReading.Record;
 public class RemoteEnvironmentDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "environmentReadings.db";
-    private static final String TABLE_NAME = "diveEnvironmentData";
+    private static final String TABLE_NAME = "environmentReadings";
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_INIT_STATEMENT = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
             Record._ID + " INTEGER PRIMARY KEY," +
