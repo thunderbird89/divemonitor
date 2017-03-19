@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.sensorium;
+package com.example.zmeggyesi.divemonitor.wear.sensorium;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,24 +7,26 @@ import android.content.ServiceConnection;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.example.zmeggyesi.divemonitor.wear.activity.Monitor;
 import com.example.zmeggyesi.divemonitor.R;
-import com.example.zmeggyesi.divemonitor.services.RecorderService;
+import com.example.zmeggyesi.divemonitor.wear.services.RecorderService;
 
 
 /**
  * Created by zmeggyesi on 2017. 03. 11..
  */
 
-public class PressureHandler extends SensorHandler implements SensorEventListener {
-	public static final String TAG = "Sensorium-pressure";
+public class TemperatureHandler extends SensorHandler implements SensorEventListener {
+	public static final String TAG = "Sensorium-temperature";
 	private final LocalBroadcastManager lbm;
-	private boolean serviceBound = false;
+	private float temperature;
 	private RecorderService rec;
+	private Context context;
+	private boolean serviceBound = false;
 	private final ServiceConnection CONN = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -41,12 +43,7 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 			serviceBound = false;
 		}
 	};
-	private Context context;
-	private float referencePressure;
-	private boolean referenceSet = false;
-
-
-	public PressureHandler(LocalBroadcastManager localBroadcastManager, Context context) {
+	public TemperatureHandler(LocalBroadcastManager localBroadcastManager, Context context) {
 		this.lbm = localBroadcastManager;
 		this.context = context;
 		bindRecorder(context, CONN, this.getClass().getName());
@@ -54,24 +51,22 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 
 	@Override
 	protected void announcePresence() {
-		Log.d(TAG, "Announcing presence on the device");
-		Intent ready = new Intent();
-		ready.setAction(context.getResources().getString(R.string.listener_ready_action));
-		ready.putExtra("listener",TAG);
+		Intent ready = new Intent(context, Monitor.class);
+		ready.setAction(context.getString(R.string.listener_ready_action));
+		ready.putExtra("listener", TAG);
 		lbm.sendBroadcast(ready);
+	}
+
+	public float getTemperature() {
+		return temperature;
 	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (!referenceSet) {
-			referencePressure = event.values[0];
-			referenceSet = true;
-		}
 		Intent recording = new Intent(context, RecorderService.class);
-		recording.putExtra("dataType", RecorderService.DataTypes.PRESSURE);
-		recording.putExtra("data", SensorManager.getAltitude(referencePressure, event.values[0]) * -1);
-		recording.putExtra("rawPressure", event.values[0]);
-		recording.setAction(context.getString(R.string.broadcast_reading_pressure));
+		recording.putExtra("dataType", RecorderService.DataTypes.TEMPERATURE);
+		recording.putExtra("data", event.values[0]);
+		recording.setAction(context.getString(R.string.broadcast_reading_temperature));
 		rec.recordReading(recording);
 		lbm.sendBroadcast(recording);
 	}
@@ -80,4 +75,5 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
 	}
+
 }

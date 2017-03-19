@@ -1,31 +1,36 @@
-package com.example.zmeggyesi.divemonitor.model;
+package com.example.zmeggyesi.divemonitor.mobile.model;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.example.zmeggyesi.divemonitor.services.RemoteEnvironmentDatabaseHelper;
+import com.example.zmeggyesi.divemonitor.mobile.service.DiveDatabaseHelper;
+import com.example.zmeggyesi.divemonitor.mobile.service.EnvironmentReadingDatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.wearable.Wearable;
 
 /**
  * Created by zmeggyesi on 2017. 03. 07..
  */
 
-public class GlobalContext extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class GlobalClient extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 	private final String TAG = "Global Context";
 	private GoogleApiClient apiClient;
-	private RemoteEnvironmentDatabaseHelper remoteEnvironmentDatabaseHelper;
+	private DiveDatabaseHelper divesHelper;
+	private EnvironmentReadingDatabaseHelper environmentReadingsHelper;
 
-	public SensorManager getSensorManager() {
-		return (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+	@Override
+	public void onTerminate() {
+		divesHelper.close();
+		environmentReadingsHelper.close();
+		apiClient.disconnect();
+		super.onTerminate();
 	}
 
 	@Override
@@ -33,6 +38,7 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 		super.onCreate();
 		apiClient = new GoogleApiClient.Builder(this)
 				.addApi(Wearable.API)
+				.addApi(LocationServices.API)
 				.addConnectionCallbacks(this)
 				.addOnConnectionFailedListener(this)
 				.build();
@@ -44,11 +50,17 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 		if (apiClient == null) {
 			return apiClient = new GoogleApiClient.Builder(this)
 					.addApi(Wearable.API)
+					.addApi(LocationServices.API)
 					.addConnectionCallbacks(this)
 					.addOnConnectionFailedListener(this)
 					.build();
 		} else {
-			return apiClient;
+			if (apiClient.isConnected()) {
+				return apiClient;
+			} else {
+				apiClient.connect();
+				return apiClient;
+			}
 		}
 	}
 
@@ -71,16 +83,28 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 	}
 
 	private void setupDBs() {
-		remoteEnvironmentDatabaseHelper = new RemoteEnvironmentDatabaseHelper(this);
+		divesHelper = new DiveDatabaseHelper(this);
+		environmentReadingsHelper = new EnvironmentReadingDatabaseHelper(this);
 	}
 
 	public SQLiteDatabase getEnvironmentReadingsDatabase(boolean rw) {
 		if (rw) {
-			SQLiteDatabase writableDatabase = remoteEnvironmentDatabaseHelper.getWritableDatabase();
+			SQLiteDatabase writableDatabase = environmentReadingsHelper.getWritableDatabase();
 			writableDatabase.setForeignKeyConstraintsEnabled(true);
 			return writableDatabase;
 		} else {
-			SQLiteDatabase readableDatabase = remoteEnvironmentDatabaseHelper.getReadableDatabase();
+			SQLiteDatabase readableDatabase = environmentReadingsHelper.getReadableDatabase();
+			return readableDatabase;
+		}
+	}
+
+	public SQLiteDatabase getDivesDatabase(boolean rw) {
+		if (rw) {
+			SQLiteDatabase writableDatabase = divesHelper.getWritableDatabase();
+			writableDatabase.setForeignKeyConstraintsEnabled(true);
+			return writableDatabase;
+		} else {
+			SQLiteDatabase readableDatabase = divesHelper.getReadableDatabase();
 			return readableDatabase;
 		}
 	}

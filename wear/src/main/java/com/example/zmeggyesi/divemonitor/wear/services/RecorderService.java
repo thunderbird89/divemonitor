@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.services;
+package com.example.zmeggyesi.divemonitor.wear.services;
 
 import android.app.Service;
 import android.content.ContentValues;
@@ -8,8 +8,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.example.zmeggyesi.divemonitor.model.EnvironmentReading.Record;
-import com.example.zmeggyesi.divemonitor.model.GlobalContext;
+import com.example.zmeggyesi.divemonitor.wear.model.EnvironmentReading;
+import com.example.zmeggyesi.divemonitor.wear.model.GlobalContext;
 
 public class RecorderService extends Service {
 	private static final String TAG = "Recorder";
@@ -94,14 +94,14 @@ public class RecorderService extends Service {
 
 	private void writeToDB() {
 		ContentValues dbRecord = new ContentValues();
-		dbRecord.put(Record.COLUMN_NAME_LIGHTLEVEL, currentRecord.lightLevel);
-		dbRecord.put(Record.COLUMN_NAME_ORIENTATION_AZIMUTH,currentRecord.orientation[0]);
-		dbRecord.put(Record.COLUMN_NAME_ORIENTATION_PITCH,currentRecord.orientation[1]);
-		dbRecord.put(Record.COLUMN_NAME_ORIENTATION_ROLL,currentRecord.orientation[2]);
-		dbRecord.put(Record.COLUMN_NAME_PRESSURE, currentRecord.pressure);
-		dbRecord.put(Record.COLUMN_NAME_TEMPERATURE, currentRecord.temperature);
-		dbRecord.put(Record.COLUMN_NAME_TIMESTAMP, currentRecord.timestamp);
-		long pk = db.insert(Record.TABLE_NAME, null, dbRecord);
+		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_LIGHTLEVEL, currentRecord.lightLevel);
+		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_ORIENTATION_AZIMUTH,currentRecord.orientation[0]);
+		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_ORIENTATION_PITCH,currentRecord.orientation[1]);
+		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_ORIENTATION_ROLL,currentRecord.orientation[2]);
+		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_PRESSURE, currentRecord.pressure);
+		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_TEMPERATURE, currentRecord.temperature);
+		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_TIMESTAMP, currentRecord.timestamp);
+		long pk = db.insert(EnvironmentReading.Record.TABLE_NAME, null, dbRecord);
 		recordOpen = false;
 	}
 

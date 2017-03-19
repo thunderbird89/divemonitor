@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.zmeggyesi.divemonitor.Home">
+    tools:context="com.example.zmeggyesi.divemonitor.mobile.activity.Home">
 
     <TextView
         android:id="@+id/textView"

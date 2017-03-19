@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor;
+package com.example.zmeggyesi.divemonitor.mobile.activity;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -6,15 +6,15 @@ import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.zmeggyesi.divemonitor.model.Dive;
-import com.example.zmeggyesi.divemonitor.model.GlobalClient;
+import com.example.zmeggyesi.divemonitor.R;
+import com.example.zmeggyesi.divemonitor.mobile.model.Dive;
+import com.example.zmeggyesi.divemonitor.mobile.model.GlobalClient;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;

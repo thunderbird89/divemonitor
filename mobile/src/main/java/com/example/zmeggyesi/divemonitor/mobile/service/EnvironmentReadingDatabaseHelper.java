@@ -1,11 +1,11 @@
-package com.example.zmeggyesi.divemonitor.services;
+package com.example.zmeggyesi.divemonitor.mobile.service;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.zmeggyesi.divemonitor.model.Dive;
-import com.example.zmeggyesi.divemonitor.model.EnvironmentReading;
+import com.example.zmeggyesi.divemonitor.mobile.model.Dive;
+import com.example.zmeggyesi.divemonitor.mobile.model.EnvironmentReading;
 
 /**
  * Created by zmeggyesi on 2017. 03. 17..

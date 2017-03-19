@@ -1,11 +1,10 @@
-package com.example.zmeggyesi.divemonitor.sensorium;
+package com.example.zmeggyesi.divemonitor.wear.sensorium;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.support.v4.content.LocalBroadcastManager;
 
-import com.example.zmeggyesi.divemonitor.services.RecorderService;
+import com.example.zmeggyesi.divemonitor.wear.services.RecorderService;
 
 /**
  * Created by zmeggyesi on 2017. 03. 12..

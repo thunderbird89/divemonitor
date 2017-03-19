@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor;
+package com.example.zmeggyesi.divemonitor.mobile.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -10,11 +10,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,10 +22,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.zmeggyesi.divemonitor.model.Dive;
-import com.example.zmeggyesi.divemonitor.model.GlobalClient;
-import com.example.zmeggyesi.divemonitor.model.SerializableLocation;
-import com.google.android.gms.common.ConnectionResult;
+import com.example.zmeggyesi.divemonitor.R;
+import com.example.zmeggyesi.divemonitor.mobile.model.Dive;
+import com.example.zmeggyesi.divemonitor.mobile.model.GlobalClient;
+import com.example.zmeggyesi.divemonitor.mobile.model.SerializableLocation;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -40,9 +37,6 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;

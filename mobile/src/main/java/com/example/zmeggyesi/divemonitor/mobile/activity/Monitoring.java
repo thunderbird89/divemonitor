@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor;
+package com.example.zmeggyesi.divemonitor.mobile.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.example.zmeggyesi.divemonitor.R;
 
 public class Monitoring extends Activity implements SensorEventListener {
 

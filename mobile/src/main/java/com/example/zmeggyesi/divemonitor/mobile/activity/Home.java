@@ -1,10 +1,12 @@
-package com.example.zmeggyesi.divemonitor;
+package com.example.zmeggyesi.divemonitor.mobile.activity;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.zmeggyesi.divemonitor.R;
 
 public class Home extends Activity {
 

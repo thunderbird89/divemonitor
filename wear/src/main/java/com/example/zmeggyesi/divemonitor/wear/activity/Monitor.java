@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor;
+package com.example.zmeggyesi.divemonitor.wear.activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,11 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.zmeggyesi.divemonitor.model.GlobalContext;
-import com.example.zmeggyesi.divemonitor.sensorium.LightLevelHandler;
-import com.example.zmeggyesi.divemonitor.sensorium.OrientationHandler;
-import com.example.zmeggyesi.divemonitor.sensorium.PressureHandler;
-import com.example.zmeggyesi.divemonitor.sensorium.TemperatureHandler;
+import com.example.zmeggyesi.divemonitor.R;
+import com.example.zmeggyesi.divemonitor.wear.model.GlobalContext;
+import com.example.zmeggyesi.divemonitor.wear.sensorium.LightLevelHandler;
+import com.example.zmeggyesi.divemonitor.wear.sensorium.OrientationHandler;
+import com.example.zmeggyesi.divemonitor.wear.sensorium.PressureHandler;
+import com.example.zmeggyesi.divemonitor.wear.sensorium.TemperatureHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -74,7 +75,6 @@ public class Monitor extends WearableActivity {
 			unregisterReceiver(terminationReceiver);
 			unregisterReceiver(listenerReadyReceiver);
 			finish();
-
 		}
 	};
 

@@ -1,9 +1,7 @@
-package com.example.zmeggyesi.divemonitor;
+package com.example.zmeggyesi.divemonitor.wear.activity;
 
-import android.app.Service;
 import android.content.Intent;
 import android.hardware.SensorManager;
-import android.os.IBinder;
 import android.util.Log;
 
 import com.google.android.gms.wearable.DataEventBuffer;
