@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.example.zmeggyesi.divemonitor.R;
 import com.example.zmeggyesi.divemonitor.mobile.model.Dive;
-import com.example.zmeggyesi.divemonitor.mobile.model.GlobalClient;
+import com.example.zmeggyesi.divemonitor.mobile.model.GlobalContext;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -57,7 +57,7 @@ public class DiveInProgress extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		GlobalClient gc = (GlobalClient) getApplicationContext();
+		GlobalContext gc = (GlobalContext) getApplicationContext();
 		divesDB = gc.getDivesDatabase(true);
 
 		if (client == null) {
@@ -84,7 +84,7 @@ public class DiveInProgress extends Activity {
 	}
 
 	private GoogleApiClient getGoogleAPIClient() {
-		GlobalClient gc = (GlobalClient) getApplicationContext();
+		GlobalContext gc = (GlobalContext) getApplicationContext();
 		return gc.getClient();
 	}
 

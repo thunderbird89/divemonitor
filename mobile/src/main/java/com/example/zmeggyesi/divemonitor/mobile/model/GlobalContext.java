@@ -19,7 +19,7 @@ import com.google.android.gms.wearable.Wearable;
  * Created by zmeggyesi on 2017. 03. 07..
  */
 
-public class GlobalClient extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class GlobalContext extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 	private final String TAG = "Global Context";
 	private GoogleApiClient apiClient;
 	private DiveDatabaseHelper divesHelper;

@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.example.zmeggyesi.divemonitor.R;
 import com.example.zmeggyesi.divemonitor.mobile.model.Dive;
-import com.example.zmeggyesi.divemonitor.mobile.model.GlobalClient;
+import com.example.zmeggyesi.divemonitor.mobile.model.GlobalContext;
 import com.example.zmeggyesi.divemonitor.mobile.model.SerializableLocation;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -61,7 +61,7 @@ public class PreDive extends Activity implements SensorEventListener, AdapterVie
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_connection);
 		outputArea = (TextView) findViewById(R.id.output);
-		GlobalClient gc = (GlobalClient) getApplicationContext();
+		GlobalContext gc = (GlobalContext) getApplicationContext();
 		divesDB = gc.getDivesDatabase(true);
 		client = gc.getClient();
 		initializeLocation();
