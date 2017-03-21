@@ -69,8 +69,9 @@ public class PressureHandler extends SensorHandler implements SensorEventListene
 		}
 		Intent recording = new Intent(context, RecorderService.class);
 		recording.putExtra("dataType", RecorderService.DataTypes.PRESSURE);
-		recording.putExtra("data", SensorManager.getAltitude(referencePressure, event.values[0]) * -1);
-		recording.putExtra("rawPressure", event.values[0]);
+		recording.putExtra("data", event.values[0]);
+		// TODO Do I even need this here, or can I let the Monitor compute it?
+		recording.putExtra("computedDepth", SensorManager.getAltitude(referencePressure, event.values[0]) * -1);
 		recording.setAction(context.getString(R.string.broadcast_reading_pressure));
 		rec.recordReading(recording);
 		lbm.sendBroadcast(recording);
