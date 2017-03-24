@@ -155,7 +155,7 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 			}
 			SQLiteDatabase readings = environmentReadingsHelper.getWritableDatabase();
 			readings.execSQL("ATTACH \"" + remoteDB.getPath() + "\" AS remote;");
-			readings.execSQL("INSERT OR IGNORE INTO " + EnvironmentReading.Record.TABLE_NAME + " (timestamp, lightLevel, depth, temperature, orientation_azimuth, orientation_pitch, orientation_roll) SELECT ALL timestamp, lightLevel, depth, temperature, orientation_azimuth, orientation_pitch, orientation_roll FROM remote.diveEnvironmentData;");
+			readings.execSQL("INSERT OR IGNORE INTO " + EnvironmentReading.Record.TABLE_NAME + " (timestamp, dive, lightLevel, depth, temperature, orientation_azimuth, orientation_pitch, orientation_roll) SELECT ALL timestamp, dive, lightLevel, depth, temperature, orientation_azimuth, orientation_pitch, orientation_roll FROM remote.diveEnvironmentData;");
 			readings.execSQL("COMMIT;");
 			Log.d(TAG, "Import finished");
 			return null;

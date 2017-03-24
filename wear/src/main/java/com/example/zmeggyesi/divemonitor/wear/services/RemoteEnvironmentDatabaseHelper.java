@@ -24,6 +24,7 @@ public class RemoteEnvironmentDatabaseHelper extends SQLiteOpenHelper {
             EnvironmentReading.Record.COLUMN_NAME_ORIENTATION_PITCH + " INTEGER," +
             EnvironmentReading.Record.COLUMN_NAME_ORIENTATION_ROLL + " INTEGER," +
             EnvironmentReading.Record.COLUMN_NAME_PRESSURE + " INTEGER," +
+            EnvironmentReading.Record.COLUMN_NAME_DIVE_KEY + " INTEGER," +
             EnvironmentReading.Record.COLUMN_NAME_TEMPERATURE + " INTEGER)";
 
     public RemoteEnvironmentDatabaseHelper(Context context) {
