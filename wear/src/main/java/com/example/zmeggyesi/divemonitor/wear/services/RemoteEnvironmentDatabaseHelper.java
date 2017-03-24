@@ -4,7 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.zmeggyesi.divemonitor.wear.model.EnvironmentReading;
+import com.example.divemonitor_commons.model.EnvironmentReading;
+
 
 /**
  * Created by zmeggyesi on 2017. 03. 05..

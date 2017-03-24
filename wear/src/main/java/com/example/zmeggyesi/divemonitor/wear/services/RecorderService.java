@@ -8,7 +8,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.example.zmeggyesi.divemonitor.wear.model.EnvironmentReading;
+import com.example.divemonitor_commons.model.EnvironmentReading;
 import com.example.zmeggyesi.divemonitor.wear.model.GlobalContext;
 
 public class RecorderService extends Service {

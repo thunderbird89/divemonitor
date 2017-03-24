@@ -3,6 +3,7 @@ package com.example.zmeggyesi.divemonitor.mobile.model;
 import android.location.Location;
 import android.provider.BaseColumns;
 
+import com.example.divemonitor_commons.model.EnvironmentReading;
 import com.google.gson.Gson;
 
 import java.io.Serializable;

@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.mobile.model;
+package com.example.divemonitor_commons.model;
 
 import android.provider.BaseColumns;
 

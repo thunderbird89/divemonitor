@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.divemonitor_commons.model.EnvironmentReading;
 import com.example.zmeggyesi.divemonitor.mobile.service.DiveDatabaseHelper;
 import com.example.zmeggyesi.divemonitor.mobile.service.EnvironmentReadingDatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
@@ -147,12 +148,16 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 			try {
 				os = new FileOutputStream(remoteDB);
 				IOUtils.copy(is, os);
-				Log.d(TAG, "Import finished");
 			} catch (FileNotFoundException e) {
 				Log.e(TAG, e.getMessage(), e);
 			} catch (IOException e) {
 				Log.e(TAG, e.getMessage(), e);
 			}
+			SQLiteDatabase readings = environmentReadingsHelper.getWritableDatabase();
+			readings.execSQL("ATTACH \"" + remoteDB.getPath() + "\" AS remote;");
+			readings.execSQL("INSERT OR IGNORE INTO " + EnvironmentReading.Record.TABLE_NAME + " (timestamp, lightLevel, depth, temperature, orientation_azimuth, orientation_pitch, orientation_roll) SELECT ALL timestamp, lightLevel, depth, temperature, orientation_azimuth, orientation_pitch, orientation_roll FROM remote.diveEnvironmentData;");
+			readings.execSQL("COMMIT;");
+			Log.d(TAG, "Import finished");
 			return null;
 		}
 	}
