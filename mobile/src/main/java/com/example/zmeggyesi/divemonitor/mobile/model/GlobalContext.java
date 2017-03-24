@@ -3,6 +3,7 @@ package com.example.zmeggyesi.divemonitor.mobile.model;
 import android.app.Application;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,13 +14,27 @@ import com.example.zmeggyesi.divemonitor.mobile.service.EnvironmentReadingDataba
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.wearable.Asset;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Wearable;
+
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created by zmeggyesi on 2017. 03. 07..
  */
 
-public class GlobalContext extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class GlobalContext extends Application implements DataApi.DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 	private final String TAG = "Global Context";
 	private GoogleApiClient apiClient;
 	private DiveDatabaseHelper divesHelper;
@@ -68,6 +83,7 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 	public void onConnected(@Nullable Bundle bundle) {
 		Log.d(TAG, "API Connected");
 		Intent bi = new Intent("apiConnected");
+		Wearable.DataApi.addListener(apiClient, this);
 		sendBroadcast(bi);
 	}
 
@@ -108,4 +124,39 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 			return readableDatabase;
 		}
 	}
+
+	@Override
+	public void onDataChanged(DataEventBuffer dataEventBuffer) {
+		Log.d(TAG, "receiving data event");
+		for (DataEvent event : dataEventBuffer) {
+			if (event.getType() == DataEvent.TYPE_CHANGED & event.getDataItem().getUri().getPath().equals("/logDB")) {
+
+			}
+		}
+		Log.d(TAG, "Log retrieval complete");
+	}
+
+//	public class Backgroundtask extends AsyncTask<DataEvent, Void, Void> {
+//
+//		@Override
+//		protected Void doInBackground(DataEvent event) {
+//			DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
+//			Asset asset = item.getDataMap().getAsset("data");
+//			String pathname = getDatabasePath(divesHelper.getDatabaseName()).getParent() + "remoteReadings.db";
+//			File remoteDB = new File(pathname);
+//			InputStream is = Wearable.DataApi.getFdForAsset(apiClient, asset).await().getInputStream();
+//			OutputStream os = null;
+//			try {
+//				os = new FileOutputStream(remoteDB);
+//			} catch (FileNotFoundException e) {
+//				e.printStackTrace();
+//			}
+//			try {
+//				IOUtils.copy(is, os);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			return null;
+//		}
+//	}
 }

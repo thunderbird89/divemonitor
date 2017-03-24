@@ -37,6 +37,10 @@ public class MonitorTriggerListener extends WearableListenerService {
 			startActivity(i);
 		} else if (messageEvent.getPath().equals("/endMonitoring")) {
 	        sendBroadcast(new Intent("terminateMonitoring"));
+		} else if (messageEvent.getPath().equals("/getLogs")) {
+			Intent intent = new Intent(this, LogTransfer.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
 		}
 	}
 }

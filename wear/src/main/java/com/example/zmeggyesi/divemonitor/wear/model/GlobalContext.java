@@ -22,6 +22,11 @@ import com.google.android.gms.wearable.Wearable;
 public class GlobalContext extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 	private final String TAG = "Global Context";
 	private GoogleApiClient apiClient;
+
+	public RemoteEnvironmentDatabaseHelper getRemoteEnvironmentDatabaseHelper() {
+		return remoteEnvironmentDatabaseHelper;
+	}
+
 	private RemoteEnvironmentDatabaseHelper remoteEnvironmentDatabaseHelper;
 
 	public SensorManager getSensorManager() {

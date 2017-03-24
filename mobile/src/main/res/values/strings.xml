@@ -6,4 +6,5 @@
     <string name="dive_start_button">Commence dive!</string>
     <string name="remoteMonitor_label">Remote Monitor</string>
     <string name="close_dive_button">Close Dive and save entry</string>
+    <string name="get_logs_button">Retrieve logs</string>
 </resources>

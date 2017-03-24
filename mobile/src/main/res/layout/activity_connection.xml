@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context="com.example.zmeggyesi.divemonitor.mobile.activity.PreDive">
 
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="retrieveLogs"
+        android:text="@string/get_logs_button"
+        app:layout_constraintLeft_toLeftOf="@+id/connect"
+        app:layout_constraintRight_toRightOf="@+id/connect"
+        app:layout_constraintTop_toBottomOf="@+id/connect"/>
+
     <Spinner
         android:id="@+id/remoteMonitor"
         android:layout_width="wrap_content"
