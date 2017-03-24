@@ -130,33 +130,30 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 		Log.d(TAG, "receiving data event");
 		for (DataEvent event : dataEventBuffer) {
 			if (event.getType() == DataEvent.TYPE_CHANGED & event.getDataItem().getUri().getPath().equals("/logDB")) {
-
+				DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
+				Asset asset = item.getDataMap().getAsset("data");
+				new Backgroundtask().execute(asset);
 			}
 		}
-		Log.d(TAG, "Log retrieval complete");
 	}
 
-//	public class Backgroundtask extends AsyncTask<DataEvent, Void, Void> {
-//
-//		@Override
-//		protected Void doInBackground(DataEvent event) {
-//			DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
-//			Asset asset = item.getDataMap().getAsset("data");
-//			String pathname = getDatabasePath(divesHelper.getDatabaseName()).getParent() + "remoteReadings.db";
-//			File remoteDB = new File(pathname);
-//			InputStream is = Wearable.DataApi.getFdForAsset(apiClient, asset).await().getInputStream();
-//			OutputStream os = null;
-//			try {
-//				os = new FileOutputStream(remoteDB);
-//			} catch (FileNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//			try {
-//				IOUtils.copy(is, os);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			return null;
-//		}
-//	}
+	public class Backgroundtask extends AsyncTask<Asset, Void, Void> {
+		@Override
+		protected Void doInBackground(Asset... assets) {
+			String pathname = getDatabasePath(divesHelper.getDatabaseName()).getParent();
+			File remoteDB = new File(pathname, "remoteReadings.db");
+			InputStream is = Wearable.DataApi.getFdForAsset(apiClient, assets[0]).await().getInputStream();
+			OutputStream os = null;
+			try {
+				os = new FileOutputStream(remoteDB);
+				IOUtils.copy(is, os);
+				Log.d(TAG, "Import finished");
+			} catch (FileNotFoundException e) {
+				Log.e(TAG, e.getMessage(), e);
+			} catch (IOException e) {
+				Log.e(TAG, e.getMessage(), e);
+			}
+			return null;
+		}
+	}
 }
