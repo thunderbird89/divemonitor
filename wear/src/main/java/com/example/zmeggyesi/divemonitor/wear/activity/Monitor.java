@@ -76,7 +76,6 @@ public class Monitor extends WearableActivity {
 			unregisterReceiver(terminationReceiver);
 			localBroadcastManager.unregisterReceiver(listenerReadyReceiver);
 			localBroadcastManager.unregisterReceiver(readingReadyReceiver);
-//			unregisterReceiver(listenerReadyReceiver);
 			finish();
 		}
 	};

@@ -26,7 +26,7 @@ public class RecorderService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		gc = (GlobalContext) getApplicationContext();
-		db = gc.getEnvironmentReadingsDatabase(true);
+		db = gc.getEnvironmentReadingsDatabase();
 	}
 
 	@Override
@@ -36,6 +36,7 @@ public class RecorderService extends Service {
 	}
 
 	public void recordReading(Intent intent) {
+		db = gc.getEnvironmentReadingsDatabase();
 		if (!recordOpen) {
 			currentRecord = new RecordBean();
 			currentRecord.timestamp = System.currentTimeMillis();

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.divemonitor_commons.model.EnvironmentReading;
 import com.example.zmeggyesi.divemonitor.mobile.activity.DatabaseManipulation;
@@ -44,35 +45,6 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 	private EnvironmentReadingDatabaseHelper environmentReadingsHelper;
 	private Node selectedNode;
 
-	public Node getSelectedNode() {
-		return selectedNode;
-	}
-
-	public void setSelectedNode(Node selectedNode) {
-		this.selectedNode = selectedNode;
-	}
-
-	@Override
-	public void onTerminate() {
-		divesHelper.close();
-		environmentReadingsHelper.close();
-		apiClient.disconnect();
-		super.onTerminate();
-	}
-
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		apiClient = new GoogleApiClient.Builder(this)
-				.addApi(Wearable.API)
-				.addApi(LocationServices.API)
-				.addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this)
-				.build();
-		apiClient.connect();
-		setupDBs();
-	}
-
 	public GoogleApiClient getClient() {
 		if (apiClient == null) {
 			return apiClient = new GoogleApiClient.Builder(this)
@@ -89,6 +61,36 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 				return apiClient;
 			}
 		}
+	}
+
+	public SQLiteDatabase getDivesDatabase(boolean rw) {
+		if (rw) {
+			SQLiteDatabase writableDatabase = divesHelper.getWritableDatabase();
+			writableDatabase.setForeignKeyConstraintsEnabled(true);
+			return writableDatabase;
+		} else {
+			SQLiteDatabase readableDatabase = divesHelper.getReadableDatabase();
+			return readableDatabase;
+		}
+	}
+
+	public SQLiteDatabase getEnvironmentReadingsDatabase(boolean rw) {
+		if (rw) {
+			SQLiteDatabase writableDatabase = environmentReadingsHelper.getWritableDatabase();
+			writableDatabase.setForeignKeyConstraintsEnabled(true);
+			return writableDatabase;
+		} else {
+			SQLiteDatabase readableDatabase = environmentReadingsHelper.getReadableDatabase();
+			return readableDatabase;
+		}
+	}
+
+	public Node getSelectedNode() {
+		return selectedNode;
+	}
+
+	public void setSelectedNode(Node selectedNode) {
+		this.selectedNode = selectedNode;
 	}
 
 	@Override
@@ -110,55 +112,50 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 		throw new RuntimeException("Could not connect to Google API");
 	}
 
-	private void setupDBs() {
-		divesHelper = new DiveDatabaseHelper(this);
-		environmentReadingsHelper = new EnvironmentReadingDatabaseHelper(this);
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		apiClient = new GoogleApiClient.Builder(this)
+				.addApi(Wearable.API)
+				.addApi(LocationServices.API)
+				.addConnectionCallbacks(this)
+				.addOnConnectionFailedListener(this)
+				.build();
+		apiClient.connect();
+		Wearable.DataApi.addListener(apiClient, this);
+		setupDBs();
 	}
 
-	public SQLiteDatabase getEnvironmentReadingsDatabase(boolean rw) {
-		if (rw) {
-			SQLiteDatabase writableDatabase = environmentReadingsHelper.getWritableDatabase();
-			writableDatabase.setForeignKeyConstraintsEnabled(true);
-			return writableDatabase;
-		} else {
-			SQLiteDatabase readableDatabase = environmentReadingsHelper.getReadableDatabase();
-			return readableDatabase;
-		}
-	}
-
-	public SQLiteDatabase getDivesDatabase(boolean rw) {
-		if (rw) {
-			SQLiteDatabase writableDatabase = divesHelper.getWritableDatabase();
-			writableDatabase.setForeignKeyConstraintsEnabled(true);
-			return writableDatabase;
-		} else {
-			SQLiteDatabase readableDatabase = divesHelper.getReadableDatabase();
-			return readableDatabase;
-		}
+	@Override
+	public void onTerminate() {
+		divesHelper.close();
+		environmentReadingsHelper.close();
+		apiClient.disconnect();
+		super.onTerminate();
 	}
 
 	@Override
 	public void onDataChanged(DataEventBuffer dataEventBuffer) {
-		Log.d(TAG, "receiving data event");
+		Log.d(TAG, "Receiving data event");
 		for (DataEvent event : dataEventBuffer) {
 			if (event.getType() == DataEvent.TYPE_CHANGED & event.getDataItem().getUri().getPath().equals("/logDB")) {
 				DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
 				Asset asset = item.getDataMap().getAsset("data");
 				new Backgroundtask().execute(asset);
+				Wearable.DataApi.deleteDataItems(apiClient, event.getDataItem().getUri());
 			}
 		}
 	}
 
-	public class Backgroundtask extends AsyncTask<Asset, Void, Void> {
-		@Override
-		protected void onPostExecute(Void aVoid) {
-			Intent i = new Intent(getApplicationContext(), DatabaseManipulation.class);
-			i.putExtra("retrievalComplete", true);
-			startActivity(i);
-		}
+	private void setupDBs() {
+		divesHelper = new DiveDatabaseHelper(this);
+		environmentReadingsHelper = new EnvironmentReadingDatabaseHelper(this);
+	}
 
+	public class Backgroundtask extends AsyncTask<Asset, Void, Boolean> {
 		@Override
-		protected Void doInBackground(Asset... assets) {
+		protected Boolean doInBackground(Asset... assets) {
+			Log.d(TAG, "Beginning import");
 			String pathname = getDatabasePath(divesHelper.getDatabaseName()).getParent();
 			File remoteDB = new File(pathname, "remoteReadings.db");
 			InputStream is = Wearable.DataApi.getFdForAsset(apiClient, assets[0]).await().getInputStream();
@@ -176,9 +173,21 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 			readings.execSQL("BEGIN TRANSACTION;");
 			readings.execSQL("INSERT OR IGNORE INTO " + EnvironmentReading.Record.TABLE_NAME + " (timestamp, dive, lightLevel, pressure, temperature, orientationAzimuth, orientationPitch, orientationRoll) SELECT ALL timestamp, dive, lightLevel, pressure, temperature, orientationAzimuth, orientationPitch, orientationRoll FROM remote.readings;");
 			readings.execSQL("COMMIT;");
+			readings.execSQL("DETACH remote;");
+			remoteDB.delete();
 			Log.d(TAG, "Import finished");
 
-			return null;
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			if (result) {
+				Log.d(TAG, "Sending callback to clear watch memory");
+				Intent i = new Intent(getApplicationContext(), DatabaseManipulation.class);
+				i.putExtra("retrievalComplete", true);
+				startActivity(i);
+			}
 		}
 	}
 }

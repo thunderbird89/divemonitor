@@ -173,10 +173,10 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 		Log.d(TAG, "DB Purge starting");
 		SQLiteDatabase dives = gc.getDivesDatabase(true);
 		SQLiteDatabase readings = gc.getEnvironmentReadingsDatabase(true);
-		dives.execSQL("DROP TABLE " + Dive.Record.TABLE_NAME);
 		readings.execSQL("DROP TABLE " + EnvironmentReading.Record.TABLE_NAME);
-		dives.execSQL(DiveDatabaseHelper.TABLE_CREATE_QUERY);
 		readings.execSQL(EnvironmentReadingDatabaseHelper.TABLE_CREATE_STATEMENT);
+		dives.execSQL("DROP TABLE " + Dive.Record.TABLE_NAME);
+		dives.execSQL(DiveDatabaseHelper.TABLE_CREATE_QUERY);
 	}
 
 

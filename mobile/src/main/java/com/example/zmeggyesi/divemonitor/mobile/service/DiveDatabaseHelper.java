@@ -16,7 +16,7 @@ public class DiveDatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	private static final String DATABASE_NAME = "dives.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	public static final String TABLE_CREATE_QUERY = "CREATE TABLE IF NOT EXISTS " + Record.TABLE_NAME + " (" +
 			Record._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +

@@ -84,18 +84,14 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 		throw new RuntimeException("Could not connect to Google API");
 	}
 
-	private void setupDBs() {
+	public void setupDBs() {
 		remoteEnvironmentDatabaseHelper = new RemoteEnvironmentDatabaseHelper(this);
+		remoteEnvironmentDatabaseHelper.getWritableDatabase();
 	}
 
-	public SQLiteDatabase getEnvironmentReadingsDatabase(boolean rw) {
-		if (rw) {
-			SQLiteDatabase writableDatabase = remoteEnvironmentDatabaseHelper.getWritableDatabase();
-			writableDatabase.setForeignKeyConstraintsEnabled(true);
-			return writableDatabase;
-		} else {
-			SQLiteDatabase readableDatabase = remoteEnvironmentDatabaseHelper.getReadableDatabase();
-			return readableDatabase;
-		}
+	public SQLiteDatabase getEnvironmentReadingsDatabase() {
+		SQLiteDatabase writableDatabase = remoteEnvironmentDatabaseHelper.getWritableDatabase();
+		writableDatabase.setForeignKeyConstraintsEnabled(true);
+		return writableDatabase;
 	}
 }

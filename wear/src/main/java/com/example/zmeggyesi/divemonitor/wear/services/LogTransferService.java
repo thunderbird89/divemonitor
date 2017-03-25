@@ -1,14 +1,12 @@
-package com.example.zmeggyesi.divemonitor.wear.activity;
+package com.example.zmeggyesi.divemonitor.wear.services;
 
-import android.app.Activity;
+import android.app.IntentService;
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.zmeggyesi.divemonitor.wear.model.GlobalContext;
-import com.example.zmeggyesi.divemonitor.wear.services.RemoteEnvironmentDatabaseHelper;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Result;
@@ -25,33 +23,44 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by zmeggyesi on 2017. 03. 24..
- */
+public class LogTransferService extends IntentService {
+	private static final String ACTION_TRANSFER_LOGS = "com.example.zmeggyesi.divemonitor.wear.TRANSFER_LOGS";
+	private final String TAG = "LogTransferService";
 
-public class LogTransfer extends Activity {
-
+	private GlobalContext gc;
 	private GoogleApiClient client;
 	private RemoteEnvironmentDatabaseHelper redbh;
-	private GlobalContext gc;
+
+	public LogTransferService() {
+		super("LogTransferService");
+	}
+
+	public static void startLogTransfer(Context context, String param1, String param2) {
+		Intent intent = new Intent(context, LogTransferService.class);
+		intent.setAction(ACTION_TRANSFER_LOGS);
+		context.startService(intent);
+	}
 
 	@Override
-	protected void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		gc = (GlobalContext) getApplicationContext();
-		client = gc.getClient();
-		redbh = gc.getRemoteEnvironmentDatabaseHelper();
-
-		Intent i = getIntent();
-		if (i.getBooleanExtra("retrievalComplete", false)) {
-			deleteLogs();
-		} else {
-			sendLogs();
+	protected void onHandleIntent(Intent intent) {
+		if (intent != null) {
+			final String action = intent.getAction();
+			if (ACTION_TRANSFER_LOGS.equals(action)) {
+				handleLogTransfer();
+			}
 		}
 	}
 
-	private void sendLogs() {
-		Log.d("API", "Transmitting logs...");
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		gc = (GlobalContext) getApplicationContext();
+		client = gc.getClient();
+		redbh = gc.getRemoteEnvironmentDatabaseHelper();
+	}
+
+	private void handleLogTransfer() {
+		Log.d(TAG, "Transmitting logs...");
 		try {
 			File dbFile = getApplicationContext().getDatabasePath(redbh.getDatabaseName());
 			Asset asset = Asset.createFromBytes(IOUtils.toByteArray(new FileInputStream(dbFile)));
@@ -64,19 +73,11 @@ public class LogTransfer extends Activity {
 			res.setResultCallback(new ResultCallback() {
 				@Override
 				public void onResult(@NonNull Result result) {
-					Log.d("API", "Logs sent...");
-					finish();
+					Log.d(TAG, "Logs sent...");
 				}
 			}, 10, TimeUnit.SECONDS);
 		} catch (IOException e) {
-			Log.e("Database", "Could not send logs to phone!", e);
+			Log.e(TAG, "Could not send logs to phone!", e);
 		}
-	}
-
-	private void deleteLogs() {
-		Log.d("Database", "Dropping readings table as per instruction");
-		gc.getEnvironmentReadingsDatabase().close();
-		gc.deleteDatabase(redbh.getDatabaseName());
-		gc.setupDBs();
 	}
 }

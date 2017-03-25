@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.divemonitor_commons.model.DiveInitData;
 import com.example.zmeggyesi.divemonitor.wear.model.GlobalContext;
+import com.example.zmeggyesi.divemonitor.wear.services.LogTransferService;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
@@ -54,9 +55,14 @@ public class MonitorTriggerListener extends WearableListenerService {
 		} else if (messageEvent.getPath().equals("/endMonitoring")) {
 	        sendBroadcast(new Intent("terminateMonitoring"));
 		} else if (messageEvent.getPath().equals("/getLogs")) {
-			Intent intent = new Intent(this, LogTransfer.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(intent);
+			Intent intent = new Intent(this, LogTransferService.class);
+			intent.setAction("com.example.zmeggyesi.divemonitor.wear.TRANSFER_LOGS");
+			startService(intent);
+		} else if (messageEvent.getPath().equals("/logRetrievalComplete")) {
+			Intent i = new Intent(this, LogTransfer.class);
+			i.putExtra("retrievalComplete", true);
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(i);
 		}
 	}
 }

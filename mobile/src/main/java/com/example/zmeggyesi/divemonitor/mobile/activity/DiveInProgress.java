@@ -35,22 +35,22 @@ public class DiveInProgress extends Activity {
 	private SQLiteDatabase divesDB;
 	private Long diveKey;
 
-	@Override
-	protected void onRestart() {
-		super.onRestart();
-		client = getGoogleAPIClient();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		client = getGoogleAPIClient();
-	}
-
-	@Override
-	protected void onPause() {
-		client.disconnect();
-		super.onPause();
+	public void closeDive(View view) {
+		client.connect();
+		Log.d(TAG, "Sending message to " + remoteId);
+		PendingResult res = Wearable.MessageApi.sendMessage(client, remoteId, "/endMonitoring", null);
+		res.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+			@Override
+			public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
+				Log.d(TAG, sendMessageResult.getStatus().toString());
+			}
+		}, 10, TimeUnit.SECONDS);
+		dive.setEndDate(new Date());
+		notificationManager.cancel(0);
+		ContentValues diveCV = new ContentValues();
+		diveCV.put(Dive.Record.COLUMN_NAME_END_TIMESTAMP, dive.getEndDate().getTime());
+		String[] args = {diveKey.toString()};
+		int result = divesDB.update(Dive.Record.TABLE_NAME, diveCV, Dive.Record._ID + " = ?", args);
 	}
 
 	@Override
@@ -83,27 +83,26 @@ public class DiveInProgress extends Activity {
 		output.setText(dive.toString());
 	}
 
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		client = getGoogleAPIClient();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		client = getGoogleAPIClient();
+	}
+
+	@Override
+	protected void onPause() {
+		client.disconnect();
+		super.onPause();
+	}
+
 	private GoogleApiClient getGoogleAPIClient() {
 		GlobalContext gc = (GlobalContext) getApplicationContext();
 		return gc.getClient();
-	}
-
-	public void closeDive(View view) {
-
-		client.connect();
-		Log.d(TAG, "Sending message to " + remoteId);
-		PendingResult res = Wearable.MessageApi.sendMessage(client, remoteId, "/endMonitoring", null);
-		res.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-			@Override
-			public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
-				Log.d(TAG, sendMessageResult.getStatus().toString());
-			}
-		}, 10, TimeUnit.SECONDS);
-		dive.setEndDate(new Date());
-		notificationManager.cancel(0);
-		ContentValues diveCV = new ContentValues();
-		diveCV.put(Dive.Record.COLUMN_NAME_END_TIMESTAMP, dive.getEndDate().getTime());
-		String[] args = {diveKey.toString()};
-		int result = divesDB.update(Dive.Record.TABLE_NAME, diveCV, Dive.Record._ID + " = ?", args);
 	}
 }
