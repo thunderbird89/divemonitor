@@ -24,13 +24,13 @@
             android:theme="@android:style/Theme.DeviceDefault.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <activity android:name=".wear.activity.LogTransfer"
-                  android:label="Log Transfer"></activity>
+                  android:label="Log Transfer">
+        </activity>
 
         <service android:name=".wear.activity.MonitorTriggerListener">
             <intent-filter>

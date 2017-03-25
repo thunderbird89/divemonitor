@@ -4,15 +4,26 @@ import android.content.Intent;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.example.divemonitor_commons.model.DiveInitData;
+import com.example.zmeggyesi.divemonitor.wear.model.GlobalContext;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
+import com.google.gson.Gson;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class MonitorTriggerListener extends WearableListenerService {
 
 	private final String TAG = "Remote";
+	private GlobalContext gc;
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		gc = (GlobalContext) getApplicationContext();
+	}
 
 	public MonitorTriggerListener() {
 	}
@@ -29,8 +40,13 @@ public class MonitorTriggerListener extends WearableListenerService {
 		Log.d(TAG, messageEvent.getPath());
 		if (messageEvent.getPath().equals("/startMonitoring")) {
 			Intent i = new Intent(this, Monitor.class);
-			float surfacePressure = ByteBuffer.wrap(messageEvent.getData()).getFloat();
+			DiveInitData initData = new Gson().fromJson(new String(messageEvent.getData(), StandardCharsets.UTF_8), DiveInitData.class);
+
+			float surfacePressure = initData.getSurfacePressure();
 			Log.d(TAG, "Received surface pressure from remote device: " + surfacePressure);
+			gc.setCurrentDiveKey(initData.getKey());
+			Log.d(TAG, "Dive key is " + gc.getCurrentDiveKey());
+
 			i.putExtra("surfacePressure", surfacePressure != 0 ? surfacePressure : SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			Log.d(TAG, "Begin monitoring!");

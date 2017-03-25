@@ -17,6 +17,7 @@ public class RecorderService extends Service {
 	private boolean recordOpen = false;
 	private SQLiteDatabase db;
 	private RecordBean currentRecord;
+	private GlobalContext gc;
 
 	public RecorderService() {
 	}
@@ -24,7 +25,7 @@ public class RecorderService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		GlobalContext gc = (GlobalContext) getApplicationContext();
+		gc = (GlobalContext) getApplicationContext();
 		db = gc.getEnvironmentReadingsDatabase(true);
 	}
 
@@ -101,6 +102,7 @@ public class RecorderService extends Service {
 		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_PRESSURE, currentRecord.pressure);
 		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_TEMPERATURE, currentRecord.temperature);
 		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_TIMESTAMP, currentRecord.timestamp);
+		dbRecord.put(EnvironmentReading.Record.COLUMN_NAME_DIVE_KEY, gc.getCurrentDiveKey());
 		long pk = db.insert(EnvironmentReading.Record.TABLE_NAME, null, dbRecord);
 		recordOpen = false;
 	}

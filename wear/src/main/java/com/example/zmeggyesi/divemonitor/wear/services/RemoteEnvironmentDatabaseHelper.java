@@ -3,6 +3,7 @@ package com.example.zmeggyesi.divemonitor.wear.services;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.divemonitor_commons.model.EnvironmentReading;
 
@@ -14,9 +15,8 @@ import com.example.divemonitor_commons.model.EnvironmentReading;
 public class RemoteEnvironmentDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "environmentReadings.db";
-    private static final String TABLE_NAME = "environmentReadings";
-    private static final int DATABASE_VERSION = 1;
-    private static final String TABLE_INIT_STATEMENT = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
+    private static final int DATABASE_VERSION = 3;
+    private static final String TABLE_INIT_STATEMENT = "CREATE TABLE IF NOT EXISTS " + EnvironmentReading.Record.TABLE_NAME + " (" +
             EnvironmentReading.Record._ID + " INTEGER PRIMARY KEY," +
             EnvironmentReading.Record.COLUMN_NAME_TIMESTAMP + " INTEGER," +
             EnvironmentReading.Record.COLUMN_NAME_LIGHTLEVEL + " INTEGER," +
@@ -43,7 +43,9 @@ public class RemoteEnvironmentDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+		Log.d("DB", "Upgrading database: " + oldVersion + " -> " + newVersion);
+		db.execSQL("DROP TABLE IF EXISTS " + EnvironmentReading.Record.TABLE_NAME);
+		db.execSQL(TABLE_INIT_STATEMENT);
     }
 
     @Override

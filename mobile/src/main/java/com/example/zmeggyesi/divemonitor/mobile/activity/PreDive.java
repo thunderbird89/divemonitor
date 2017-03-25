@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.divemonitor_commons.model.DiveInitData;
 import com.example.zmeggyesi.divemonitor.R;
 import com.example.zmeggyesi.divemonitor.mobile.model.Dive;
 import com.example.zmeggyesi.divemonitor.mobile.model.GlobalContext;
@@ -38,6 +39,8 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -145,7 +148,13 @@ public class PreDive extends Activity implements SensorEventListener, AdapterVie
 		diveCV.put(Dive.Record.COLUMN_NAME_TIMESTAMP, dive.getStartDate().getTime());
 		long diveKey = divesDB.insert(Dive.Record.TABLE_NAME, null, diveCV);
 		Log.d(TAG, "New dive saved with key " + diveKey);
+
+		final DiveInitData initData = new DiveInitData();
+		initData.setKey(diveKey);
+		initData.setSurfacePressure(surfacePressure);
+
 		if (selectedNode == null) {
+			Log.d(TAG, "Locating remote monitor node...");
 			PendingResult<CapabilityApi.GetCapabilityResult> result =
 					Wearable.CapabilityApi.getCapability(
 							client, "dive_monitor",
@@ -154,11 +163,11 @@ public class PreDive extends Activity implements SensorEventListener, AdapterVie
 				@Override
 				public void onResult(@NonNull CapabilityApi.GetCapabilityResult getCapabilityResult) {
 					updateMonitorList(getCapabilityResult.getCapability());
-					sendMonitoringStartMessage();
+					sendMonitoringStartMessage(initData);
 				}
 			});
 		} else {
-			sendMonitoringStartMessage();
+			sendMonitoringStartMessage(initData);
 		}
 
 		Intent i = new Intent(this, DiveInProgress.class);
@@ -168,12 +177,12 @@ public class PreDive extends Activity implements SensorEventListener, AdapterVie
 		startActivity(i);
 	}
 
-	private void sendMonitoringStartMessage() {
+	private void sendMonitoringStartMessage(DiveInitData initData) {
 		Log.d(TAG, "Sending message to " + selectedNode.getDisplayName());
 
 		Wearable.MessageApi.sendMessage(client, selectedNode.getId(),
 				"/startMonitoring",
-				ByteBuffer.allocate(64).putFloat(surfacePressure).array())
+				initData.toString().getBytes(StandardCharsets.UTF_8))
 				.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
 					@Override
 					public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {

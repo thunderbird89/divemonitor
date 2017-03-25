@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -73,7 +74,9 @@ public class Monitor extends WearableActivity {
 			manager.unregisterListener(ph);
 			manager.unregisterListener(lh);
 			unregisterReceiver(terminationReceiver);
-			unregisterReceiver(listenerReadyReceiver);
+			localBroadcastManager.unregisterReceiver(listenerReadyReceiver);
+			localBroadcastManager.unregisterReceiver(readingReadyReceiver);
+//			unregisterReceiver(listenerReadyReceiver);
 			finish();
 		}
 	};

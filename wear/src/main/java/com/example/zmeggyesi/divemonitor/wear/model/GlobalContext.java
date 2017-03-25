@@ -22,6 +22,15 @@ import com.google.android.gms.wearable.Wearable;
 public class GlobalContext extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 	private final String TAG = "Global Context";
 	private GoogleApiClient apiClient;
+	private long currentDiveKey;
+
+	public long getCurrentDiveKey() {
+		return currentDiveKey;
+	}
+
+	public void setCurrentDiveKey(long currentDiveKey) {
+		this.currentDiveKey = currentDiveKey;
+	}
 
 	public RemoteEnvironmentDatabaseHelper getRemoteEnvironmentDatabaseHelper() {
 		return remoteEnvironmentDatabaseHelper;

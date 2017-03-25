@@ -3,6 +3,7 @@ package com.example.zmeggyesi.divemonitor.mobile.service;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.zmeggyesi.divemonitor.mobile.model.Dive;
 import com.example.divemonitor_commons.model.EnvironmentReading;
@@ -17,7 +18,7 @@ public class EnvironmentReadingDatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	private static final String DATABASE_NAME = "dives.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private static final String TABLE_CREATE_STATEMENT = "CREATE TABLE IF NOT EXISTS " + EnvironmentReading.Record.TABLE_NAME + " (" +
 			EnvironmentReading.Record._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 			EnvironmentReading.Record.COLUMN_NAME_DIVE_KEY + " INTEGER," +
@@ -47,6 +48,9 @@ public class EnvironmentReadingDatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		Log.d("DB", "Upgrading database: " + oldVersion + " -> " + newVersion);
+		db.execSQL("DROP TABLE IF EXISTS " + EnvironmentReading.Record.TABLE_NAME);
+		db.execSQL(TABLE_CREATE_STATEMENT);
 
 	}
 
