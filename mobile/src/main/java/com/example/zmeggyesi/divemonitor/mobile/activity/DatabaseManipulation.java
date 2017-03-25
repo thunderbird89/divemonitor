@@ -71,7 +71,6 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 		client = gc.getClient();
 		Spinner remoteMonitor = (Spinner) findViewById(R.id.remoteMonitor);
 		remoteMonitor.setOnItemSelectedListener(this);
-		initiateConnection();
 		watchCapabilities();
 		initialScan();
 		Intent i = getIntent();
@@ -96,19 +95,6 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 
 	private void initiateConnection() {
 		client.connect();
-	}
-
-	public void scanDevices() {
-		PendingResult<CapabilityApi.GetCapabilityResult> result =
-				Wearable.CapabilityApi.getCapability(
-						client, "dive_monitor",
-						CapabilityApi.FILTER_REACHABLE);
-		result.setResultCallback(new ResultCallback<CapabilityApi.GetCapabilityResult>() {
-			@Override
-			public void onResult(@NonNull CapabilityApi.GetCapabilityResult getCapabilityResult) {
-				updateMonitorList(getCapabilityResult.getCapability());
-			}
-		});
 	}
 
 	private void watchCapabilities() {
@@ -173,11 +159,9 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 		Log.d(TAG, "DB Purge starting");
 		SQLiteDatabase dives = gc.getDivesDatabase(true);
 		SQLiteDatabase readings = gc.getEnvironmentReadingsDatabase(true);
-		readings.execSQL("DROP TABLE " + EnvironmentReading.Record.TABLE_NAME);
+		readings.execSQL("DROP TABLE IF EXISTS " + EnvironmentReading.Record.TABLE_NAME);
 		readings.execSQL(EnvironmentReadingDatabaseHelper.TABLE_CREATE_STATEMENT);
-		dives.execSQL("DROP TABLE " + Dive.Record.TABLE_NAME);
+		dives.execSQL("DROP TABLE IF EXISTS " + Dive.Record.TABLE_NAME);
 		dives.execSQL(DiveDatabaseHelper.TABLE_CREATE_QUERY);
 	}
-
-
 }

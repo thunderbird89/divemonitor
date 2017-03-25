@@ -34,9 +34,9 @@ public class DiveInProgress extends Activity {
 	private GoogleApiClient client;
 	private SQLiteDatabase divesDB;
 	private Long diveKey;
+	private GlobalContext gc;
 
 	public void closeDive(View view) {
-		client.connect();
 		Log.d(TAG, "Sending message to " + remoteId);
 		PendingResult res = Wearable.MessageApi.sendMessage(client, remoteId, "/endMonitoring", null);
 		res.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
@@ -57,16 +57,10 @@ public class DiveInProgress extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		GlobalContext gc = (GlobalContext) getApplicationContext();
+		gc = (GlobalContext) getApplicationContext();
+		client = gc.getClient();
 		divesDB = gc.getDivesDatabase(true);
 
-		if (client == null) {
-			Log.d(TAG, "Client does not exist, creating");
-			client = getGoogleAPIClient();
-		} else {
-			Log.d(TAG, "Client already exists");
-		}
-		client.connect();
 		setContentView(R.layout.activity_dive_in_progress);
 		Notification notification = new Notification.Builder(this)
 				.setOngoing(true)
@@ -86,23 +80,18 @@ public class DiveInProgress extends Activity {
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		client = getGoogleAPIClient();
+		client = gc.getClient();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		client = getGoogleAPIClient();
+		client = gc.getClient();
 	}
 
 	@Override
 	protected void onPause() {
 		client.disconnect();
 		super.onPause();
-	}
-
-	private GoogleApiClient getGoogleAPIClient() {
-		GlobalContext gc = (GlobalContext) getApplicationContext();
-		return gc.getClient();
 	}
 }

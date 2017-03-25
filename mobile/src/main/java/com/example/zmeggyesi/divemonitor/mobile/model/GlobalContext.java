@@ -16,6 +16,9 @@ import com.example.zmeggyesi.divemonitor.mobile.service.DiveDatabaseHelper;
 import com.example.zmeggyesi.divemonitor.mobile.service.EnvironmentReadingDatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
@@ -99,6 +102,7 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 		Intent bi = new Intent("apiConnected");
 		Wearable.DataApi.addListener(apiClient, this);
 		sendBroadcast(bi);
+		PendingResult res = Wearable.DataApi.getDataItems(apiClient);
 	}
 
 	@Override
@@ -108,7 +112,7 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 
 	@Override
 	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-		Log.wtf(TAG, "PreDive Failed");
+		Log.wtf(TAG, "Connection Failed");
 		throw new RuntimeException("Could not connect to Google API");
 	}
 
@@ -139,12 +143,14 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 		Log.d(TAG, "Receiving data event");
 		for (DataEvent event : dataEventBuffer) {
 			if (event.getType() == DataEvent.TYPE_CHANGED & event.getDataItem().getUri().getPath().equals("/logDB")) {
+				event.freeze();
 				DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
 				Asset asset = item.getDataMap().getAsset("data");
 				new Backgroundtask().execute(asset);
 				Wearable.DataApi.deleteDataItems(apiClient, event.getDataItem().getUri());
 			}
 		}
+		dataEventBuffer.release();
 	}
 
 	private void setupDBs() {
