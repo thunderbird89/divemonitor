@@ -49,6 +49,14 @@ public class LogTransferService extends IntentService {
 	}
 
 	@Override
+	public void onCreate() {
+		super.onCreate();
+		gc = (GlobalContext) getApplicationContext();
+		client = gc.getClient();
+		redbh = gc.getRemoteEnvironmentDatabaseHelper();
+	}
+
+	@Override
 	protected void onHandleIntent(Intent intent) {
 		if (intent != null) {
 			final String action = intent.getAction();
@@ -58,14 +66,6 @@ public class LogTransferService extends IntentService {
 				clearLocalDB();
 			}
 		}
-	}
-
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		gc = (GlobalContext) getApplicationContext();
-		client = gc.getClient();
-		redbh = gc.getRemoteEnvironmentDatabaseHelper();
 	}
 
 	private void clearLocalDB() {
