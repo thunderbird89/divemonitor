@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public class LogTransferService extends IntentService {
 	private static final String ACTION_TRANSFER_LOGS = "com.example.zmeggyesi.divemonitor.wear.TRANSFER_LOGS";
+	private static final String ACTION_CLEAR_LOCAL_DB = "com.example.zmeggyesi.divemonitor.wear.CLEAR_LOCAL_DB";
 	private final String TAG = "LogTransferService";
 
 	private GlobalContext gc;
@@ -35,9 +36,15 @@ public class LogTransferService extends IntentService {
 		super("LogTransferService");
 	}
 
-	public static void startLogTransfer(Context context, String param1, String param2) {
+	public static void startLogTransfer(Context context) {
 		Intent intent = new Intent(context, LogTransferService.class);
 		intent.setAction(ACTION_TRANSFER_LOGS);
+		context.startService(intent);
+	}
+
+	public static void clearLocalDB(Context context) {
+		Intent intent = new Intent(context, LogTransferService.class);
+		intent.setAction(ACTION_CLEAR_LOCAL_DB);
 		context.startService(intent);
 	}
 
@@ -47,6 +54,8 @@ public class LogTransferService extends IntentService {
 			final String action = intent.getAction();
 			if (ACTION_TRANSFER_LOGS.equals(action)) {
 				handleLogTransfer();
+			} else if (ACTION_CLEAR_LOCAL_DB.equals(action)) {
+				clearLocalDB();
 			}
 		}
 	}
@@ -57,6 +66,14 @@ public class LogTransferService extends IntentService {
 		gc = (GlobalContext) getApplicationContext();
 		client = gc.getClient();
 		redbh = gc.getRemoteEnvironmentDatabaseHelper();
+	}
+
+	private void clearLocalDB() {
+		Log.d(TAG, "Dropping readings table as per instruction");
+		gc.getEnvironmentReadingsDatabase().close();
+		gc.deleteDatabase(redbh.getDatabaseName());
+		gc.setupDBs();
+		Log.d(TAG, "Local DB cleared");
 	}
 
 	private void handleLogTransfer() {

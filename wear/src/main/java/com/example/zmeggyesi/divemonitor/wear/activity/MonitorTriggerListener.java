@@ -59,9 +59,8 @@ public class MonitorTriggerListener extends WearableListenerService {
 			intent.setAction("com.example.zmeggyesi.divemonitor.wear.TRANSFER_LOGS");
 			startService(intent);
 		} else if (messageEvent.getPath().equals("/logRetrievalComplete")) {
-			Intent i = new Intent(this, LogTransfer.class);
-			i.putExtra("retrievalComplete", true);
-			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			Intent i = new Intent(this, LogTransferService.class);
+			i.setAction("com.example.zmeggyesi.divemonitor.wear.CLEAR_LOCAL_DB");
 			startActivity(i);
 		}
 	}
