@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.divemonitor_commons.model.EnvironmentReading;
+import com.example.zmeggyesi.divemonitor.mobile.activity.DatabaseManipulation;
 import com.example.zmeggyesi.divemonitor.mobile.service.DiveDatabaseHelper;
 import com.example.zmeggyesi.divemonitor.mobile.service.EnvironmentReadingDatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
@@ -20,6 +21,7 @@ import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import org.apache.commons.io.IOUtils;
@@ -40,6 +42,15 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 	private GoogleApiClient apiClient;
 	private DiveDatabaseHelper divesHelper;
 	private EnvironmentReadingDatabaseHelper environmentReadingsHelper;
+	private Node selectedNode;
+
+	public Node getSelectedNode() {
+		return selectedNode;
+	}
+
+	public void setSelectedNode(Node selectedNode) {
+		this.selectedNode = selectedNode;
+	}
 
 	@Override
 	public void onTerminate() {
@@ -140,6 +151,13 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 
 	public class Backgroundtask extends AsyncTask<Asset, Void, Void> {
 		@Override
+		protected void onPostExecute(Void aVoid) {
+			Intent i = new Intent(getApplicationContext(), DatabaseManipulation.class);
+			i.putExtra("retrievalComplete", true);
+			startActivity(i);
+		}
+
+		@Override
 		protected Void doInBackground(Asset... assets) {
 			String pathname = getDatabasePath(divesHelper.getDatabaseName()).getParent();
 			File remoteDB = new File(pathname, "remoteReadings.db");
@@ -159,6 +177,7 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 			readings.execSQL("INSERT OR IGNORE INTO " + EnvironmentReading.Record.TABLE_NAME + " (timestamp, dive, lightLevel, pressure, temperature, orientationAzimuth, orientationPitch, orientationRoll) SELECT ALL timestamp, dive, lightLevel, pressure, temperature, orientationAzimuth, orientationPitch, orientationRoll FROM remote.readings;");
 			readings.execSQL("COMMIT;");
 			Log.d(TAG, "Import finished");
+
 			return null;
 		}
 	}

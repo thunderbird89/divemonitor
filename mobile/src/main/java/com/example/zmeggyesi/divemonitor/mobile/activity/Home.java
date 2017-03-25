@@ -26,4 +26,9 @@ public class Home extends Activity {
         Intent intent = new Intent(this, PreDive.class);
         startActivity(intent);
     }
+
+    public void startDBManipulation(View view) {
+        Intent intent = new Intent(this, DatabaseManipulation.class);
+        startActivity(intent);
+    }
 }

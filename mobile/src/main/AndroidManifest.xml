@@ -24,6 +24,7 @@
         <activity android:name=".mobile.activity.Monitoring" />
         <activity android:name=".mobile.activity.PreDive" />
         <activity android:name=".mobile.activity.DiveInProgress"></activity>
+        <activity android:name=".mobile.activity.DatabaseManipulation"></activity>
     </application>
 
 </manifest>

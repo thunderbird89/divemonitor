@@ -191,12 +191,6 @@ public class PreDive extends Activity implements SensorEventListener, AdapterVie
 				});
 	}
 
-	public void retrieveLogs(View view) {
-		Log.d(TAG, "Retrieving logs from " + selectedNode.getDisplayName());
-		Wearable.MessageApi.sendMessage(client, selectedNode.getId(),
-				"/getLogs", null);
-	}
-
 	public void closeConnection(View view) {
 		Log.d(TAG, "PreDive closed");
 		Intent i = new Intent(this, Home.class);

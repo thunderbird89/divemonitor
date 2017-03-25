@@ -7,4 +7,6 @@
     <string name="remoteMonitor_label">Remote Monitor</string>
     <string name="close_dive_button">Close Dive and save entry</string>
     <string name="get_logs_button">Retrieve logs</string>
+    <string name="purge_database_button">Purge databases</string>
+    <string name="start_db_manipulation_button">Manipulate databases</string>
 </resources>
