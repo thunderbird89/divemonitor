@@ -28,13 +28,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="retrieveLogs"
-        android:text="@string/get_logs_button"/>
+        android:text="@string/button_get_logs"/>
 
     <Button
         android:id="@+id/purge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="purgeDatabases"
-        android:text="@string/purge_database_button"/>
+        android:text="@string/button_purge_database"/>
 
 </LinearLayout>

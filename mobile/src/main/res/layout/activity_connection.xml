@@ -56,7 +56,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="scanDevices"
-        android:text="@string/remote_monitor_rescan_button"
+        android:text="@string/button_rescan_remote_monitors"
         app:layout_constraintLeft_toLeftOf="@+id/closeConnection"
         app:layout_constraintRight_toRightOf="@+id/closeConnection"
         app:layout_constraintTop_toBottomOf="@+id/remoteMonitor" />
@@ -71,7 +71,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="beginDive"
-        android:text="@string/dive_start_button"
+        android:text="@string/button_dive_start"
         app:layout_constraintLeft_toLeftOf="@+id/scan"
         app:layout_constraintRight_toRightOf="@+id/scan"
         app:layout_constraintTop_toBottomOf="@+id/scan" />
@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
-        android:text="@string/remoteMonitor_label"
+        android:text="@string/label_remote_monitor_selector"
         app:layout_constraintBaseline_toBaselineOf="@+id/remoteMonitor"
         app:layout_constraintRight_toLeftOf="@+id/remoteMonitor" />
 </android.support.constraint.ConstraintLayout>
