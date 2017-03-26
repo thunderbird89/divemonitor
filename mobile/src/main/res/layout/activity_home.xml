@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.zmeggyesi.divemonitor.Home">
+    tools:context="com.example.zmeggyesi.divemonitor.mobile.activity.Home">
 
     <TextView
         android:id="@+id/textView"
@@ -26,7 +26,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:onClick="startMonitor"
-        android:text="@string/local_monitor_button"
+        android:text="@string/button_start_local_monitoring"
         app:layout_constraintLeft_toLeftOf="@+id/textView"
         app:layout_constraintRight_toRightOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -39,9 +39,22 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:onClick="connectWatch"
-        android:text="@string/diver_preparation_button"
+        android:text="@string/button_dive_preparation"
         app:layout_constraintLeft_toLeftOf="@+id/startLocalMonitor"
         app:layout_constraintRight_toRightOf="@+id/startLocalMonitor"
         app:layout_constraintTop_toBottomOf="@+id/startLocalMonitor" />
+
+    <Button
+        android:id="@+id/manipulateDB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="startDBManipulation"
+        android:text="@string/button_start_db_maniuplation"
+        app:layout_constraintLeft_toLeftOf="@+id/connect"
+        app:layout_constraintRight_toRightOf="@+id/connect"
+        app:layout_constraintTop_toBottomOf="@+id/connect"/>
 
 </android.support.constraint.ConstraintLayout>

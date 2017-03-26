@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name" translatable="false">Dive Monitor</string>
-    <string name="local_monitor_button">Start Local Monitor</string>
-    <string name="diver_preparation_button">Prepare for dive</string>
-    <string name="remote_monitor_rescan_button">Re-scan remote devices</string>
-    <string name="dive_start_button">Commence dive!</string>
-    <string name="remoteMonitor_label">Remote Monitor</string>
-    <string name="close_dive_button">Close Dive and save entry</string>
+    <string name="button_start_local_monitoring">Start Local Monitor</string>
+    <string name="button_dive_preparation">Prepare for dive</string>
+    <string name="button_rescan_remote_monitors">Re-scan remote devices</string>
+    <string name="button_dive_start">Commence dive!</string>
+    <string name="button_close_dive">Close Dive and save entry</string>
+    <string name="button_get_logs">Retrieve logs</string>
+    <string name="button_purge_database">Purge databases</string>
+    <string name="button_start_db_maniuplation">Manipulate databases</string>
+    <string name="label_remote_monitor_selector">Remote Monitor</string>
+    <string name="toast_database_retrieved">Database retrieved and integrated</string>
 </resources>

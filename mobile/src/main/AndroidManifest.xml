@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.zmeggyesi.divemonitor">
+          package="com.example.zmeggyesi.divemonitor">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.LOCATION_HARDWARE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.LOCATION_HARDWARE"/>
 
     <application
+        android:name=".mobile.model.GlobalContext"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".model.GlobalClient"
         android:theme="@style/AppTheme">
-        <activity android:name=".Home">
+        <activity android:name=".mobile.activity.Home">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Monitoring" />
-        <activity android:name=".PreDive" />
-        <activity android:name=".DiveInProgress"></activity>
+        <activity android:name=".mobile.activity.Monitoring"/>
+        <activity android:name=".mobile.activity.PreDive"/>
+        <activity android:name=".mobile.activity.DiveInProgress"/>
+        <activity android:name=".mobile.activity.DatabaseManipulation"/>
+
+        <service
+            android:name=".mobile.service.LogTransferService"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>

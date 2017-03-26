@@ -1,0 +1,3 @@
+ATTACH "c:\Users\zmeggyesi\Projects\divemonitor\database-design\dive-remote.sqlite " AS remote;
+INSERT OR IGNORE INTO Environmentreading (timestamp, lightLevel, depth, temperature, orientation_azimuth, orientation_pitch, orientation_roll) SELECT ALL timestamp, lightLevel, depth, temperature, orientation_azimuth, orientation_pitch, orientation_roll FROM remote.diveEnvironmentData;
+COMMIT;
