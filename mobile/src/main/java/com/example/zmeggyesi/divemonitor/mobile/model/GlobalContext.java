@@ -107,12 +107,23 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 
 	@Override
 	public void onConnectionSuspended(int i) {
-
+		switch (i) {
+			case GoogleApiClient.ConnectionCallbacks.CAUSE_NETWORK_LOST:
+				Log.w(TAG, "Network disrupted");
+				break;
+			case GoogleApiClient.ConnectionCallbacks.CAUSE_SERVICE_DISCONNECTED:
+				Log.w(TAG, "Network service disconnected or killed!");
+				break;
+			default:
+				Log.wtf(TAG, "API Client killed for an unknown reason, not in constants!");
+				break;
+		}
 	}
 
 	@Override
 	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 		Log.wtf(TAG, "Connection Failed");
+		Log.d(TAG, "Failure cause: " + connectionResult.getErrorMessage());
 		throw new RuntimeException("Could not connect to Google API");
 	}
 
