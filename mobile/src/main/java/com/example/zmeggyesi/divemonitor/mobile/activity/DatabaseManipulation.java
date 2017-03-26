@@ -143,6 +143,7 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 	}
 
 	public void retrieveLogs(View view) {
+		Wearable.DataApi.addListener(client, gc);
 		Log.d(TAG, "Retrieving logs from " + selectedNode.getDisplayName());
 		Wearable.MessageApi.sendMessage(client, selectedNode.getId(),
 				"/getLogs", null);

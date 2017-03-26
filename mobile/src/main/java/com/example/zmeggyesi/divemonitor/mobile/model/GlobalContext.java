@@ -100,9 +100,7 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 	public void onConnected(@Nullable Bundle bundle) {
 		Log.d(TAG, "API Connected");
 		Intent bi = new Intent("apiConnected");
-		Wearable.DataApi.addListener(apiClient, this);
 		sendBroadcast(bi);
-		PendingResult res = Wearable.DataApi.getDataItems(apiClient);
 	}
 
 	@Override
@@ -137,7 +135,6 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 				.addOnConnectionFailedListener(this)
 				.build();
 		apiClient.connect();
-		Wearable.DataApi.addListener(apiClient, this);
 		setupDBs();
 	}
 
@@ -200,6 +197,7 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
+				Wearable.DataApi.removeListener(apiClient, GlobalContext.this);
 				Log.d(TAG, "Sending callback to clear watch memory");
 				Intent i = new Intent(getApplicationContext(), DatabaseManipulation.class);
 				i.putExtra("retrievalComplete", true);
