@@ -19,6 +19,7 @@ import com.example.zmeggyesi.divemonitor.mobile.model.Dive;
 import com.example.zmeggyesi.divemonitor.mobile.model.GlobalContext;
 import com.example.zmeggyesi.divemonitor.mobile.service.DiveDatabaseHelper;
 import com.example.zmeggyesi.divemonitor.mobile.service.EnvironmentReadingDatabaseHelper;
+import com.example.zmeggyesi.divemonitor.mobile.service.LogTransferService;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -143,10 +144,10 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 	}
 
 	public void retrieveLogs(View view) {
-		Wearable.DataApi.addListener(client, gc);
-		Log.d(TAG, "Retrieving logs from " + selectedNode.getDisplayName());
-		Wearable.MessageApi.sendMessage(client, selectedNode.getId(),
-				"/getLogs", null);
+		Intent intent = new Intent(this, LogTransferService.class);
+		intent.setAction(LogTransferService.ACTION_GET_LOG_DATABASE);
+		intent.putExtra("nodeId", selectedNode.getId());
+		startService(intent);
 	}
 
 	public void signalRetrievalComplete() {

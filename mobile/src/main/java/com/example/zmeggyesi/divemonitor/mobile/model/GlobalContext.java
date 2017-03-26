@@ -41,9 +41,18 @@ import java.io.OutputStream;
  * Created by zmeggyesi on 2017. 03. 07..
  */
 
-public class GlobalContext extends Application implements DataApi.DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class GlobalContext extends Application implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 	private final String TAG = "Global Context";
 	private GoogleApiClient apiClient;
+
+	public DiveDatabaseHelper getDivesHelper() {
+		return divesHelper;
+	}
+
+	public EnvironmentReadingDatabaseHelper getEnvironmentReadingsHelper() {
+		return environmentReadingsHelper;
+	}
+
 	private DiveDatabaseHelper divesHelper;
 	private EnvironmentReadingDatabaseHelper environmentReadingsHelper;
 	private Node selectedNode;
@@ -146,63 +155,8 @@ public class GlobalContext extends Application implements DataApi.DataListener, 
 		super.onTerminate();
 	}
 
-	@Override
-	public void onDataChanged(DataEventBuffer dataEventBuffer) {
-		Log.d(TAG, "Receiving data event");
-		for (DataEvent event : dataEventBuffer) {
-			if (event.getType() == DataEvent.TYPE_CHANGED & event.getDataItem().getUri().getPath().equals("/logDB")) {
-				event.freeze();
-				DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
-				Asset asset = item.getDataMap().getAsset("data");
-				new Backgroundtask().execute(asset);
-				Wearable.DataApi.deleteDataItems(apiClient, event.getDataItem().getUri());
-			}
-		}
-		dataEventBuffer.release();
-	}
-
 	private void setupDBs() {
 		divesHelper = new DiveDatabaseHelper(this);
 		environmentReadingsHelper = new EnvironmentReadingDatabaseHelper(this);
-	}
-
-	public class Backgroundtask extends AsyncTask<Asset, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(Asset... assets) {
-			Log.d(TAG, "Beginning import");
-			String pathname = getDatabasePath(divesHelper.getDatabaseName()).getParent();
-			File remoteDB = new File(pathname, "remoteReadings.db");
-			InputStream is = Wearable.DataApi.getFdForAsset(apiClient, assets[0]).await().getInputStream();
-			OutputStream os = null;
-			try {
-				os = new FileOutputStream(remoteDB);
-				IOUtils.copy(is, os);
-			} catch (FileNotFoundException e) {
-				Log.e(TAG, e.getMessage(), e);
-			} catch (IOException e) {
-				Log.e(TAG, e.getMessage(), e);
-			}
-			SQLiteDatabase readings = environmentReadingsHelper.getWritableDatabase();
-			readings.execSQL("ATTACH \"" + remoteDB.getPath() + "\" AS remote;");
-			readings.execSQL("BEGIN TRANSACTION;");
-			readings.execSQL("INSERT OR IGNORE INTO " + EnvironmentReading.Record.TABLE_NAME + " (timestamp, dive, lightLevel, pressure, temperature, orientationAzimuth, orientationPitch, orientationRoll) SELECT ALL timestamp, dive, lightLevel, pressure, temperature, orientationAzimuth, orientationPitch, orientationRoll FROM remote.readings;");
-			readings.execSQL("COMMIT;");
-			readings.execSQL("DETACH remote;");
-			remoteDB.delete();
-			Log.d(TAG, "Import finished");
-
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			if (result) {
-				Wearable.DataApi.removeListener(apiClient, GlobalContext.this);
-				Log.d(TAG, "Sending callback to clear watch memory");
-				Intent i = new Intent(getApplicationContext(), DatabaseManipulation.class);
-				i.putExtra("retrievalComplete", true);
-				startActivity(i);
-			}
-		}
 	}
 }
