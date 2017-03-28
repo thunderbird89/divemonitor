@@ -22,8 +22,8 @@ public class DiveProvider extends ContentProvider {
 	private SQLiteDatabase divesDB;
 
 	static {
-		URI_MATCHER.addURI("com.example.zmeggyesi.divemonitor.provider", "dives", 1);
-		URI_MATCHER.addURI("com.example.zmeggyesi.divemonitor.provider", "dives/#", 2);
+		URI_MATCHER.addURI(DivesContract.AUTHORITY, "dives", 1);
+		URI_MATCHER.addURI(DivesContract.AUTHORITY, "dives/#", 2);
 	}
 
 	public DiveProvider() {}
@@ -57,6 +57,10 @@ public class DiveProvider extends ContentProvider {
 				throw new IllegalArgumentException("URI not recognized: " + uri);
 		}
 
+		if (projection == null) {
+			projection = DivesContract.DEFAULT_PROJECTION_UI;
+		}
+
 		return divesDB.query("dives", projection, selection, selectionArgs, null, null, sortOrder);
 	}
 
@@ -64,8 +68,8 @@ public class DiveProvider extends ContentProvider {
 	@Override
 	public String getType(@NonNull Uri uri) {
 		switch (URI_MATCHER.match(uri)) {
-			case 1 : return "vnd.android.cursor.dir/vnd.com.example.zmeggyesi.divemonitor.dive";
-			case 2 : return "vnd.android.cursor.item/vnd.com.example.zmeggyesi.divemonitor.dive";
+			case 1 : return DivesContract.CONTENT_TYPE;
+			case 2 : return DivesContract.CONTENT_ITEM_TYPE;
 			default : throw new UnsupportedOperationException("Requested URI does not match: " + uri);
 		}
 	}
