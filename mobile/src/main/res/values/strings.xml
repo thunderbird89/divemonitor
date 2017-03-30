@@ -13,4 +13,6 @@
     <string name="permission_write_dives" translatable="false">WRITE_DIVES</string>
     <string name="provider_dives_provider" translatable="false">com.example.zmeggyesi.divemonitor.provider</string>
     <string name="toast_database_retrieved">Database retrieved and integrated</string>
+    <string name="title_dive_list">Dives</string>
+    <string name="title_dive_detail">Dive Detail</string>
 </resources>
