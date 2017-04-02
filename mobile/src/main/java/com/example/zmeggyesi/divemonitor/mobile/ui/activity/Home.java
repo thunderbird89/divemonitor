@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.mobile.activity;
+package com.example.zmeggyesi.divemonitor.mobile.ui.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.zmeggyesi.divemonitor.R;
-import com.example.zmeggyesi.divemonitor.mobile.activity.listview.DiveList;
 
 public class Home extends Activity {
 

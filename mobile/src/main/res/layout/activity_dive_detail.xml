@@ -3,5 +3,5 @@
              android:id="@+id/dive_detail_container"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.example.zmeggyesi.divemonitor.mobile.activity.DiveDetailActivity"
+             tools:context=".mobile.ui.activity.DiveDetailActivity"
              tools:ignore="MergeRootFrame"/>

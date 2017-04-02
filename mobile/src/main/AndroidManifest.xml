@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".mobile.activity.Home">
+        <activity android:name=".mobile.ui.activity.Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -25,11 +25,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".mobile.activity.Monitoring"/>
-        <activity android:name=".mobile.activity.PreDive"/>
-        <activity android:name=".mobile.activity.DiveInProgress"/>
-        <activity android:name=".mobile.activity.DatabaseManipulation"/>
-        <activity android:name=".mobile.activity.listview.DiveList" />
+        <activity android:name=".mobile.ui.activity.Monitoring"/>
+        <activity android:name=".mobile.ui.activity.PreDive"/>
+        <activity android:name=".mobile.ui.activity.DiveInProgress"/>
+        <activity android:name=".mobile.ui.activity.DatabaseManipulation"/>
+        <activity android:name=".mobile.ui.activity.DiveList" />
 
         <provider
             android:name=".mobile.service.provider.DiveProvider"

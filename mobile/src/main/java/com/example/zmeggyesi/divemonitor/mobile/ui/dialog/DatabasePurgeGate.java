@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.mobile.activity;
+package com.example.zmeggyesi.divemonitor.mobile.ui.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,7 +14,8 @@ import com.example.zmeggyesi.divemonitor.R;
  * Created by zmeggyesi on 2017. 04. 02..
  */
 
-class DatabasePurgeGate extends DialogFragment {
+public class DatabasePurgeGate extends DialogFragment {
+	private static final String TAG = "DatabasePurgeGate";
 	private CallbackListener listener;
 
 	@Override
@@ -45,6 +46,6 @@ class DatabasePurgeGate extends DialogFragment {
 	}
 
 	public interface CallbackListener {
-		public void initiatePurge(DialogFragment dialog);
+		void initiatePurge(DialogFragment dialog);
 	}
 }

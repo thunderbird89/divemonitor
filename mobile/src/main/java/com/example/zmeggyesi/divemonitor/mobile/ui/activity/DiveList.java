@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.mobile.activity.listview;
+package com.example.zmeggyesi.divemonitor.mobile.ui.activity;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
@@ -18,8 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 
 import com.example.zmeggyesi.divemonitor.mobile.service.provider.DivesContract;
-
-import java.util.logging.Logger;
 
 /**
  * Created by zmeggyesi on 2017. 04. 01..
