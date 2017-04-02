@@ -21,7 +21,7 @@ public class DiveDatabaseHelper extends SQLiteOpenHelper {
 	public static final String TABLE_CREATE_QUERY = "CREATE TABLE IF NOT EXISTS " + Record.TABLE_NAME + " (" +
 			Record._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 			Record.COLUMN_NAME_DISPLAY_NAME + " TEXT," +
-			Record.COLUMN_NAME_LOCATION + " TEXT," +
+			Record.COLUMN_NAME_LOCATION + " BLOB," +
 			Record.COLUMN_NAME_TIMESTAMP + " INTEGER," +
 			Record.COLUMN_NAME_END_TIMESTAMP + " INTEGER);";
 

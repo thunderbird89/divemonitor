@@ -35,6 +35,7 @@ public final class DivesContract {
 	 * Default projections for UI
 	 */
 	public static final String[] DEFAULT_PROJECTION_UI = {
+			Dive.Record._ID,
 			Dive.Record.COLUMN_NAME_LOCATION,
 			Dive.Record.COLUMN_NAME_TIMESTAMP,
 			Dive.Record.COLUMN_NAME_DISPLAY_NAME

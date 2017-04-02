@@ -31,7 +31,11 @@ public class DiveProvider extends ContentProvider {
 	@Override
 	public boolean onCreate() {
 		gc = (GlobalContext) getContext();
-		divesDB = gc.getDivesDatabase(false);
+		try {
+			divesDB = gc.getDivesDatabase(false);
+		} catch (NullPointerException npe) {
+			divesDB = gc.getDivesDatabase(false);
+		}
 		return true;
 	}
 

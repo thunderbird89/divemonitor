@@ -26,6 +26,7 @@
         <activity android:name=".mobile.activity.PreDive"/>
         <activity android:name=".mobile.activity.DiveInProgress"/>
         <activity android:name=".mobile.activity.DatabaseManipulation"/>
+        <activity android:name=".mobile.activity.listview.DiveList" />
 
         <provider
             android:name=".mobile.service.provider.DiveProvider"

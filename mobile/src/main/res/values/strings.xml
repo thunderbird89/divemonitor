@@ -4,8 +4,9 @@
     <string name="button_dive_preparation">Prepare for dive</string>
     <string name="button_rescan_remote_monitors">Re-scan remote devices</string>
     <string name="button_dive_start">Commence dive!</string>
-    <string name="button_close_dive">Close Dive and save entry</string>
+    <string name="button_close_dive">Close dive and save entry</string>
     <string name="button_get_logs">Retrieve logs</string>
+    <string name="button_list_dives">List dives</string>
     <string name="button_purge_database">Purge databases</string>
     <string name="button_start_db_maniuplation">Manipulate databases</string>
     <string name="label_remote_monitor_selector">Remote Monitor</string>

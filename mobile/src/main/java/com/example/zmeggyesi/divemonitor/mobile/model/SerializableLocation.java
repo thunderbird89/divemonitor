@@ -3,12 +3,14 @@ package com.example.zmeggyesi.divemonitor.mobile.model;
 import android.location.Location;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * Created by zmeggyesi on 2017. 03. 06..
  */
 
 public class SerializableLocation implements Serializable {
+	public static final String FORMAT = "Lat: %1$,.3f; Long: %2$,.3f; Alt: %3$,.3f; Acc: %4$,.3f";
 	private double latitude;
 	private double longitude;
 	private double altitude;
@@ -58,5 +60,14 @@ public class SerializableLocation implements Serializable {
 
 	public void setAccuracy(float accuracy) {
 		this.accuracy = accuracy;
+	}
+
+	@Override
+	public String toString() {
+		return String.format(Locale.ENGLISH, FORMAT,
+				this.latitude,
+				this.longitude,
+				this.altitude,
+				this.accuracy);
 	}
 }

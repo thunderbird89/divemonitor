@@ -1,6 +1,7 @@
 package com.example.zmeggyesi.divemonitor.mobile.model;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -56,6 +57,12 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 	private DiveDatabaseHelper divesHelper;
 	private EnvironmentReadingDatabaseHelper environmentReadingsHelper;
 	private Node selectedNode;
+
+	@Override
+	protected void attachBaseContext(Context base) {
+		super.attachBaseContext(base);
+		setupDBs();
+	}
 
 	public GoogleApiClient getClient() {
 		if (apiClient == null) {
@@ -144,7 +151,6 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 				.addOnConnectionFailedListener(this)
 				.build();
 		apiClient.connect();
-		setupDBs();
 	}
 
 	@Override

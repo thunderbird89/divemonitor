@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.zmeggyesi.divemonitor.R;
+import com.example.zmeggyesi.divemonitor.mobile.activity.listview.DiveList;
 
 public class Home extends Activity {
 
@@ -19,6 +20,11 @@ public class Home extends Activity {
 
     public void startMonitor(View view) {
         Intent i = new Intent(this, Monitoring.class);
+        startActivity(i);
+    }
+
+    public void listDives(View view) {
+        Intent i = new Intent(this, DiveList.class);
         startActivity(i);
     }
 
