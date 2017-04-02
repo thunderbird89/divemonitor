@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.LOCATION_HARDWARE"/>
+    <uses-permission android:name="android.permission.READ_DIVES"/>
 
     <application
         android:name=".mobile.model.GlobalContext"
@@ -25,11 +26,32 @@
         <activity android:name=".mobile.activity.PreDive"/>
         <activity android:name=".mobile.activity.DiveInProgress"/>
         <activity android:name=".mobile.activity.DatabaseManipulation"/>
+        <activity android:name=".mobile.activity.listview.DiveList" />
+
+        <provider
+            android:name=".mobile.service.provider.DiveProvider"
+            android:authorities="com.example.zmeggyesi.divemonitor.provider"
+            android:exported="false"
+            android:readPermission="@string/permission_read_dives"
+            android:writePermission="@string/permission_write_dives"/>
 
         <service
             android:name=".mobile.service.LogTransferService"
             android:exported="false">
         </service>
+
+        <activity
+            android:name=".mobile.activity.DiveListActivity"
+            android:label="@string/title_dive_list">
+        </activity>
+        <activity
+            android:name=".mobile.activity.DiveDetailActivity"
+            android:label="@string/title_dive_detail"
+            android:parentActivityName=".mobile.activity.DiveListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.zmeggyesi.divemonitor.mobile.activity.DiveListActivity"/>
+        </activity>
     </application>
 
 </manifest>

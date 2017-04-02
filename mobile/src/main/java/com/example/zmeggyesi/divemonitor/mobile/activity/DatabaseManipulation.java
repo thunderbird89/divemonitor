@@ -1,6 +1,7 @@
 package com.example.zmeggyesi.divemonitor.mobile.activity;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.divemonitor_commons.model.EnvironmentReading;
 import com.example.zmeggyesi.divemonitor.R;
@@ -38,13 +40,18 @@ import java.util.Set;
  * Created by zmeggyesi on 2017. 03. 25..
  */
 
-public class DatabaseManipulation extends Activity implements AdapterView.OnItemSelectedListener {
+public class DatabaseManipulation extends Activity implements AdapterView.OnItemSelectedListener, DatabasePurgeGate.CallbackListener {
 	private GlobalContext gc;
 	private static final String TAG = "Database";
 	private GoogleApiClient client;
 	private Map<String, Node> nodeMap;
 	private Node selectedNode;
 	private TextView outputArea;
+
+	@Override
+	public void initiatePurge(DialogFragment dialog) {
+		executePurge();
+	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -157,7 +164,14 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 				"/logRetrievalComplete", null);
 	}
 
+
+
 	public void purgeDatabases(View view) {
+		DialogFragment frag = new DatabasePurgeGate();
+		frag.show(getFragmentManager(), "purge");
+	}
+
+	private void executePurge() {
 		Log.d(TAG, "DB Purge starting");
 		SQLiteDatabase dives = gc.getDivesDatabase(true);
 		SQLiteDatabase readings = gc.getEnvironmentReadingsDatabase(true);
@@ -165,5 +179,6 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 		readings.execSQL(EnvironmentReadingDatabaseHelper.TABLE_CREATE_STATEMENT);
 		dives.execSQL("DROP TABLE IF EXISTS " + Dive.Record.TABLE_NAME);
 		dives.execSQL(DiveDatabaseHelper.TABLE_CREATE_QUERY);
+		Toast.makeText(this, getString(R.string.content_database_purge_complete), Toast.LENGTH_LONG).show();
 	}
 }
