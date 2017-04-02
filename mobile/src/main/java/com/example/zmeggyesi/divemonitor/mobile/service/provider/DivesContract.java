@@ -12,7 +12,7 @@ public final class DivesContract {
 	/**
 	 * Authority for the Dives provider
 	 */
-	public static final String AUTHORITY = "com.example.zmeggyesi.divemonitor.provider";
+	public static final String AUTHORITY = "com.example.zmeggyesi.divemonitor.provider.dives";
 
 	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
 

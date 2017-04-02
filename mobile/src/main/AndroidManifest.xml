@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.LOCATION_HARDWARE"/>
     <uses-permission android:name="android.permission.READ_DIVES"/>
+    <uses-permission android:name="android.permission.READ_ENVIRONMENT"/>
 
     <application
         android:name=".mobile.model.GlobalContext"
@@ -15,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".mobile.activity.Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -22,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity android:name=".mobile.activity.Monitoring"/>
         <activity android:name=".mobile.activity.PreDive"/>
         <activity android:name=".mobile.activity.DiveInProgress"/>
@@ -30,28 +33,20 @@
 
         <provider
             android:name=".mobile.service.provider.DiveProvider"
-            android:authorities="com.example.zmeggyesi.divemonitor.provider"
+            android:authorities="com.example.zmeggyesi.divemonitor.provider.dives"
             android:exported="false"
             android:readPermission="@string/permission_read_dives"
             android:writePermission="@string/permission_write_dives"/>
+        <provider
+            android:name=".mobile.service.provider.EnvironmentReadingsProvider"
+            android:authorities="com.example.zmeggyesi.divemonitor.provider.environmentreadings"
+            android:exported="false"
+            android:readPermission="@string/permission_read_environmentreadings"
+            android:writePermission="@string/permission_write_environmentreadings"/>
 
         <service
             android:name=".mobile.service.LogTransferService"
             android:exported="false">
         </service>
-
-        <activity
-            android:name=".mobile.activity.DiveListActivity"
-            android:label="@string/title_dive_list">
-        </activity>
-        <activity
-            android:name=".mobile.activity.DiveDetailActivity"
-            android:label="@string/title_dive_detail"
-            android:parentActivityName=".mobile.activity.DiveListActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.zmeggyesi.divemonitor.mobile.activity.DiveListActivity"/>
-        </activity>
     </application>
-
 </manifest>
