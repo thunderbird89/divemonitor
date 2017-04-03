@@ -10,8 +10,12 @@
     <string name="button_purge_database">Purge databases</string>
     <string name="button_start_db_maniuplation">Manipulate databases</string>
     <string name="content_database_purge_complete">Databases purged</string>
+    <string name="content_export_dialog_title">Export dive data</string>
+    <string name="content_export_dialog_content">Export dive data to CSV?</string>
     <string name="content_purge_dialog_title">About to drop all databases!</string>
     <string name="content_purge_dialog_content">THIS ACTION IS INSTANTANEOUS, IRREVERSIBLE, AND WILL CAUSE YOU TO LOSE ALL RECORDED DIVES AND READINGS!</string>
+    <string name="content_yes">Yes</string>
+    <string name="content_no">No</string>
     <string name="content_strong_yes">Yes, do exactly as I say!</string>
     <string name="content_strong_abort">No, abort!</string>
     <string name="label_remote_monitor_selector">Remote Monitor</string>

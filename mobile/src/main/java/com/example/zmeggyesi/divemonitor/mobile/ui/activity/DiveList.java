@@ -1,8 +1,10 @@
 package com.example.zmeggyesi.divemonitor.mobile.ui.activity;
 
+import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,13 +19,15 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 
+import com.example.zmeggyesi.divemonitor.mobile.service.CSVExporter;
 import com.example.zmeggyesi.divemonitor.mobile.service.provider.DivesContract;
+import com.example.zmeggyesi.divemonitor.mobile.ui.dialog.DiveExportGate;
 
 /**
  * Created by zmeggyesi on 2017. 04. 01..
  */
 
-public class DiveList extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class DiveList extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>, DiveExportGate.CSVExportCallbackListener {
 
 	private SimpleCursorAdapter adapter;
 
@@ -65,12 +69,21 @@ public class DiveList extends ListActivity implements LoaderManager.LoaderCallba
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-		Log.d("DiveList", "Item clicked: " + position);
+		DialogFragment fragment = new DiveExportGate();
+		fragment.show(getFragmentManager(), "export");
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		adapter.swapCursor(null);
+	}
+
+	@Override
+	public void startExport(DialogFragment dialog) {
+		Log.d("DiveList", "Export started");
+		Intent intent = new Intent(this, CSVExporter.class);
+		intent.setAction(CSVExporter.ACTION_START_CSV_EXPORT);
+		intent.putExtra("diveKey", "1");
+		startService(intent);
 	}
 }

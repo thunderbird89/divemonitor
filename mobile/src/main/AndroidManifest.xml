@@ -48,5 +48,9 @@
             android:name=".mobile.service.LogTransferService"
             android:exported="false">
         </service>
+        <service
+            android:name=".mobile.service.CSVExporter"
+            android:exported="false">
+        </service>
     </application>
 </manifest>

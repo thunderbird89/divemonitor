@@ -51,11 +51,11 @@ public class EnvironmentReadingsProvider extends ContentProvider {
 				break;
 			case 2 :
 				// Get a single readings cluster
-				selection = selection + "_ID = " + uri.getLastPathSegment();
+				selection = "_ID = " + uri.getLastPathSegment();
 				break;
 			case 3 :
 				// Query readings for a single dive
-				selection = selection + EnvironmentReading.Record.COLUMN_NAME_DIVE_KEY + " = " + uri.getLastPathSegment();
+				selection = EnvironmentReading.Record.COLUMN_NAME_DIVE_KEY + " = " + uri.getLastPathSegment();
 				break;
 			default :
 				throw new IllegalArgumentException("URI not recognized: " + uri);
