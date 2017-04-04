@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.mobile.activity;
+package com.example.zmeggyesi.divemonitor.mobile.ui.activity;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -22,6 +22,7 @@ import com.example.zmeggyesi.divemonitor.mobile.model.GlobalContext;
 import com.example.zmeggyesi.divemonitor.mobile.service.DiveDatabaseHelper;
 import com.example.zmeggyesi.divemonitor.mobile.service.EnvironmentReadingDatabaseHelper;
 import com.example.zmeggyesi.divemonitor.mobile.service.LogTransferService;
+import com.example.zmeggyesi.divemonitor.mobile.ui.dialog.DatabasePurgeGate;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;

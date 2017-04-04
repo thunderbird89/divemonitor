@@ -10,71 +10,70 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.example.zmeggyesi.divemonitor.mobile.model.Dive;
+import com.example.divemonitor_commons.model.EnvironmentReading;
 import com.example.zmeggyesi.divemonitor.mobile.model.GlobalContext;
 
 /**
- * Created by zmeggyesi on 2017. 03. 27..
+ * Created by zmeggyesi on 2017. 04. 02..
  */
 
-public class DiveProvider extends ContentProvider {
+public class EnvironmentReadingsProvider extends ContentProvider {
 	private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	private GlobalContext gc;
-	private SQLiteDatabase divesDB;
+	private SQLiteDatabase readingsDB;
 
 	static {
-		URI_MATCHER.addURI(DivesContract.AUTHORITY, "dives", 1);
-		URI_MATCHER.addURI(DivesContract.AUTHORITY, "dives/#", 2);
+		URI_MATCHER.addURI(EnvironmentReadingsContract.AUTHORITY, "readings", 1);
+		URI_MATCHER.addURI(EnvironmentReadingsContract.AUTHORITY, "readings/#", 2);
+		URI_MATCHER.addURI(EnvironmentReadingsContract.AUTHORITY, "readings/dive/#", 3);
 	}
-
-	public DiveProvider() {}
 
 	@Override
 	public boolean onCreate() {
 		gc = (GlobalContext) getContext();
-		try {
-			divesDB = gc.getDivesDatabase(false);
-		} catch (NullPointerException npe) {
-			divesDB = gc.getDivesDatabase(false);
-		}
+		readingsDB = gc.getEnvironmentReadingsDatabase(false);
 		return true;
 	}
 
 	@Nullable
 	@Override
 	public Cursor query(@NonNull Uri uri,
-	                    @Nullable String[] projection,
-	                    @Nullable String selection,
-	                    @Nullable String[] selectionArgs,
-	                    @Nullable String sortOrder) {
+						@Nullable String[] projection,
+						@Nullable String selection,
+						@Nullable String[] selectionArgs,
+						@Nullable String sortOrder) {
 		switch (URI_MATCHER.match(uri)) {
 			case 1 :
-				// Multi-row query
+				// Query all readings
 				if (TextUtils.isEmpty(sortOrder)) {
 					sortOrder = "_ID ASC";
 				}
 				break;
 			case 2 :
-				// Single-row query
-				selection = selection + "_ID = " + uri.getLastPathSegment();
+				// Get a single readings cluster
+				selection = "_ID = " + uri.getLastPathSegment();
+				break;
+			case 3 :
+				// Query readings for a single dive
+				selection = EnvironmentReading.Record.COLUMN_NAME_DIVE_KEY + " = " + uri.getLastPathSegment();
 				break;
 			default :
 				throw new IllegalArgumentException("URI not recognized: " + uri);
 		}
 
 		if (projection == null) {
-			projection = DivesContract.DEFAULT_PROJECTION_UI;
+			projection = EnvironmentReadingsContract.DEFAULT_PROJECTION;
 		}
 
-		return divesDB.query(Dive.Record.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+		return readingsDB.query(EnvironmentReading.Record.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 	}
 
 	@Nullable
 	@Override
 	public String getType(@NonNull Uri uri) {
 		switch (URI_MATCHER.match(uri)) {
-			case 1 : return DivesContract.CONTENT_TYPE;
-			case 2 : return DivesContract.CONTENT_ITEM_TYPE;
+			case 1 : return EnvironmentReadingsContract.CONTENT_TYPE;
+			case 2 : return EnvironmentReadingsContract.CONTENT_ITEM_TYPE;
 			default : throw new UnsupportedOperationException("Requested URI does not match: " + uri);
 		}
 	}

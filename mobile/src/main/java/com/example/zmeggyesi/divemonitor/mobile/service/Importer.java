@@ -2,6 +2,7 @@ package com.example.zmeggyesi.divemonitor.mobile.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -56,6 +57,9 @@ public class Importer extends AsyncTask<Asset, Void, Boolean> {
 		readings.execSQL("INSERT OR IGNORE INTO " + EnvironmentReading.Record.TABLE_NAME + " (timestamp, dive, lightLevel, pressure, temperature, orientationAzimuth, orientationPitch, orientationRoll) SELECT ALL timestamp, dive, lightLevel, pressure, temperature, orientationAzimuth, orientationPitch, orientationRoll FROM remote.readings;");
 		readings.execSQL("COMMIT;");
 		readings.execSQL("DETACH remote;");
+		String[] columns = {"*"};
+		Cursor c = readings.query(EnvironmentReading.Record.TABLE_NAME, columns, null, null, null, null, null);
+		Log.d(TAG, Integer.toString(c.getCount(), 10));
 		remoteDB.delete();
 		Log.d(TAG, "Import finished, releasing data buffer");
 		return true;

@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.mobile.activity;
+package com.example.zmeggyesi.divemonitor.mobile.ui.activity;
 
 import android.app.Activity;
 import android.app.Notification;

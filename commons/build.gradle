@@ -30,4 +30,5 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     compile 'com.google.code.gson:gson:2.8.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0.pr2'
 }

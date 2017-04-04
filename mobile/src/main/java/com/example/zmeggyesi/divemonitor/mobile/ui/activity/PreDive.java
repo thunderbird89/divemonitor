@@ -1,4 +1,4 @@
-package com.example.zmeggyesi.divemonitor.mobile.activity;
+package com.example.zmeggyesi.divemonitor.mobile.ui.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -38,8 +38,6 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
