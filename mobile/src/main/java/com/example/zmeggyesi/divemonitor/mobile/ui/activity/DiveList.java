@@ -88,7 +88,7 @@ public class DiveList extends ListActivity implements LoaderManager.LoaderCallba
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if (canWritetoExternalStorage) {
-			DialogFragment fragment = new DiveExportGate();
+			DialogFragment fragment = DiveExportGate.newInstanceWithArgs(position+1);
 			fragment.show(getFragmentManager(), "export");
 		}
 	}
@@ -103,7 +103,7 @@ public class DiveList extends ListActivity implements LoaderManager.LoaderCallba
 		Log.d("DiveList", "Export started");
 		Intent intent = new Intent(this, CSVExporter.class);
 		intent.setAction(CSVExporter.ACTION_START_CSV_EXPORT);
-		intent.putExtra("diveKey", "1");
+		intent.putExtra(getString(R.string.constant_dive_key), dialog.getArguments().getInt(getString(R.string.constant_dive_key)));
 		startService(intent);
 	}
 }
