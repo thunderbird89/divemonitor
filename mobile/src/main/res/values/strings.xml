@@ -28,4 +28,5 @@
     <string name="toast_database_retrieved">Database retrieved and integrated</string>
     <string name="title_dive_list">Dives</string>
     <string name="title_dive_detail">Dive Detail</string>
+    <string name="content_dive_list_overview">Tap one of the items to export readings into CSV</string>
 </resources>
