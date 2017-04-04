@@ -177,7 +177,7 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 		SQLiteDatabase dives = gc.getDivesDatabase(true);
 		SQLiteDatabase readings = gc.getEnvironmentReadingsDatabase(true);
 		readings.execSQL("DROP TABLE IF EXISTS " + EnvironmentReading.Record.TABLE_NAME);
-		readings.execSQL(EnvironmentReadingDatabaseHelper.TABLE_CREATE_STATEMENT);
+		readings.execSQL(EnvironmentReadingDatabaseHelper.TABLE_CREATE_QUERY);
 		dives.execSQL("DROP TABLE IF EXISTS " + Dive.Record.TABLE_NAME);
 		dives.execSQL(DiveDatabaseHelper.TABLE_CREATE_QUERY);
 		Toast.makeText(this, getString(R.string.content_database_purge_complete), Toast.LENGTH_LONG).show();

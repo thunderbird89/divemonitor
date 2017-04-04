@@ -19,7 +19,7 @@ public class EnvironmentReadingDatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "dives.db";
 	private static final int DATABASE_VERSION = 2;
-	public static final String TABLE_CREATE_STATEMENT = "CREATE TABLE IF NOT EXISTS " + EnvironmentReading.Record.TABLE_NAME + " (" +
+	public static final String TABLE_CREATE_QUERY = "CREATE TABLE IF NOT EXISTS " + EnvironmentReading.Record.TABLE_NAME + " (" +
 			EnvironmentReading.Record._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 			EnvironmentReading.Record.COLUMN_NAME_DIVE_KEY + " INTEGER," +
 			EnvironmentReading.Record.COLUMN_NAME_LIGHTLEVEL + " INTEGER," +
@@ -43,14 +43,14 @@ public class EnvironmentReadingDatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL(TABLE_CREATE_STATEMENT);
+		db.execSQL(TABLE_CREATE_QUERY);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.d("DB", "Upgrading database: " + oldVersion + " -> " + newVersion);
 		db.execSQL("DROP TABLE IF EXISTS " + EnvironmentReading.Record.TABLE_NAME);
-		db.execSQL(TABLE_CREATE_STATEMENT);
+		db.execSQL(TABLE_CREATE_QUERY);
 
 	}
 
