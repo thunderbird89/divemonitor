@@ -1,16 +1,21 @@
 package com.example.zmeggyesi.divemonitor.mobile.service;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.example.divemonitor_commons.model.EnvironmentReading;
@@ -102,9 +107,8 @@ public class CSVExporter extends IntentService implements CursorLoader.OnLoadCom
 
 			try {
 				File exportPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-				File exportFile = new File(exportPath, "export-" + System.currentTimeMillis() + ".csv");
 				exportPath.mkdirs();
-				Log.d(TAG, Boolean.toString(exportFile.exists()));
+				File exportFile = new File(exportPath, "export-" + System.currentTimeMillis() + ".csv");
 				Log.d(TAG, exportFile.getAbsolutePath());
 				FileOutputStream fos = new FileOutputStream(exportFile);
 				BufferedOutputStream bos = new BufferedOutputStream(fos, 1024);

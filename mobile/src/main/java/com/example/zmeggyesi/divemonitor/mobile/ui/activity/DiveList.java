@@ -1,14 +1,18 @@
 package com.example.zmeggyesi.divemonitor.mobile.ui.activity;
 
+import android.Manifest;
 import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -30,10 +34,23 @@ import com.example.zmeggyesi.divemonitor.mobile.ui.dialog.DiveExportGate;
 public class DiveList extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>, DiveExportGate.CSVExportCallbackListener {
 
 	private SimpleCursorAdapter adapter;
+	private static boolean canWritetoExternalStorage;
 
 	@Override
 	public ListAdapter getListAdapter() {
 		return super.getListAdapter();
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		switch (requestCode) {
+			case 0 :
+				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+					canWritetoExternalStorage = true;
+				} else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+					canWritetoExternalStorage = false;
+				}
+		}
 	}
 
 	@Override
@@ -55,6 +72,14 @@ public class DiveList extends ListActivity implements LoaderManager.LoaderCallba
 		setListAdapter(adapter);
 
 		getLoaderManager().initLoader(0, null, this);
+
+		if (PackageManager.PERMISSION_DENIED == getApplicationContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+				PackageManager.PERMISSION_DENIED == getBaseContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+			canWritetoExternalStorage = false;
+			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+		} else {
+			canWritetoExternalStorage = true;
+		}
 	}
 
 	@Override
@@ -69,8 +94,10 @@ public class DiveList extends ListActivity implements LoaderManager.LoaderCallba
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		DialogFragment fragment = new DiveExportGate();
-		fragment.show(getFragmentManager(), "export");
+		if (canWritetoExternalStorage) {
+			DialogFragment fragment = new DiveExportGate();
+			fragment.show(getFragmentManager(), "export");
+		}
 	}
 
 	@Override
