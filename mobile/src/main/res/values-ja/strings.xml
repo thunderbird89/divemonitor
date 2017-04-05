@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Dive Monitor</string>
     <string name="button_start_local_monitoring">局地的計を開始する</string>
     <string name="button_dive_preparation">潜水備える</string>
     <string name="button_rescan_remote_monitors">遠隔的計機会を探す</string>
