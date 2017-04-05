@@ -11,6 +11,7 @@
     <string name="button_list_dives">List dives</string>
     <string name="button_purge_database">Purge databases</string>
     <string name="button_start_db_maniuplation">Manipulate databases</string>
+    <string name="content_connected_to_node">Connected to %s</string>
     <string name="content_database_purge_complete">Databases purged</string>
     <string name="content_dive_list_overview">Tap one of the items to export readings into CSV</string>
     <string name="content_export_dialog_title">Export dive data</string>

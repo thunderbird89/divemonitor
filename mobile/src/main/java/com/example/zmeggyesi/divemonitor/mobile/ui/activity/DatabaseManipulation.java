@@ -59,7 +59,7 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 		String nodeDisplayName = (String) parent.getItemAtPosition(position);
 		selectedNode = nodeMap.get(nodeDisplayName);
 		gc.setSelectedNode(selectedNode);
-		outputArea.setText("Connected to " + selectedNode.getDisplayName());
+		outputArea.setText(String.format(getString(R.string.content_connected_to_node), selectedNode.getDisplayName()));
 	}
 
 	@Override
@@ -67,8 +67,7 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 		String nodeDisplayName = (String) parent.getItemAtPosition(0);
 		selectedNode = nodeMap.get(nodeDisplayName);
 		gc.setSelectedNode(selectedNode);
-		outputArea.setText("Connected to " + selectedNode.getDisplayName());
-
+		outputArea.setText(String.format(getString(R.string.content_connected_to_node), selectedNode.getDisplayName()));
 	}
 
 	@Override
