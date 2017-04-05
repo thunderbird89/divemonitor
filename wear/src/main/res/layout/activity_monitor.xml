@@ -20,29 +20,34 @@
             android:layout_height="wrap_content"
             android:gravity="top|center_horizontal"
             android:textAppearance="@style/TextAppearance.Wearable.Large"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_box="all"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <TextView
                 android:id="@+id/pressure"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingRight="5dp"
-                android:text="Pressure"/>
+                android:text="Pressure"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/TextAppearance.Wearable.Medium"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/depth"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingLeft="5dp"
-                android:text="Depth"/>
+                android:text="Depth"
+                android:textAlignment="viewEnd"
+                android:textAppearance="@style/TextAppearance.Wearable.Medium"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <TextView
@@ -50,6 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
+            android:visibility="gone"
             tools:text="@string/duration_format"/>
 
         <TextView
@@ -57,7 +63,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Temperature"/>
+            android:text="Temperature"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

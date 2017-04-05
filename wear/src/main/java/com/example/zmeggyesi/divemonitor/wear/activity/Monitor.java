@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Monitor extends WearableActivity {
 	private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
-            new SimpleDateFormat("HH:mm", Locale.US);
+			new SimpleDateFormat("HH:mm", Locale.US);
 	private static final SimpleDateFormat DURATION_FORMAT = new SimpleDateFormat("mm:ss.SS", Locale.US);
 	private static final String TAG = "DataLayer";
 
@@ -41,7 +41,13 @@ public class Monitor extends WearableActivity {
 	private TextView depthDisplay;
 	private TextView durationDisplay;
 
-    private TextView temperatureDisplay;
+	private final TextView[] CORE_ELEMENTS = {
+			clockDisplay,
+			pressureDisplay,
+			depthDisplay
+	};
+
+	private TextView temperatureDisplay;
 	private SensorManager manager;
 	private float surfacePressure;
 	private OrientationHandler ol;
@@ -54,18 +60,17 @@ public class Monitor extends WearableActivity {
 	private Sensor pressureSensor;
 
 	private TemperatureHandler th;
-	private float pressureReading;
-
-	private float depth;
 	private final BroadcastReceiver listenerReadyReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-		if (intent.hasExtra("listener")) {
+			if (intent.hasExtra("listener")) {
 				registerListener(intent.getStringExtra("listener"));
 				Log.d(TAG, "Registering listener " + intent.getStringExtra("listener"));
-		}
+			}
 		}
 	};
+	private float pressureReading;
+	private float depth;
 	private LocalBroadcastManager localBroadcastManager;
 	private long timestamp;
 
@@ -76,6 +81,7 @@ public class Monitor extends WearableActivity {
 				pressureReading = intent.getFloatExtra("data", 0);
 				timestamp = System.currentTimeMillis();
 				if (surfacePressure == 0) {
+					Log.d(TAG, "Setting reference pressure from first reading");
 					surfacePressure = pressureReading;
 				}
 				computeDepth(pressureReading, timestamp);
@@ -103,7 +109,7 @@ public class Monitor extends WearableActivity {
 	}
 
 	@Override
-    protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		GlobalContext gc = (GlobalContext) getApplicationContext();
 		manager = gc.getSensorManager();
@@ -124,76 +130,43 @@ public class Monitor extends WearableActivity {
 
 		mContainerView = (BoxInsetLayout) findViewById(R.id.container);
 
-		pressureDisplay = (TextView) findViewById(R.id.pressure);
-		pressureDisplay.setVisibility(View.VISIBLE);
-		temperatureDisplay = (TextView) findViewById(R.id.temperature);
-		temperatureDisplay.setVisibility(View.VISIBLE);
-		clockDisplay = (TextView) findViewById(R.id.clock);
-		clockDisplay.setVisibility(View.VISIBLE);
-		durationDisplay = (TextView) findViewById(R.id.duration);
-		durationDisplay.setVisibility(View.VISIBLE);
-		depthDisplay = (TextView) findViewById(R.id.depth);
-		depthDisplay.setVisibility(View.VISIBLE);
+		setupDisplayElements();
 
 		am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent ambientStateIntent = new Intent(gc, Monitor.class);
 		Intent[] intents = {ambientStateIntent};
 		pendingIntent = PendingIntent.getActivities(gc, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		setIntent(intent);
-		refreshAndReschedule();
 	}
 
-	private void refreshAndReschedule() {
-
-		updateDisplay();
-
-		long time = System.currentTimeMillis();
-		if (isAmbient()) {
-			long delay = TimeUnit.SECONDS.toMillis(1L) - (time % TimeUnit.SECONDS.toMillis(1L));
-			long triggerTime = time + delay;
-			am.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
-		}
+	private void setupDisplayElements() {
+		pressureDisplay = (TextView) findViewById(R.id.pressure);
+		pressureDisplay.setVisibility(View.VISIBLE);
+		temperatureDisplay = (TextView) findViewById(R.id.temperature);
+		temperatureDisplay.setVisibility(View.GONE);
+		clockDisplay = (TextView) findViewById(R.id.clock);
+		clockDisplay.setVisibility(View.VISIBLE);
+		durationDisplay = (TextView) findViewById(R.id.duration);
+		durationDisplay.setVisibility(View.GONE);
+		depthDisplay = (TextView) findViewById(R.id.depth);
+		depthDisplay.setVisibility(View.VISIBLE);
 	}
 
 	@Override
-    protected void onResume() {
-        super.onResume();
-	    ol = new OrientationHandler(localBroadcastManager, manager, getApplicationContext());
-	    lh = new LightLevelHandler(localBroadcastManager, getApplicationContext());
-	    ph = new PressureHandler(localBroadcastManager, getApplicationContext());
-	    th = new TemperatureHandler(localBroadcastManager, getApplicationContext());
-	    magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD, true);
-	    accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER, true);
-	    light = manager.getDefaultSensor(Sensor.TYPE_LIGHT, true);
-	    temperatureSensor = manager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, true);
-	    pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE, true);
-    }
-
-	private void registerListener(String listener) {
-		switch (listener) {
-			case OrientationHandler.TAG :
-				manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
-				manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
-				break;
-			case TemperatureHandler.TAG :
-				manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-				break;
-			case PressureHandler.TAG :
-				manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-				break;
-			case LightLevelHandler.TAG :
-				manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
-				break;
-		}
+	protected void onResume() {
+		super.onResume();
+		ol = new OrientationHandler(localBroadcastManager, manager, getApplicationContext());
+		lh = new LightLevelHandler(localBroadcastManager, getApplicationContext());
+		ph = new PressureHandler(localBroadcastManager, getApplicationContext());
+		th = new TemperatureHandler(localBroadcastManager, getApplicationContext());
+		magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD, true);
+		accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER, true);
+		light = manager.getDefaultSensor(Sensor.TYPE_LIGHT, true);
+		temperatureSensor = manager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, true);
+		pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE, true);
 	}
 
 	@Override
-    protected void onPause() {
+	protected void onPause() {
 		super.onPause();
 		manager.unregisterListener(ol);
 		manager.unregisterListener(th);
@@ -222,12 +195,49 @@ public class Monitor extends WearableActivity {
 		am.cancel(pendingIntent);
 	}
 
-    private void computeDepth(float reading, long timestamp) {
-        if (timestamp - lastReading > TimeUnit.SECONDS.toMillis(1L)) {
-	        depth = SensorManager.getAltitude(surfacePressure, reading) * -1;
-	        lastReading = timestamp;
-        }
-    }
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+		refreshAndReschedule();
+	}
+
+	private void refreshAndReschedule() {
+
+		updateDisplay();
+
+		long time = System.currentTimeMillis();
+		if (isAmbient()) {
+			long delay = TimeUnit.SECONDS.toMillis(1L) - (time % TimeUnit.SECONDS.toMillis(1L));
+			long triggerTime = time + delay;
+			am.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+		}
+	}
+
+	private void registerListener(String listener) {
+		switch (listener) {
+			case OrientationHandler.TAG:
+				manager.registerListener(ol, magneto, SensorManager.SENSOR_DELAY_NORMAL);
+				manager.registerListener(ol, accelero, SensorManager.SENSOR_DELAY_NORMAL);
+				break;
+			case TemperatureHandler.TAG:
+				manager.registerListener(th, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+				break;
+			case PressureHandler.TAG:
+				manager.registerListener(ph, pressureSensor, SensorManager.SENSOR_DELAY_NORMAL);
+				break;
+			case LightLevelHandler.TAG:
+				manager.registerListener(lh, light, SensorManager.SENSOR_DELAY_NORMAL);
+				break;
+		}
+	}
+
+	private void computeDepth(float reading, long timestamp) {
+		if (timestamp - lastReading > TimeUnit.SECONDS.toMillis(1L)) {
+			depth = SensorManager.getAltitude(surfacePressure, reading) * -1;
+			lastReading = timestamp;
+		}
+	}
 
 	private void updateDisplay() {
 		Log.d(TAG, "Updating display in mode " + Boolean.toString(isAmbient()));
@@ -241,7 +251,6 @@ public class Monitor extends WearableActivity {
 			clockDisplay.setVisibility(View.VISIBLE);
 			pressureDisplay.setVisibility(View.VISIBLE);
 			depthDisplay.setVisibility(View.VISIBLE);
-			durationDisplay.setVisibility(View.VISIBLE);
 
 			clockDisplay.setText(AMBIENT_DATE_FORMAT.format(new Date()));
 
@@ -254,12 +263,13 @@ public class Monitor extends WearableActivity {
 			clockDisplay.setVisibility(View.VISIBLE);
 			pressureDisplay.setVisibility(View.VISIBLE);
 			depthDisplay.setVisibility(View.VISIBLE);
-			durationDisplay.setVisibility(View.VISIBLE);
 
-			clockDisplay.setTextColor(getResources().getColor(R.color.white, null));
+			clockDisplay.setTextColor(getResources().getColor(R.color.black, getTheme()));
 			clockDisplay.setText(AMBIENT_DATE_FORMAT.format(new Date()));
 
+			depthDisplay.setTextColor(getResources().getColor(R.color.black, getTheme()));
 			depthDisplay.setText(String.format(getString(R.string.depth_format), depth));
+			pressureDisplay.setTextColor(getResources().getColor(R.color.black, getTheme()));
 			pressureDisplay.setText(String.format(getString(R.string.pressure_format), pressureReading));
 		}
 	}
