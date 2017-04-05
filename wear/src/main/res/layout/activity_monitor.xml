@@ -23,19 +23,27 @@
             android:visibility="visible"
             app:layout_box="all"/>
 
-        <TextView
-            android:id="@+id/temperature"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Temperature" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/pressure"
-            android:layout_width="71dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Pressure" />
+            <TextView
+                android:id="@+id/pressure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingRight="5dp"
+                android:text="Pressure"/>
+
+            <TextView
+                android:id="@+id/depth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="5dp"
+                android:text="Depth"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/duration"
@@ -43,6 +51,13 @@
             android:layout_height="wrap_content"
             android:text="TextView"
             tools:text="@string/duration_format"/>
+
+        <TextView
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Temperature"/>
 
     </LinearLayout>
 

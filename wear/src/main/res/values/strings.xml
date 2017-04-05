@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Dive Monitor</string>
-    <string name="hello_world">Hello World!</string>
     <string name="temperature_format">Temperature: %1$.2d</string>
-    <string name="pressure_format">Pressure: %1$,.2f\nDepth: %2$,.2f</string>
+    <string name="pressure_format">Pressure: %1$,.2f</string>
+    <string name="depth_format">Depth: %1$,.2f</string>
     <string name="duration_format">Connection lost for:\n%1$,.2f</string>
 
     <string name="listener_ready_action">com.example.zmeggyesi.LISTENER_READY</string>
