@@ -20,29 +20,51 @@
             android:layout_height="wrap_content"
             android:gravity="top|center_horizontal"
             android:textAppearance="@style/TextAppearance.Wearable.Large"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_box="all"/>
 
-        <TextView
-            android:id="@+id/temperature"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Temperature" />
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-        <TextView
-            android:id="@+id/pressure"
-            android:layout_width="71dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Pressure" />
+            <TextView
+                android:id="@+id/pressure"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Pressure"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/TextAppearance.Wearable.Medium"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/depth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Depth"
+                android:textAlignment="viewEnd"
+                android:textAppearance="@style/TextAppearance.Wearable.Medium"
+                android:visibility="gone"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
+            android:visibility="gone"
             tools:text="@string/duration_format"/>
+
+        <TextView
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Temperature"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

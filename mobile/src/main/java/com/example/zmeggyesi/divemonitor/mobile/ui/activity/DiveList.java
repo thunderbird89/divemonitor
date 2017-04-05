@@ -22,7 +22,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
+import com.example.zmeggyesi.divemonitor.R;
 import com.example.zmeggyesi.divemonitor.mobile.service.CSVExporter;
 import com.example.zmeggyesi.divemonitor.mobile.service.provider.DivesContract;
 import com.example.zmeggyesi.divemonitor.mobile.ui.dialog.DiveExportGate;
@@ -56,16 +58,7 @@ public class DiveList extends ListActivity implements LoaderManager.LoaderCallba
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Create a progress bar to display while the list loads
-		ProgressBar progressBar = new ProgressBar(this);
-		progressBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-		progressBar.setIndeterminate(true);
-		getListView().setEmptyView(progressBar);
-
-		// Must add the progress bar to the root of the layout
-		ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
-		root.addView(progressBar);
+		setContentView(R.layout.activity_dive_list);
 
 		int[] toViews = {android.R.id.text1, android.R.id.text2};
 		adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, null, DivesContract.DEFAULT_PROJECTION_UI, toViews, 0);
@@ -95,7 +88,7 @@ public class DiveList extends ListActivity implements LoaderManager.LoaderCallba
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if (canWritetoExternalStorage) {
-			DialogFragment fragment = new DiveExportGate();
+			DialogFragment fragment = DiveExportGate.newInstanceWithArgs(position+1);
 			fragment.show(getFragmentManager(), "export");
 		}
 	}
@@ -110,7 +103,7 @@ public class DiveList extends ListActivity implements LoaderManager.LoaderCallba
 		Log.d("DiveList", "Export started");
 		Intent intent = new Intent(this, CSVExporter.class);
 		intent.setAction(CSVExporter.ACTION_START_CSV_EXPORT);
-		intent.putExtra("diveKey", "1");
+		intent.putExtra(getString(R.string.constant_dive_key), dialog.getArguments().getInt(getString(R.string.constant_dive_key)));
 		startService(intent);
 	}
 }

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Dive Monitor</string>
+
+    <!--UI ELEMENTS-->
     <string name="button_start_local_monitoring">Start Local Monitor</string>
     <string name="button_dive_preparation">Prepare for dive</string>
     <string name="button_rescan_remote_monitors">Re-scan remote devices</string>
@@ -9,7 +11,9 @@
     <string name="button_list_dives">List dives</string>
     <string name="button_purge_database">Purge databases</string>
     <string name="button_start_db_maniuplation">Manipulate databases</string>
+    <string name="content_connected_to_node">Connected to %s</string>
     <string name="content_database_purge_complete">Databases purged</string>
+    <string name="content_dive_list_overview">Tap one of the items to export readings into CSV</string>
     <string name="content_export_dialog_title">Export dive data</string>
     <string name="content_export_dialog_content">Export dive data to CSV?</string>
     <string name="content_purge_dialog_title">About to drop all databases!</string>
@@ -19,13 +23,18 @@
     <string name="content_strong_yes">Yes, do exactly as I say!</string>
     <string name="content_strong_abort">No, abort!</string>
     <string name="label_remote_monitor_selector">Remote Monitor</string>
+    <string name="toast_database_retrieved">Database retrieved and integrated</string>
+    <string name="title_dive_list">Dives</string>
+    <string name="title_dive_detail">Dive Detail</string>
+
+    <!--SYSTEM CONSTANTS-->
     <string name="permission_read_dives" translatable="false">READ_DIVES</string>
     <string name="permission_write_dives" translatable="false">WRITE_DIVES</string>
     <string name="provider_dives_provider" translatable="false">com.example.zmeggyesi.divemonitor.provider.dives</string>
     <string name="permission_read_environmentreadings" translatable="false">READ_ENVIRONMENT_READINGS</string>
     <string name="permission_write_environmentreadings" translatable="false">WRITE_ENVIRONMENT_READINGS</string>
     <string name="provider_environmentreadings_provider" translatable="false">com.example.zmeggyesi.divemonitor.provider.environmentreadings</string>
-    <string name="toast_database_retrieved">Database retrieved and integrated</string>
-    <string name="title_dive_list">Dives</string>
-    <string name="title_dive_detail">Dive Detail</string>
+
+    <!--PROGRAM CONSTANTS-->
+    <string name="constant_dive_key">diveKey</string>
 </resources>

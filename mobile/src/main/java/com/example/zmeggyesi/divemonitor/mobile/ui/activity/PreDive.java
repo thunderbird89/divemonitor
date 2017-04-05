@@ -255,14 +255,14 @@ public class PreDive extends Activity implements SensorEventListener, AdapterVie
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		String nodeDisplayName = (String) parent.getItemAtPosition(position);
 		selectedNode = nodeMap.get(nodeDisplayName);
-		outputArea.setText("Connected to " + selectedNode.getDisplayName());
+		outputArea.setText(String.format(getString(R.string.content_connected_to_node), selectedNode.getDisplayName()));
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
 		String nodeDisplayName = (String) parent.getItemAtPosition(0);
 		selectedNode = nodeMap.get(nodeDisplayName);
-		outputArea.setText("Connected to " + selectedNode.getDisplayName());
+		outputArea.setText(String.format(getString(R.string.content_connected_to_node), selectedNode.getDisplayName()));
 
 	}
 

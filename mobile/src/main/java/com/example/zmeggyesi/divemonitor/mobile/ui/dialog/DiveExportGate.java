@@ -21,6 +21,15 @@ public class DiveExportGate extends DialogFragment {
 
 	private CSVExportCallbackListener listener;
 
+	public static DiveExportGate newInstanceWithArgs(int diveKey) {
+		DiveExportGate deg = new DiveExportGate();
+		Bundle args = new Bundle();
+		args.putInt("diveKey", diveKey);
+		deg.setArguments(args);
+		
+		return deg;
+	}
+
 	@Override
 	public void onAttach(Context context) {
 		super.onAttach(context);

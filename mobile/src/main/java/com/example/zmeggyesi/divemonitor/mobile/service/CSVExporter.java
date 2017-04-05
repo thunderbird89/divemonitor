@@ -1,21 +1,13 @@
 package com.example.zmeggyesi.divemonitor.mobile.service;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.IntentService;
-import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.example.divemonitor_commons.model.EnvironmentReading;
@@ -23,7 +15,6 @@ import com.example.zmeggyesi.divemonitor.mobile.model.GlobalContext;
 import com.example.zmeggyesi.divemonitor.mobile.service.provider.EnvironmentReadingsContract;
 import com.example.zmeggyesi.divemonitor.mobile.service.provider.EnvironmentReadingsProvider;
 import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -31,12 +22,10 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +60,7 @@ public class CSVExporter extends IntentService implements CursorLoader.OnLoadCom
 	protected void onHandleIntent(@Nullable Intent intent) {
 		if (intent != null) {
 			if (ACTION_START_CSV_EXPORT.equals(intent.getAction())) {
-				String diveKey = intent.getStringExtra("diveKey");
+				int diveKey = intent.getIntExtra("diveKey", 0);
 				Uri contentUri = new Uri.Builder().scheme("content").authority(EnvironmentReadingsContract.AUTHORITY).path("readings/dive/" + diveKey).build();
 				CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, null, null, null, null);
 				loader.registerListener(0, this);
