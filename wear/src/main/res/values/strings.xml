@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">Dive Monitor</string>
-    <string name="temperature_format">Temperature: %1$.2d</string>
-    <string name="pressure_format">Pressure\n%1$,.2f hPa</string>
-    <string name="depth_format">Depth\n%1$,.2f m</string>
-    <string name="duration_format">Connection lost for:\n%1$,.2f</string>
+    <string name="app_name" translatable="false">Dive Monitor</string>
+    <string name="temperature_format" translatable="false">Temperature: %1$.2d</string>
+    <string name="pressure_format" translatable="false">Pressure\n%1$,.2f hPa</string>
+    <string name="depth_format" translatable="false">Depth\n%1$,.2f m</string>
+    <string name="duration_format" translatable="false">Connection lost for:\n%1$,.2f</string>
 
-    <string name="listener_ready_action">com.example.zmeggyesi.LISTENER_READY</string>
+    <string name="listener_ready_action" translatable="false">com.example.zmeggyesi.LISTENER_READY</string>
 
-    <string name="broadcast_reading_pressure">com.example.zmeggyesi.divemonitor.BROADCAST_READING_PRESSURE</string>
-    <string name="broadcast_reading_orientation">com.example.zmeggyesi.divemonitor.BROADCAST_READING_ORIENTATION</string>
-    <string name="broadcast_reading_light">com.example.zmeggyesi.divemonitor.BROADCAST_READING_LIGHT</string>
-    <string name="broadcast_reading_temperature">com.example.zmeggyesi.divemonitor.BROADCAST_READING_TEMPERATURE</string>
+    <string name="broadcast_reading_pressure" translatable="false">com.example.zmeggyesi.divemonitor.BROADCAST_READING_PRESSURE</string>
+    <string name="broadcast_reading_orientation" translatable="false">com.example.zmeggyesi.divemonitor.BROADCAST_READING_ORIENTATION</string>
+    <string name="broadcast_reading_light" translatable="false">com.example.zmeggyesi.divemonitor.BROADCAST_READING_LIGHT</string>
+    <string name="broadcast_reading_temperature" translatable="false">com.example.zmeggyesi.divemonitor.BROADCAST_READING_TEMPERATURE</string>
 </resources>
