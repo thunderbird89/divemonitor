@@ -94,7 +94,6 @@ public class DiveInProgress extends Activity {
 
 	@Override
 	protected void onPause() {
-		client.disconnect();
 		super.onPause();
 	}
 }

@@ -173,6 +173,7 @@ public class DatabaseManipulation extends Activity implements AdapterView.OnItem
 
 	private void executePurge() {
 		Log.d(TAG, "DB Purge starting");
+		signalRetrievalComplete();
 		SQLiteDatabase dives = gc.getDivesDatabase(true);
 		SQLiteDatabase readings = gc.getEnvironmentReadingsDatabase(true);
 		readings.execSQL("DROP TABLE IF EXISTS " + EnvironmentReading.Record.TABLE_NAME);

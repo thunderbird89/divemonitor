@@ -91,6 +91,7 @@ public class Monitor extends WearableActivity {
 	private final BroadcastReceiver terminationReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "Terminating monitoring");
 			manager.unregisterListener(ol);
 			manager.unregisterListener(th);
 			manager.unregisterListener(ph);
@@ -118,14 +119,13 @@ public class Monitor extends WearableActivity {
 		setAmbientEnabled();
 		setAutoResumeEnabled(true);
 		registerReceiver(terminationReceiver, new IntentFilter("terminateMonitoring"));
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(getResources().getString(R.string.listener_ready_action));
+
 		IntentFilter readingReadyFilter = new IntentFilter();
 		readingReadyFilter.addAction(getString(R.string.broadcast_reading_pressure));
 		readingReadyFilter.addAction(getString(R.string.broadcast_reading_temperature));
 		readingReadyFilter.addAction(getString(R.string.broadcast_reading_orientation));
 		readingReadyFilter.addAction(getString(R.string.broadcast_reading_light));
-		localBroadcastManager.registerReceiver(listenerReadyReceiver, filter);
+
 		localBroadcastManager.registerReceiver(readingReadyReceiver, readingReadyFilter);
 
 		mContainerView = (BoxInsetLayout) findViewById(R.id.container);
@@ -136,6 +136,26 @@ public class Monitor extends WearableActivity {
 		Intent ambientStateIntent = new Intent(gc, Monitor.class);
 		Intent[] intents = {ambientStateIntent};
 		pendingIntent = PendingIntent.getActivities(gc, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		ol = new OrientationHandler(localBroadcastManager, manager, getApplicationContext());
+		lh = new LightLevelHandler(localBroadcastManager, getApplicationContext());
+		ph = new PressureHandler(localBroadcastManager, getApplicationContext());
+		th = new TemperatureHandler(localBroadcastManager, getApplicationContext());
+		magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD, true);
+		accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER, true);
+		light = manager.getDefaultSensor(Sensor.TYPE_LIGHT, true);
+		temperatureSensor = manager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, true);
+		pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE, true);
+
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(getResources().getString(R.string.listener_ready_action));
+		if (getIntent().getBooleanExtra("launchedFromPhone", false)) {
+			localBroadcastManager.registerReceiver(listenerReadyReceiver, filter);
+		}
 	}
 
 	private void setupDisplayElements() {
@@ -152,17 +172,15 @@ public class Monitor extends WearableActivity {
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		ol = new OrientationHandler(localBroadcastManager, manager, getApplicationContext());
-		lh = new LightLevelHandler(localBroadcastManager, getApplicationContext());
-		ph = new PressureHandler(localBroadcastManager, getApplicationContext());
-		th = new TemperatureHandler(localBroadcastManager, getApplicationContext());
-		magneto = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD, true);
-		accelero = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER, true);
-		light = manager.getDefaultSensor(Sensor.TYPE_LIGHT, true);
-		temperatureSensor = manager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE, true);
-		pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE, true);
+	protected void onStop() {
+		unregisterReceiver(terminationReceiver);
+		super.onStop();
+	}
+
+	@Override
+	protected void onStart() {
+		registerReceiver(terminationReceiver, new IntentFilter("terminateMonitoring"));
+		super.onStart();
 	}
 
 	@Override
@@ -199,7 +217,9 @@ public class Monitor extends WearableActivity {
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		setIntent(intent);
-		refreshAndReschedule();
+		if (!"com.example.zmeggyesi.divemonitor.START_MONITORING".equals(intent.getAction())) {
+			refreshAndReschedule();
+		}
 	}
 
 	private void refreshAndReschedule() {

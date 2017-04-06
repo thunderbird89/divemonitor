@@ -49,7 +49,9 @@ public class MonitorTriggerListener extends WearableListenerService {
 			Log.d(TAG, "Dive key is " + gc.getCurrentDiveKey());
 
 			i.putExtra("surfacePressure", surfacePressure != 0 ? surfacePressure : SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
+			i.putExtra("launchedFromPhone", true);
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			i.setAction("com.example.zmeggyesi.divemonitor.START_MONITORING");
 			Log.d(TAG, "Begin monitoring!");
 			startActivity(i);
 		} else if (messageEvent.getPath().equals("/endMonitoring")) {
