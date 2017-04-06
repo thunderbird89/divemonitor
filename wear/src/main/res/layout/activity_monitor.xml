@@ -35,8 +35,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Pressure"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.Wearable.Medium"
+                android:textAppearance="@style/TextAppearance.Wearable.Small"
+                android:textSize="18sp"
                 android:visibility="gone"/>
 
             <TextView
@@ -47,6 +47,7 @@
                 android:text="Depth"
                 android:textAlignment="viewEnd"
                 android:textAppearance="@style/TextAppearance.Wearable.Medium"
+                android:textSize="18sp"
                 android:visibility="gone"/>
         </LinearLayout>
 

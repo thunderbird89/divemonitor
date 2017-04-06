@@ -36,5 +36,5 @@
     <string name="provider_environmentreadings_provider" translatable="false">com.example.zmeggyesi.divemonitor.provider.environmentreadings</string>
 
     <!--PROGRAM CONSTANTS-->
-    <string name="constant_dive_key">diveKey</string>
+    <string name="constant_dive_key" translatable="false">diveKey</string>
 </resources>

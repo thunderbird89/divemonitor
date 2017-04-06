@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="button_start_local_monitoring">局地的計を開始する</string>
-    <string name="button_dive_preparation">潜水備える</string>
+    <string name="button_dive_preparation">潜水準備</string>
     <string name="button_rescan_remote_monitors">遠隔的計機会を探す</string>
-    <string name="button_dive_start">潜水発車！</string>
+    <string name="button_dive_start">潜水開始！</string>
     <string name="label_remote_monitor_selector">局地的計</string>
+    <string name="button_close_dive">潜水終わる</string>
+    <string name="button_get_logs">ログを取出す</string>
+    <string name="button_list_dives">潜水表</string>
+    <string name="button_purge_database">データベース消去</string>
+    <string name="button_start_db_maniuplation">データベース操作</string>
+    <string name="content_connected_to_node">%sに接続済み</string>
+    <string name="content_database_purge_complete">データベース消去完成</string>
+    <string name="content_export_dialog_content">CSVに湧出するか？</string>
+    <string name="content_export_dialog_title">潜水データ湧出</string>
+    <string name="content_no">いいえ</string>
+    <string name="content_yes">はい</string>
+    <string name="content_strong_yes">ハイ、言う通りしろ！</string>
+    <string name="content_strong_abort">イイエ、打ち切ろ！</string>
+    <string name="content_purge_dialog_content">このアクションは瞬発て、不可逆て、潜水とデータを全部失ってもらう！</string>
+    <string name="content_purge_dialog_title">データベース全部DROPされます！</string>
+    <string name="content_dive_list_overview">CSVに湧出ためにアイタムを打って</string>
+    <string name="title_dive_detail">潜水詳細</string>
+    <string name="title_dive_list">潜水</string>
+    <string name="toast_database_retrieved">データベース取り出完了</string>
 </resources>
