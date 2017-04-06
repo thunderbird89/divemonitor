@@ -92,6 +92,7 @@ public class Monitor extends WearableActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.d(TAG, "Terminating monitoring");
+			setAutoResumeEnabled(false);
 			manager.unregisterListener(ol);
 			manager.unregisterListener(th);
 			manager.unregisterListener(ph);
