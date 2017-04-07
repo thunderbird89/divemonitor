@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.zmeggyesi.divemonitor">
+          package="tech.provingground.divemonitor">
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:name=".mobile.model.GlobalContext"
+        android:name="tech.provingground.divemonitor.model.GlobalContext"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".mobile.ui.activity.Home">
+        <activity android:name="tech.provingground.divemonitor.ui.activity.Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -27,31 +27,31 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".mobile.ui.activity.Monitoring"/>
-        <activity android:name=".mobile.ui.activity.PreDive"/>
-        <activity android:name=".mobile.ui.activity.DiveInProgress"/>
-        <activity android:name=".mobile.ui.activity.DatabaseManipulation"/>
-        <activity android:name=".mobile.ui.activity.DiveList" />
+        <activity android:name="tech.provingground.divemonitor.ui.activity.Monitoring"/>
+        <activity android:name="tech.provingground.divemonitor.ui.activity.PreDive"/>
+        <activity android:name="tech.provingground.divemonitor.ui.activity.DiveInProgress"/>
+        <activity android:name="tech.provingground.divemonitor.ui.activity.DatabaseManipulation"/>
+        <activity android:name="tech.provingground.divemonitor.ui.activity.DiveList" />
 
         <provider
-            android:name=".mobile.service.provider.DiveProvider"
-            android:authorities="com.example.zmeggyesi.divemonitor.provider.dives"
+            android:name="tech.provingground.divemonitor.service.provider.DiveProvider"
+            android:authorities="tech.provingground.divemonitor.provider.dives"
             android:exported="false"
             android:readPermission="@string/permission_read_dives"
             android:writePermission="@string/permission_write_dives"/>
         <provider
-            android:name=".mobile.service.provider.EnvironmentReadingsProvider"
-            android:authorities="com.example.zmeggyesi.divemonitor.provider.environmentreadings"
+            android:name="tech.provingground.divemonitor.service.provider.EnvironmentReadingsProvider"
+            android:authorities="tech.provingground.divemonitor.provider.environmentreadings"
             android:exported="false"
             android:readPermission="@string/permission_read_environmentreadings"
             android:writePermission="@string/permission_write_environmentreadings"/>
 
         <service
-            android:name=".mobile.service.LogTransferService"
+            android:name="tech.provingground.divemonitor.service.LogTransferService"
             android:exported="false">
         </service>
         <service
-            android:name=".mobile.service.CSVExporter"
+            android:name="tech.provingground.divemonitor.service.CSVExporter"
             android:exported="false">
         </service>
     </application>
