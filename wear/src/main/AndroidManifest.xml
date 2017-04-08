@@ -2,69 +2,71 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="tech.provingground.divemonitor">
 
-<uses-feature android:name="android.hardware.type.watch"/>
+    <uses-feature android:name="android.hardware.type.watch"/>
 
-<uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
-<application
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:supportsRtl="true"
-    android:name="tech.provingground.divemonitor.model.GlobalContext"
-    android:launchMode="singleInstance"
-    android:theme="@android:style/Theme.DeviceDefault">
-    <uses-library
-        android:name="com.google.android.wearable"
-        android:required="false"/>
-
-    <activity
-        android:name="tech.provingground.divemonitor.activity.Monitor"
+    <application
+        android:name="tech.provingground.divemonitor.model.GlobalContext"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault.Light"
-        android:launchMode="singleInstance">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN"/>
-            <category android:name="android.intent.category.LAUNCHER"/>
-        </intent-filter>
-    </activity>
+        android:launchMode="singleInstance"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault">
+        <uses-library
+            android:name="com.google.android.wearable"
+            android:required="false"/>
 
-    <service android:name="tech.provingground.divemonitor.activity.MonitorTriggerListener">
-        <intent-filter>
-            <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED"/>
-            <data
-                android:host="*"
-                android:path="/startMonitoring"
-                android:scheme="wear"/>
-        </intent-filter>
-        <intent-filter>
-            <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED"/>
-            <data
-                android:host="*"
-                android:path="/logRetrievalComplete"
-                android:scheme="wear"/>
-        </intent-filter>
-        <intent-filter>
-            <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED"/>
-            <data
-                android:host="*"
-                android:path="/getLogs"
-                android:scheme="wear"/>
-        </intent-filter>
-        <intent-filter>
-            <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED"/>
-            <data android:host="*"
-                  android:path="/endMonitoring"
-                  android:scheme="wear"/>
-        </intent-filter>
-    </service>
-    <service
-        android:name="tech.provingground.divemonitor.services.RecorderService"
-        android:enabled="true"
-        android:exported="false">
-    </service>
-    <service android:name="tech.provingground.divemonitor.services.LogTransferService"
-             android:exported="false">
-    </service>
-</application>
+        <activity
+            android:name="tech.provingground.divemonitor.activity.Monitor"
+            android:label="@string/app_name"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.DeviceDefault.Light">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <service android:name="tech.provingground.divemonitor.activity.MonitorTriggerListener">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED"/>
+                <data
+                    android:host="*"
+                    android:path="/startMonitoring"
+                    android:scheme="wear"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED"/>
+                <data
+                    android:host="*"
+                    android:path="/logRetrievalComplete"
+                    android:scheme="wear"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED"/>
+                <data
+                    android:host="*"
+                    android:path="/getLogs"
+                    android:scheme="wear"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED"/>
+                <data
+                    android:host="*"
+                    android:path="/endMonitoring"
+                    android:scheme="wear"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="tech.provingground.divemonitor.services.RecorderService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
+        <service
+            android:name="tech.provingground.divemonitor.services.LogTransferService"
+            android:exported="false">
+        </service>
+    </application>
 </manifest>

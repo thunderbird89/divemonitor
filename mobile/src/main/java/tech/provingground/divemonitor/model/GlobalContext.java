@@ -64,10 +64,12 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 	public SQLiteDatabase getDivesDatabase(boolean rw) {
 		if (rw) {
 			SQLiteDatabase writableDatabase = divesHelper.getWritableDatabase();
+			divesHelper.onCreate(writableDatabase);
 			writableDatabase.setForeignKeyConstraintsEnabled(true);
 			return writableDatabase;
 		} else {
 			SQLiteDatabase readableDatabase = divesHelper.getReadableDatabase();
+			divesHelper.onCreate(readableDatabase);
 			return readableDatabase;
 		}
 	}
@@ -75,10 +77,12 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 	public SQLiteDatabase getEnvironmentReadingsDatabase(boolean rw) {
 		if (rw) {
 			SQLiteDatabase writableDatabase = environmentReadingsHelper.getWritableDatabase();
+			environmentReadingsHelper.onCreate(writableDatabase);
 			writableDatabase.setForeignKeyConstraintsEnabled(true);
 			return writableDatabase;
 		} else {
 			SQLiteDatabase readableDatabase = environmentReadingsHelper.getReadableDatabase();
+			environmentReadingsHelper.onCreate(readableDatabase);
 			return readableDatabase;
 		}
 	}

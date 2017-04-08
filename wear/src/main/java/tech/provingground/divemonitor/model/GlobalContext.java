@@ -91,6 +91,7 @@ public class GlobalContext extends Application implements GoogleApiClient.Connec
 
 	public SQLiteDatabase getEnvironmentReadingsDatabase() {
 		SQLiteDatabase writableDatabase = remoteEnvironmentDatabaseHelper.getWritableDatabase();
+		remoteEnvironmentDatabaseHelper.onCreate(writableDatabase);
 		writableDatabase.setForeignKeyConstraintsEnabled(true);
 		return writableDatabase;
 	}
